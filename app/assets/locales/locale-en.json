@@ -487,7 +487,7 @@
         "buy_sell": "Order Form",
         "buysell_formatter": "{direction} {asset}",
         "call": "Call Price",
-        "change": "Change",
+        "change": "+/-",
         "chart_height": "Chart height (pixels)",
         "chart_hide": "Hide Charts",
         "chart_modal": "Chart options",
@@ -960,7 +960,7 @@
             "rudex": "",
             "trade": "<br/><br/>The %(asset)s asset is backed 1:1 by real %(backed)s and can be deposited or withdrawn using the gateway service provided by Blocktrades.",
             "win": "",
-            "xbts": ""
+            "xbtsx": "<br/><br/>The %(asset)s asset is backed 1:1 by real %(backed)s and can be deposited or withdrawn using the gateway service provided by XBTS."
         },
         "balance": "Current balance",
         "balance_asset": "Current %(asset)s balance",
@@ -1441,7 +1441,7 @@
         "withdraw_none": "No withdrawals"
     },
     "operation": {
-        "annual_upgrade_account": "{account} was upgraded to annual member",
+        "annual_upgrade_account": "starredMarkets was upgraded to annual member",
         "asset_claim_pool": "{account} claimed {amount} from asset {asset}'s fee pool",
         "asset_create": "{account} created the asset {asset}",
         "asset_fund_fee_pool": "{account} funded {asset} fee pool with {amount}",
@@ -1588,7 +1588,7 @@
         "walletDescription": "A bin-file will be automatically created. Please download it and keep in a safe place. You’ll need to upload this file to login to your account in the future.",
         "walletLoginByValue": "Bin-file + Password",
         "walletModelTitle": "By bin-file",
-        "walletNote": "Please keep in mind, that BitShares doesn't store users passwords and couldn't recover users accounts after password loss.",
+        "walletNote": "Please keep in mind, that XBTS doesn't store users passwords and couldn't recover users accounts after password loss.",
         "whyBinFile": "Why do I need a .bin file?"
     },
     "settings": {
@@ -1653,6 +1653,7 @@
         "low_latency": "Low latency",
         "medium_latency": "Medium latency",
         "midnightTheme": "Midnight",
+        "xbtsTheme": "XBTS Theme",
         "my_nodes": "Personal",
         "no": "No",
         "no_accounts": "This local wallet does not contain any accounts.",

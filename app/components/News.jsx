@@ -5,7 +5,7 @@ import Translate from "react-translate-component";
 import LoadingIndicator from "./LoadingIndicator";
 import sanitize from "sanitize";
 
-const query = {tag: "bitshares.fdn", limit: 20};
+const query = {tag: "xbts", limit: 20};
 
 const alignRight = {textAlign: "right"};
 const alignLeft = {textAlign: "left"};
@@ -155,8 +155,7 @@ class News extends React.Component {
     componentDidMount() {
         this.updateDimensions();
         window.addEventListener("resize", this.updateDimensions);
-        api
-            .getDiscussionsByBlog(query)
+        api.getDiscussionsByBlog(query)
             .then(discussions => {
                 this.orderDiscussions(discussions);
             })

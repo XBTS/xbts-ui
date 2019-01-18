@@ -31,15 +31,13 @@ class AccountOverview extends React.Component {
             ), // alphabetical A -> B, numbers high to low
             shownAssets: props.viewSettings.get("shownAssets", "active"),
             alwaysShowAssets: [
-                "BTS"
+                "BTS",
+                "XBTSX.STH",
+                "XBTSX.BTC",
+                "XBTSX.ETH",
+                "XBTSX.WAVES"
                 // "USD",
                 // "CNY",
-                // "OPEN.BTC",
-                // "OPEN.USDT",
-                // "OPEN.ETH",
-                // "OPEN.MAID",
-                // "OPEN.STEEM",
-                // "OPEN.DASH"
             ],
             hideFishingProposals: true
         };

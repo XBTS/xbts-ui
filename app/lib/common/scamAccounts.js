@@ -1166,5 +1166,7 @@ export const scamAccountsOther = [
     "zhex",
     "1.2.1030026",
     "zilla",
-    "1.2.878051"
+    "1.2.878051",
+    "sth-rolik2001",
+    "1.2.1002460"
 ];

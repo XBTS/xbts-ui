@@ -44,7 +44,7 @@ export default class DropDownMenu extends React.Component {
             <ul
                 className="dropdown header-menu"
                 style={{
-                    left: -200,
+                    left: -250,
                     top: 64,
                     maxHeight: !dropdownActive ? 0 : maxHeight,
                     overflowY: "auto"
@@ -293,7 +293,7 @@ export default class DropDownMenu extends React.Component {
                         <Translate content="header.settings" />
                     </div>
                 </li>
-
+                {/*
                 <li
                     className={cnames(
                         {
@@ -314,7 +314,7 @@ export default class DropDownMenu extends React.Component {
                         <Translate content="header.showcases" />
                     </div>
                 </li>
-
+                */}
                 <li
                     className={cnames(
                         {
@@ -452,7 +452,7 @@ export default class DropDownMenu extends React.Component {
                     <div className="table-cell">
                         <Icon
                             size="2x"
-                            name="text"
+                            name="network"
                             title="icons.text.membership_stats"
                         />
                     </div>
@@ -513,7 +513,7 @@ export default class DropDownMenu extends React.Component {
                     )}
                 >
                     <div className="table-cell">
-                        <Icon size="2x" name="warning" title="icons.warning" />
+                        <Icon size="2x" name="privacy" title="icons.privacy" />
                     </div>
                     <div className="table-cell">
                         <Translate content="account.permissions" />

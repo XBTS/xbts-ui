@@ -27,10 +27,10 @@
         border-right: none;
         > a {
             font-weight: bold;
-            line-height: 2rem;
+            line-height: 1rem;
             padding-left: 1.25rem;
             padding-right: 0.75rem;
-            font-size: 1.1rem;
+            font-size: 1rem;
             @include breakpoint(large) {
                 padding-left: 1.75rem;
                 padding-right: 1.75rem;

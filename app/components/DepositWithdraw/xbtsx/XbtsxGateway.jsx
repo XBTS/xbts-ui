@@ -93,7 +93,7 @@ class XbtsxGateway extends React.Component {
                         : coin.symbol;
                 return (
                     <option value={option} key={coin.symbol}>
-                        {option}
+                        {option.replace("XBTSX.", "")}
                     </option>
                 );
             })
@@ -124,7 +124,8 @@ class XbtsxGateway extends React.Component {
                             >
                                 <Translate
                                     content={"gateway.choose_" + action}
-                                />:{" "}
+                                />
+                                :{" "}
                             </label>
                             <select
                                 className="external-coin-types bts-select"
@@ -269,13 +270,16 @@ class XbtsxGateway extends React.Component {
     }
 }
 
-export default connect(XbtsxGateway, {
-    listenTo() {
-        return [SettingsStore];
-    },
-    getProps() {
-        return {
-            viewSettings: SettingsStore.getState().viewSettings
-        };
+export default connect(
+    XbtsxGateway,
+    {
+        listenTo() {
+            return [SettingsStore];
+        },
+        getProps() {
+            return {
+                viewSettings: SettingsStore.getState().viewSettings
+            };
+        }
     }
-});
+);

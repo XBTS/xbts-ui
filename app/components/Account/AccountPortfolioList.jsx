@@ -3,6 +3,7 @@ import debounceRender from "react-debounce-render";
 import BalanceComponent from "../Utility/BalanceComponent";
 import {BalanceValueComponent} from "../Utility/EquivalentValueComponent";
 import {Market24HourChangeComponent} from "../Utility/MarketChangeComponent";
+import AssetImage from "../Utility/AssetImage";
 import assetUtils from "common/asset_utils";
 import counterpart from "counterpart";
 import {Link} from "react-router-dom";
@@ -448,6 +449,7 @@ class AccountPortfolioList extends React.Component {
                 asset.getIn(["options", "description"])
             );
             symbol = asset.get("symbol");
+            if (symbol.indexOf("XBTSX.") !== -1 && !market) market = "BTS";
             if (symbol.indexOf("OPEN.") !== -1 && !market) market = "USD";
             let preferredMarket = market ? market : preferredUnit;
 
@@ -584,6 +586,11 @@ class AccountPortfolioList extends React.Component {
             balances.push(
                 <tr key={asset.get("symbol")} style={{maxWidth: "100rem"}}>
                     <td style={{textAlign: "left"}}>
+                        <AssetImage
+                            replaceNoneToBts={false}
+                            maxWidth={18}
+                            name={asset.get("symbol")}
+                        />
                         <LinkToAssetById asset={asset.get("id")} />
                     </td>
                     <td style={{textAlign: "right"}}>
@@ -837,7 +844,12 @@ class AccountPortfolioList extends React.Component {
                                 .find(
                                     a => a.backingCoin === thisAssetName[1]
                                 ) ||
-                            asset.get("symbol") == "BTS";
+                            !!this.props.backedCoins
+                                .get("XBTSX", [])
+                                .find(
+                                    a => a.backingCoin === thisAssetName[1]
+                                ) ||
+                            asset.get("symbol") === "BTS";
 
                         const canBuy = !!this.props.bridgeCoins.get(
                             asset.get("symbol")
@@ -852,6 +864,11 @@ class AccountPortfolioList extends React.Component {
                             !market
                         )
                             market = "USD";
+                        if (
+                            asset.get("symbol").indexOf("XBTSX.") !== -1 &&
+                            !market
+                        )
+                            market = "BTS";
                         let preferredMarket = market ? market : coreSymbol;
 
                         let directMarketLink = notCore ? (

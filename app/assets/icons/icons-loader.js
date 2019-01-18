@@ -1,4 +1,7 @@
 let icons = [
+    "molecule",
+    "growth",
+    "computer",
     "network",
     "pie-chart",
     "privacy",

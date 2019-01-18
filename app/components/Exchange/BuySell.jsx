@@ -667,6 +667,30 @@ class BuySell extends React.Component {
             formContent = singleColumnForm ? (
                 <div className={containerClass}>
                     <div className="grid-block no-overflow wrap shrink">
+                        {/*  */}
+                        <Translate
+                            className="small-3 buy-sell-label"
+                            content="transfer.amount"
+                        />
+                        <div className="inputAddon small-9">
+                            <ExchangeInput
+                                id={`${type}Amount`}
+                                value={amount}
+                                onChange={amountChange}
+                                autoComplete="off"
+                                placeholder="0.0"
+                                addonAfter={
+                                    <span>
+                                        <AssetName
+                                            dataPlace="right"
+                                            name={quote.get("symbol")}
+                                        />
+                                    </span>
+                                }
+                            />
+                        </div>
+                    </div>
+                    <div className="grid-block no-overflow wrap shrink">
                         <Translate
                             className="small-3 buy-sell-label"
                             content="exchange.price"
@@ -685,30 +709,6 @@ class BuySell extends React.Component {
                                             name={base.get("symbol")}
                                         />
                                         &nbsp;/&nbsp;
-                                        <AssetName
-                                            dataPlace="right"
-                                            name={quote.get("symbol")}
-                                        />
-                                    </span>
-                                }
-                            />
-                        </div>
-                    </div>
-                    <div className="grid-block no-overflow wrap shrink">
-                        {/*  */}
-                        <Translate
-                            className="small-3 buy-sell-label"
-                            content="transfer.amount"
-                        />
-                        <div className="inputAddon small-9">
-                            <ExchangeInput
-                                id={`${type}Amount`}
-                                value={amount}
-                                onChange={amountChange}
-                                autoComplete="off"
-                                placeholder="0.0"
-                                addonAfter={
-                                    <span>
                                         <AssetName
                                             dataPlace="right"
                                             name={quote.get("symbol")}

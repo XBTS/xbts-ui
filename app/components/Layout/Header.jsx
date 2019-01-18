@@ -502,6 +502,7 @@ class Header extends React.Component {
                 </a>
             );
         }
+
         if (active.indexOf("spotlight") !== -1) {
             dynamicMenuItem = (
                 <a style={{flexFlow: "row"}} className={cnames({active: true})}>
@@ -519,6 +520,7 @@ class Header extends React.Component {
                 </a>
             );
         }
+
         if (active.indexOf("settings") !== -1) {
             dynamicMenuItem = (
                 <a
@@ -749,8 +751,8 @@ class Header extends React.Component {
                     <Icon
                         size="1_5x"
                         style={{position: "relative", top: 0, left: -8}}
-                        name="warning"
-                        title="icons.warning"
+                        name="privacy"
+                        title="icons.privacy"
                     />
                     <Translate
                         className="column-hide-small"
@@ -994,7 +996,7 @@ class Header extends React.Component {
                                                 top: -2,
                                                 left: -8
                                             }}
-                                            name="dashboard"
+                                            name="user"
                                             title="icons.dashboard"
                                         />
                                         <Translate
@@ -1028,7 +1030,7 @@ class Header extends React.Component {
                                             top: -2,
                                             left: -8
                                         }}
-                                        name="trade"
+                                        name="computer"
                                         title="icons.trade.exchange"
                                     />
                                     <Translate
@@ -1057,13 +1059,13 @@ class Header extends React.Component {
                                     )}
                                 >
                                     <Icon
-                                        size="2x"
+                                        size="1_5x"
                                         style={{
                                             position: "relative",
                                             top: 0,
                                             left: -8
                                         }}
-                                        name="server"
+                                        name="molecule"
                                         title="icons.server"
                                     />
                                     <Translate
@@ -1161,7 +1163,7 @@ class Header extends React.Component {
                             >
                                 <div className="table-cell">
                                     <Icon
-                                        size="2x"
+                                        size="1_5x"
                                         name="people"
                                         title="icons.manage_accounts"
                                     />

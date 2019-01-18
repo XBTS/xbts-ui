@@ -148,3 +148,19 @@ $separator-line: rgba(23, 26, 37, 0.3);
         $dark-help-text
     );
 }
+::-webkit-scrollbar,
+-moz-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+::-webkit-scrollbar-corner {
+    background-color: #999;
+}
+::-webkit-scrollbar-thumb {
+    background: #000;
+    border: 1px solid rgb(43, 113, 149);
+}
+::-webkit-scrollbar-track {
+    /* background-color: #08091b; */
+    /* border-left: 1px solid #0c0f2a; */
+}

@@ -282,10 +282,10 @@ class Exchange extends React.Component {
         let ws = props.viewSettings;
         let {ask, bid} = this._initialOrderState(props);
 
-        let chart_height = ws.get("chartHeight", 620);
+        let chart_height = ws.get("chartHeight", 400);
         if (chart_height == 620 && window.innerWidth < 640) {
             // assume user is on default setting, use smaller for mobile
-            chart_height = 400;
+            chart_height = 300;
         }
 
         return {
@@ -326,13 +326,13 @@ class Exchange extends React.Component {
             hidePanel: ws.get("hidePanel", false),
             hideScrollbars: ws.get("hideScrollbars", false),
             singleColumnOrderForm: ws.get("singleColumnOrderForm", true),
-            flipOrderBook: ws.get("flipOrderBook", false),
+            flipOrderBook: ws.get("flipOrderBook", true),
             flipBuySell: ws.get("flipBuySell", false),
             orderBookReversed: ws.get("orderBookReversed", false),
             chartType: ws.get("chartType", "price_chart"),
             chartHeight: chart_height,
             chartZoom: ws.get("chartZoom", true),
-            chartTools: ws.get("chartTools", true),
+            chartTools: ws.get("chartTools", false),
             hideFunctionButtons: ws.get("hideFunctionButtons", true),
             currentPeriod: ws.get("currentPeriod", 3600 * 24 * 30 * 3), // 3 months
             showMarketPicker: false,
@@ -340,10 +340,10 @@ class Exchange extends React.Component {
             mobileKey: [""],
             forceReRender: 0,
             panelWidth: 0,
-            mirrorPanels: ws.get("mirrorPanels", false),
+            mirrorPanels: ws.get("mirrorPanels", true),
             panelTabs: ws.get("panelTabs", {
-                my_history: 1,
-                history: 1,
+                my_history: 2,
+                history: 2,
                 my_orders: 2,
                 open_settlement: 2
             }),
@@ -1950,7 +1950,7 @@ class Exchange extends React.Component {
         let smallScreen = width < 850 ? true : false;
         let tinyScreen = width < 640 ? true : false;
 
-        const minChartHeight = 300;
+        const minChartHeight = 210;
         const thisChartHeight = Math.max(
             this.state.height > 1100 ? chartHeight : chartHeight - 125,
             minChartHeight
@@ -2303,7 +2303,7 @@ class Exchange extends React.Component {
         // panelWidth = 350;
         // }
 
-        panelWidth = 350;
+        panelWidth = 360;
 
         let marketHistory =
             tinyScreen &&
@@ -2312,7 +2312,7 @@ class Exchange extends React.Component {
                     key={`actionCard_${actionCardIndex++}`}
                     className={cnames(
                         panelTabs["history"] == 0
-                            ? centerContainerWidth > 1200
+                            ? centerContainerWidth > 1100
                                 ? "medium-6 large-6 xlarge-4"
                                 : centerContainerWidth > 800
                                     ? "medium-6"

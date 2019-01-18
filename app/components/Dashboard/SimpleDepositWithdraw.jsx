@@ -23,7 +23,7 @@ import AssetName from "../Utility/AssetName";
 import {ChainStore} from "bitsharesjs";
 import {debounce} from "lodash-es";
 import {DecimalChecker} from "../Utility/DecimalChecker";
-import {openledgerAPIs} from "api/apiConfig";
+import {xbtsxAPIs} from "api/apiConfig";
 import {getWalletName} from "branding";
 import {Modal} from "bitshares-ui-style-guide";
 
@@ -384,7 +384,7 @@ class DepositWithdrawContent extends DecimalChecker {
 
     _validateAddress(address, props = this.props) {
         validateAddress({
-            url: openledgerAPIs.BASE,
+            url: xbtsxAPIs.BASE,
             walletType: props.walletType,
             newAddress: address
         })

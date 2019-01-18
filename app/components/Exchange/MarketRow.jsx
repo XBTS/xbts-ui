@@ -2,6 +2,7 @@ import React from "react";
 import FormattedAsset from "../Utility/FormattedAsset";
 import AssetWrapper from "../Utility/AssetWrapper";
 import AccountName from "../Utility/AccountName";
+import AssetImage from "../Utility/AssetImage";
 import utils from "common/utils";
 import Icon from "../Icon/Icon";
 import MarketsActions from "actions/MarketsActions";
@@ -82,7 +83,7 @@ class MarketRow extends React.Component {
             buttonStyle = {
                 marginBottom: 0,
                 fontSize: "0.75rem",
-                padding: "4px 10px",
+                padding: "4px 8px",
                 borderRadius: "0px",
                 letterSpacing: "0.05rem"
             };
@@ -165,6 +166,11 @@ class MarketRow extends React.Component {
                                 onClick={this._onClick.bind(this, marketID)}
                                 key={column.index}
                             >
+                                <AssetImage
+                                    replaceNoneToBts={false}
+                                    maxWidth={14}
+                                    name={quote.get("symbol")}
+                                />
                                 {this.props.name}
                             </td>
                         );
@@ -195,11 +201,12 @@ class MarketRow extends React.Component {
                         let highPrecisionAssets = [
                             "BTC",
                             "OPEN.BTC",
+                            "XBTSX.BTC",
                             "TRADE.BTC",
                             "GOLD",
                             "SILVER"
                         ];
-                        let precision = 6;
+                        let precision = 5;
                         if (
                             highPrecisionAssets.indexOf(base.get("symbol")) !==
                             -1

@@ -645,6 +645,7 @@ class Footer extends React.Component {
                                 </Tooltip>
 
                                 <div className="grid-block">
+                                    {/*
                                     <Tooltip
                                         title={counterpart.translate(
                                             "tooltip.debug_report"
@@ -660,7 +661,9 @@ class Footer extends React.Component {
                                         >
                                             <Translate content="modal.report.button" />
                                         </div>
+
                                     </Tooltip>
+*/}
                                     <Tooltip
                                         title={counterpart.translate(
                                             "tooltip.self_help"

@@ -14,7 +14,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 */
 let branch = !!process.env.BRANCH ? process.env.BRANCH : git.branch();
 var __VERSION__ =
-    branch === "develop" ? git.short() : require("./package.json").version;
+    branch === "xbts" ? git.short() : require("./package.json").version;
 
 // BASE APP DIR
 var root_dir = path.resolve(__dirname);
@@ -71,7 +71,7 @@ module.exports = function(env) {
         new HtmlWebpackPlugin({
             template: "!!handlebars-loader!app/assets/index.hbs",
             templateParameters: {
-                title: "BitShares " + __VERSION__,
+                title: "XBTS " + __VERSION__,
                 INCLUDE_BASE: !!env.prod && !env.hash,
                 PRODUCTION: !!env.prod,
                 ELECTRON: !!env.electron

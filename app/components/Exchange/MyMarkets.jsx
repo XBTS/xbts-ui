@@ -354,7 +354,7 @@ class MyMarkets extends React.Component {
             nextState.activeTab === "find-market" &&
             !nextProps.searchAssets.size
         ) {
-            this._lookupAssets("OPEN.", true);
+            this._lookupAssets("XBTSX.", true);
         }
 
         if (this.state.activeTab !== nextState.activeTab) {
@@ -419,7 +419,7 @@ class MyMarkets extends React.Component {
         this._setMinWidth();
 
         if (this.state.activeTab === "find-market") {
-            this._lookupAssets("OPEN.", true);
+            this._lookupAssets("XBTSX.", true);
         }
 
         if (this.state.activeTab !== this.props.activeTab) {
@@ -736,35 +736,35 @@ class MyMarkets extends React.Component {
             ));
 
             /* Check for possible gateway versions of the asset */
-            gatewayPrefixes.forEach(prefix => {
-                let possibleGatewayAssetName = `${prefix}.${currentBase}`;
-                let gatewayAsset = ChainStore.getAsset(
-                    possibleGatewayAssetName
-                );
-                /* If the gateway offers an asset for this base, add it to the list */
-                if (!!gatewayAsset) {
-                    let gatewayMarkets = activeMarkets
-                        .map(m => {
-                            if (m.quote === m.base) return null;
-                            let newID = `${
-                                m.quote
-                            }_${possibleGatewayAssetName}`;
-                            if (activeMarkets.has(newID)) return null;
-                            return {
-                                base: possibleGatewayAssetName,
-                                quote: m.quote
-                            };
-                        }, {})
-                        .filter(m => !!m);
-                    ({otherMarkets, baseGroups} = filterAndSeparateMarkets(
-                        currentBase,
-                        [currentBase, possibleGatewayAssetName],
-                        gatewayMarkets,
-                        baseGroups,
-                        otherMarkets
-                    ));
-                }
-            });
+            // gatewayPrefixes.forEach(prefix => {
+            //     let possibleGatewayAssetName = `${prefix}.${currentBase}`;
+            //     let gatewayAsset = ChainStore.getAsset(
+            //         possibleGatewayAssetName
+            //     );
+            //     /* If the gateway offers an asset for this base, add it to the list */
+            //     if (!!gatewayAsset) {
+            //         let gatewayMarkets = activeMarkets
+            //             .map(m => {
+            //                 if (m.quote === m.base) return null;
+            //                 let newID = `${
+            //                     m.quote
+            //                 }_${possibleGatewayAssetName}`;
+            //                 if (activeMarkets.has(newID)) return null;
+            //                 return {
+            //                     base: possibleGatewayAssetName,
+            //                     quote: m.quote
+            //                 };
+            //             }, {})
+            //             .filter(m => !!m);
+            //         ({otherMarkets, baseGroups} = filterAndSeparateMarkets(
+            //             currentBase,
+            //             [currentBase, possibleGatewayAssetName],
+            //             gatewayMarkets,
+            //             baseGroups,
+            //             otherMarkets
+            //         ));
+            //     }
+            // });
         }
 
         return {baseGroups, otherMarkets};
@@ -1110,7 +1110,7 @@ class MyMarkets extends React.Component {
                                           active: activeMarketTab === index
                                       })}
                                   >
-                                      {base}
+                                      {base.replace("XBTSX.", "")}
                                   </li>
                               );
                           })}
