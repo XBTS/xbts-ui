@@ -1,4 +1,7 @@
 let icons = [
+    "network",
+    "pie-chart",
+    "privacy",
     "photo-camera",
     "adjust",
     "alarm",
