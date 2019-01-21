@@ -821,7 +821,6 @@ class XbtsxWithdrawModal extends React.Component {
                             <div className="inline-label">
                                 <input
                                     type="text"
-                                    spellcheck="false"
                                     value={withdraw_address_selected}
                                     tabIndex="4"
                                     onChange={this.onWithdrawAddressChanged.bind(
