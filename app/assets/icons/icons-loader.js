@@ -1,4 +1,12 @@
 let icons = [
+    "explorer",
+    "deposit-withdraw",
+    "molecule",
+    "growth",
+    "computer",
+    "network",
+    "pie-chart",
+    "privacy",
     "photo-camera",
     "adjust",
     "alarm",

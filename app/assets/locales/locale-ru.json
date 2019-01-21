@@ -487,7 +487,7 @@
         "buy_sell": "Форма ордера",
         "buysell_formatter": "{direction} {asset}",
         "call": "Цена досрочного погашения",
-        "change": "Изменение",
+        "change": "+/-",
         "chart_height": "Высота графика (в пикселях)",
         "chart_hide": "Скрыть чарты",
         "chart_modal": "Параметры графика",
@@ -509,7 +509,7 @@
         "global_settle": "Global Settlement",
         "group_order_limit": "Групповой",
         "hide": "Скрыть",
-        "highest_bid": "Наивысшая ставка",
+        "highest_bid": "Наивысшая",
         "history": "Рыночные сделки",
         "horizontal": "Горизонтальный",
         "index": "Индекс",
@@ -517,10 +517,10 @@
         "invalid_price": "Недействительная цена",
         "invert": "Инвертировать цену",
         "latest": "Последние",
-        "lowest_ask": "Самый низкий запрос",
+        "lowest_ask": "Минимальный",
         "maintenance": "Цена требования дополнительного обеспечения",
         "market": "Рынок",
-        "market_depth": "Market Depth",
+        "market_depth": "Total ",
         "market_frozen": "Владелец %(asset)s запретил торговлю на этом рынке.",
         "market_name": "Мои Рынки",
         "market_picker": {
@@ -785,7 +785,7 @@
                 "asset_type": "Тип актива",
                 "current_supply": "Текущее количество",
                 "issuer": "Эмитент",
-                "market_fee": "Комиссия рынка",
+                "market_fee": "Fee",
                 "max_market_fee": "Максимальная комиссия рынка",
                 "stealth_supply": "Стелс количество"
             },
@@ -960,7 +960,7 @@
             "rudex": "",
             "trade": "<br/><br/>Актив %(asset)s обеспечивается реальными %(backed)s в соотношении 1:1 и может быть депонирован или выведен с помощью сервиса шлюза от Blocktrades.",
             "win": "",
-            "xbts": ""
+            "xbtsx": "<br/><br/>Актив %(asset)s обеспечивается реальными %(backed)s в соотношении 1:1 и может быть депонирован или выведен с помощью сервиса шлюза от XBTS."
         },
         "balance": "Текущий остаток на счете",
         "balance_asset": "Текущий баланс %(asset)s",
@@ -1098,7 +1098,8 @@
         "help": "Помощь",
         "return_to_top": "Вернуться к началу",
         "scan_qr_code": "Сканировать QR-код",
-        "set": "Задать"
+        "set": "Задать",
+        "add_coin": "Add Coin"
     },
     "header": {
         "account": "Аккаунт",
@@ -1109,9 +1110,9 @@
         "create_account": "Создать аккаунт",
         "create_asset": "Создать актив",
         "current": "Текущий аккаунт",
-        "dashboard": "Инфопанель",
+        "dashboard": "Аккаунт",
         "deposit-withdraw": "Ввод/Вывод",
-        "deposit_legacy": "или старой формой депозита",
+        "deposit_legacy": "(или старая форма)",
         "exchange": "Биржа",
         "explorer": "Обозреватель",
         "help": "Помощь",
@@ -1129,7 +1130,7 @@
         "unlock_short": "Войти",
         "unlocked_tip": "<br/>Нажмите, чтобы выйти.<br/><br/>Закрыв окно браузера, Вы также выйдете из аккаунта.",
         "update_asset": "Обновить актив",
-        "withdraw_legacy": "или старой формой вывода"
+        "withdraw_legacy": "(или старая форма)"
     },
     "icons": {
         "adjust": "Настроить маржинальную позицию",
@@ -1313,7 +1314,7 @@
             "close": "Закрыть",
             "header": "Пополнить аккаунт %(account_name)s",
             "header_short": "Пополнить",
-            "submit": "Пополнить счет"
+            "submit": "Пополнить"
         },
         "deposit_withdraw": {
             "disabled": "Сервис шлюза %(gateway)s недоступен",
@@ -1653,6 +1654,7 @@
         "low_latency": "Низкое значение задержки",
         "medium_latency": "Среднее значение задержки",
         "midnightTheme": "Полночь",
+        "xbtsTheme": "XBTS Dark",
         "my_nodes": "Личные",
         "no": "Нет",
         "no_accounts": "Этот локальный кошелек не содержит аккаунтов.",
@@ -1754,7 +1756,7 @@
         "filter_ops": "Используйте этот список для фильтрации Вашей истории по типу операции.",
         "follow_user": "Вы подписаны на этого пользователя",
         "follow_user_add": "Нажмите, чтобы подписаться на этого пользователя",
-        "gateway": "Шлюзы подкрепляют депозиты реальными активами на 100% ",
+        "gateway": "Шлюзы подкрепляют депозиты реальными активами",
         "generate": "Сгенерированный пароль был создан локально в Вашем браузере. <br /><br /><strong>Никто, кроме Вас не имеет к нему доступа</strong>.<br /><br /> Вставьте его ниже и сохраните копию в надежном месте",
         "global_settle": "This asset is globally settled. Settling it will let you convert your holdings of %(asset)s to %(backingAsset)s instantly, at the global settlement price (visible in exchange header or asset details page).",
         "global_settle_price": "This is the price at which settle orders will execute. This asset is globally settled, thus settlement orders will execute instantly",
