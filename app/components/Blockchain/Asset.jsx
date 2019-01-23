@@ -6,6 +6,7 @@ import LinkToAssetById from "../Utility/LinkToAssetById";
 import AssetWrapper from "../Utility/AssetWrapper";
 import FormattedAsset from "../Utility/FormattedAsset";
 import FormattedPrice from "../Utility/FormattedPrice";
+import AssetImage from "../Utility/AssetImage";
 import AssetName from "../Utility/AssetName";
 import TimeAgo from "../Utility/TimeAgo";
 import HelpContent from "../Utility/HelpContent";
@@ -357,6 +358,7 @@ class Asset extends React.Component {
             }
         }
         if (asset.symbol === core_asset.get("symbol")) preferredMarket = "USD";
+
         if (urls && urls.length) {
             urls.forEach(url => {
                 let markdownUrl = `<a target="_blank" rel="noopener noreferrer" href="${url}">${url}</a>`;
@@ -365,8 +367,25 @@ class Asset extends React.Component {
         }
 
         let {name, prefix} = utils.replaceName(originalAsset);
+
         return (
             <div style={{overflow: "visible"}}>
+                <h2>
+                    <AssetImage
+                        maxWidth={50}
+                        replaceNoneToBts={false}
+                        name={asset.symbol}
+                    />
+                    {short_name ? (
+                        <span style={{marginRight: 15}}>{short_name}</span>
+                    ) : null}
+                    <Link
+                        className="button market-button"
+                        to={`/market/${asset.symbol}_${preferredMarket}`}
+                    >
+                        <Translate content="exchange.market" />
+                    </Link>
+                </h2>
                 <HelpContent
                     path={"assets/" + asset.symbol}
                     alt_path="assets/Asset"
@@ -376,13 +395,6 @@ class Asset extends React.Component {
                     issuer={issuerName}
                     hide_issuer="true"
                 />
-                {short_name ? <p>{short_name}</p> : null}
-                <Link
-                    className="button market-button"
-                    to={`/market/${asset.symbol}_${preferredMarket}`}
-                >
-                    <Translate content="exchange.market" />
-                </Link>
             </div>
         );
     }
@@ -453,7 +465,7 @@ class Asset extends React.Component {
         ) : null;
 
         return (
-            <div className="asset-card no-padding">
+            <div className="asset-card">
                 <div className="card-divider">
                     <AssetName name={asset.symbol} />
                 </div>
@@ -514,7 +526,7 @@ class Asset extends React.Component {
         var feedPrice = this.formattedPrice(currentFeed.settlement_price);
 
         return (
-            <div className="asset-card no-padding">
+            <div className="asset-card">
                 <div className="card-divider">{title}</div>
 
                 <table
@@ -710,7 +722,7 @@ class Asset extends React.Component {
         }
 
         return (
-            <div className="asset-card no-padding">
+            <div className="asset-card">
                 <div className="card-divider">{title}</div>
                 {isGlobalSettle && (
                     <Translate
@@ -922,7 +934,7 @@ class Asset extends React.Component {
         const core = ChainStore.getAsset("1.3.0");
 
         return (
-            <div className="asset-card no-padding">
+            <div className="asset-card">
                 <div className="card-divider">
                     {<Translate content="explorer.asset.fee_pool.title" />}
                 </div>
@@ -986,7 +998,7 @@ class Asset extends React.Component {
                 className="grid-content small-no-padding"
                 style={{overflowY: "visible"}}
             >
-                <div className="asset-card no-padding">
+                <div className="asset-card">
                     <div className="card-divider">
                         <Translate content="account.user_issued_assets.update_owner" />
                     </div>
@@ -1011,7 +1023,7 @@ class Asset extends React.Component {
                 className="grid-content small-no-padding"
                 style={{overflowY: "visible"}}
             >
-                <div className="asset-card no-padding">
+                <div className="asset-card">
                     <div className="card-divider">
                         <Translate content="transaction.trxTypes.asset_publish_feed" />
                     </div>
@@ -1032,7 +1044,7 @@ class Asset extends React.Component {
     renderCollateralBid(asset) {
         return (
             <div className="grid-content small-no-padding">
-                <div className="asset-card no-padding">
+                <div className="asset-card">
                     <div className="card-divider">
                         <Translate content="explorer.asset.collateral.bid" />
                     </div>
@@ -1066,7 +1078,7 @@ class Asset extends React.Component {
     renderFeePoolFunding(asset) {
         return (
             <div className="grid-content small-no-padding">
-                <div className="asset-card no-padding">
+                <div className="asset-card">
                     <div className="card-divider">
                         <Translate content="explorer.asset.fee_pool.fund" />
                     </div>
@@ -1090,7 +1102,7 @@ class Asset extends React.Component {
         if (dynamic) dynamic = dynamic.toJS();
         return (
             <div className="grid-content small-no-padding">
-                <div className="asset-card no-padding">
+                <div className="asset-card">
                     <div className="card-divider">
                         <Translate content="explorer.asset.fee_pool.claim_balance" />
                     </div>
@@ -1111,7 +1123,7 @@ class Asset extends React.Component {
         if (dynamic) dynamic = dynamic.toJS();
         return (
             <div className="grid-content small-no-padding">
-                <div className="asset-card no-padding">
+                <div className="asset-card">
                     <div className="card-divider">
                         <Translate content="transaction.trxTypes.asset_claim_fees" />
                     </div>
@@ -1228,7 +1240,7 @@ class Asset extends React.Component {
         ) : null;
 
         return (
-            <div className="asset-card no-padding">
+            <div className="asset-card">
                 <div className="card-divider">
                     {<Translate content="explorer.asset.permissions.title" />}
                 </div>
@@ -1818,7 +1830,7 @@ class Asset extends React.Component {
 
         return (
             <div className="grid-block" style={{paddingBottom: "1rem"}}>
-                <div className="grid-content no-padding">
+                <div className="grid-content">
                     <div className="">
                         <Tabs
                             defaultActiveTab={0}
