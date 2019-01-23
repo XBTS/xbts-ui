@@ -1,5 +1,5 @@
 {
-    "name": "BitShares2-light",
+    "name": "XBTS-light",
     "version": "2.0.190123-rc1",
     "description": "Advanced wallet interface for the BitShares financial blockchain.",
     "homepage": "https://github.com/bitshares/bitshares-ui",
@@ -86,8 +86,8 @@
     },
     "browsersList": "electron 1.7",
     "build": {
-        "productName": "BitShares",
-        "appId": "org.bitshares.graphene",
+        "productName": "XBTS",
+        "appId": "io.xbts",
         "files": [
             "build/electron",
             "!node_modules"
