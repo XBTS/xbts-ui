@@ -1,4 +1,5 @@
 let icons = [
+    "chat",
     "explorer",
     "deposit-withdraw",
     "molecule",
