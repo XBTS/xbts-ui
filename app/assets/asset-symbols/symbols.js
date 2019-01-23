@@ -99,6 +99,7 @@ require("file-loader?name=asset-symbols/[name].png!./bco.png");
 require("file-loader?name=asset-symbols/[name].png!./wix.png");
 require("file-loader?name=asset-symbols/[name].png!./cvcoin.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.btc.png");
+require("file-loader?name=asset-symbols/[name].png!./evraz.png");
 
 // xbts assets
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.sth.png");
