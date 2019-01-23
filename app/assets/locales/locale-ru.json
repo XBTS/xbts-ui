@@ -509,7 +509,7 @@
         "global_settle": "Global Settlement",
         "group_order_limit": "Групповой",
         "hide": "Скрыть",
-        "highest_bid": "Наивысшая",
+        "highest_bid": "Наивысшая ставка",
         "history": "Рыночные сделки",
         "horizontal": "Горизонтальный",
         "index": "Индекс",
@@ -517,7 +517,7 @@
         "invalid_price": "Недействительная цена",
         "invert": "Инвертировать цену",
         "latest": "Последние",
-        "lowest_ask": "Минимальный",
+        "lowest_ask": "Мин. запрос",
         "maintenance": "Цена требования дополнительного обеспечения",
         "market": "Рынок",
         "market_depth": "Total ",
@@ -716,7 +716,7 @@
                 "claim_text": "Эмитент активов может востребовать любую из накопленных здесь комиссий.",
                 "core_exchange_rate": "Основной обменный курс (CER)",
                 "fund": "Пополнить пул комиссий",
-                "fund_text": "Кто угодно может добавлять %(core) в пул комиссий используя эту форму:",
+                "fund_text": "Кто угодно может добавлять %(core)s в пул комиссий используя эту форму:",
                 "pool_balance": "Баланс пула",
                 "pool_text": "Пул комиссий используется для оплаты комиссий в %(core)s конвертируя комиссию в %(asset)s в %(core)s. Если в пуле комиссий заканчиваются средства, то комиссии становится не возможно платить в %(asset)s и по умолчанию они будут платиться в %(core)s.<br/><br/>Основной обменный курс это цена по которой %(asset)s конвертируются в %(core)s.",
                 "title": "Пул комиссии",
@@ -2250,6 +2250,89 @@
         "withdraw": {
             "finalNumber": "Фактическая сумма:%(final_number)s",
             "winAmount": "Минимальная сумма: %(min_amount)s %(asset)s"
+        }
+    },
+    "xbtsx": {
+        "account": {
+            "id": "STH Staking ID",
+            "title": "Используйте свои SmartHoldem Coin (STH), чтобы получать прибыль от XBTS DEX",
+            "staking_amount": "Сумма ставки",
+            "remaining": "Оставшиеся в период стейкинга",
+            "staking_text1": "Каждый, кто депонирует свои STH, имеет право на получение до %(percent)s от торговой прибыли <b>XBTS decentralized exchange</b>. <br>Ставки заблокируют ваши монеты на время, указанное вами ниже. <br>Во время периода ставок вы автоматически принимаете участие в распределении выплат. Выплаты происходят раз в две недели.",
+            "staking_text2": "Большая длительность ставки приводит к большему коэффициенту выплат. <br>После того, как период ставки достигнут, вы можете вернуть свой баланс STH с помощью кнопки <b>'Востребовать Сейчас'</b>. <br>Плата за блокчейн для начала новой позиции ставок в настоящее время установлена в <b>%(fee)s STH</b>. <br>Плата за блокчейн для возврата ваших STH на данный момент установлена на уровне <b>%(reclaimFee)s STH.</b>",
+            "staking_text3": "Вы можете поставить только ставку STH, которые вы депонировали на <b>XBTS decentralized exchange</b>. ",
+            "status": "Статус",
+            "staking": "SmartHolder",
+            "days": "%(days)s Дней",
+            "available": "Available for claiming",
+            "month_1": "1 Месяц (%(bonus)s bonus)",
+            "month_3": "3 Месяца (%(bonus)s bonus)",
+            "month_6": "6 Месяцев (%(bonus)s bonus)",
+            "month_12": "12 Месяцев (%(bonus)s bonus)",
+            "month_1_plural": "1 Месяц",
+            "month_3_plural": "3 Месяца",
+            "month_6_plural": "6 Месяцев",
+            "month_12_plural": "12 Месяцев",
+            "amount_sth": "Сумма ставки STH",
+            "stake_sth": "Создать новую ставку STH",
+            "length": "Продолжительность ставки",
+            "understand": "Я соглашаюсь с тем, что, делая ставку %(amount)s STH, Я полностью принимаю, что указанные STH будут заморожены, и я полностью понимаю, что они будут заблокированы на  %(month)s  и НЕТ возможности получить средства до истечения срока ставки. Я также принимаю долю прибыли от платформы XBTS, которая связана с моими вложенными средствами.",
+            "no_balances": "У вас нет открытых позиций XBTS STH.",
+            "sth_available": "В наличии: ",
+            "sth_not_available": "Нет доступных STH "
+        }
+    },
+    "cryptobridge": {
+        "general": {
+            "check_url": "Please check that you are visiting %(url)s",
+            "important": "Important",
+            "news": "News"
+        },
+        "gateway": {
+            "required_confirmations": "Required confirmations",
+            "support_block": "For support, please contact CryptoBridge at:",
+            "deposit_or_withdrawal": "Depositing or withdrawing coins",
+            "deposit_intro": "If you want to deposit or withdraw funds from other blockchains, please use the form below.",
+            "deposit_to_fee_warning": "WARNING: Depositing %(asset)s more than once every %(fee_time_frame)s minutes will incur a %(fee_percentage)s% deposit fee (minimum %(fee_minimum)s %(asset)s). A deposit fee of %(fee_percentage_low_amounts)s% is charged when the deposit is below 1 %(asset)s.",
+            "deposit_minimum": "Minimum deposit",
+            "deposit_login": "Your wallet must be unlocked before you make a deposit",
+            "receive_funds": "Receiving funds",
+            "receive_funds_intro": "In order to receive funds from another person on CryptoBridge, simply give them your account name: "
+        },
+        "footer": {
+            "title": "CryptoBridge decentralized exchange"
+        },
+        "account": {
+            "id": "BCO Staking ID",
+            "title": "Stake your BridgeCoin (BCO) to earn profits from the DEX",
+            "intro_text_title": "Welcome to CryptoBridge",
+            "staking_amount": "Staking amount",
+            "remaining": "Оставшийся в период стейкинга",
+            "staking_text1": "Everyone who stakes their BCO is entitled to %(percent)s of the trading profits from the <b>CryptoBridge decentralized exchange</b>. Staking will lock your coins for the time you specify below. During the staking period you automatically take part in the payout distributions. Payouts happen bi-weekly.",
+            "staking_text2": "A longer staking duration results in a bigger payout factor. After the staking period has been reached, you can reclaim your staked BCO balance with the <b>'Claim Now'</b> button. The blockchain fee to start a new staking position is currently set at <b>%(fee)s BCO</b>. The blockchain fee to reclaim your staked BCO is currently set at <b>%(reclaimFee)s BCO.</b>",
+            "staking_text3": "You can only stake BCO that you have deposited into the <b>CryptoBridge decentralized exchange</b>. You can find more information about the advantages of the <b>CryptoBridge decentralized exchange</b> and its profit sharing at <a target=\"_new\" href=\"https://crypto-bridge.org\">crypto-bridge.org</a>. More details on how payouts happen and how bonuses are applied are also available on the <a target=\"_new\" href=\"https://crypto-bridge.org#faq\">FAQ page</a>. ",
+            "status": "Status",
+            "staking": "SmartHolder",
+            "days": "%(days)s Days",
+            "available": "Available for claiming",
+            "month_1": "1 Month (%(bonus)s bonus)",
+            "month_3": "3 Month (%(bonus)s bonus)",
+            "month_6": "6 Month (%(bonus)s bonus)",
+            "month_12": "12 Month (%(bonus)s bonus)",
+            "month_1_plural": "1 Month",
+            "month_3_plural": "3 Months",
+            "month_6_plural": "6 Months",
+            "month_12_plural": "12 Months",
+            "amount_bco": "Amount of BCO to stake",
+            "stake_bco": "Create a new BCO staking position",
+            "length": "Staking duration",
+            "understand": "I hereby agree that by staking %(amount)s BCO, I fully understand that they will be locked away for %(month)s and that there is no way of claiming the funds before the staking term is over. I also accept the share in the profits of CryptoBridge platform which is attributed to my staked funds.",
+            "no_balances": "You have no open BridgeCoin staking positions.",
+            "bco_available": "Available: ",
+            "bco_not_available": "No BCO available "
+        },
+        "dashboard": {
+            "all_markets": "All Markets"
         }
     }
 }
