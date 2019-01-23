@@ -113,6 +113,7 @@ var Utils = {
         let baseID = base.toJS ? base.get("id") : base.id;
         let basePrecision = base.toJS ? base.get("precision") : base.precision;
         let fixedPrecisionAssets = {
+            "1.3.4157": 8, // XBTSX.BTC
             "1.3.113": 5, // bitCNY
             "1.3.121": 5 // bitUSD
         };
@@ -447,6 +448,35 @@ var Utils = {
             prefix,
             isBitAsset: !!isBitAsset
         };
+    },
+
+    timeStringToGrapheneDate(time_string) {
+        if (!time_string) return new Date("1970-01-01T00:00:00.000Z");
+        if (!/Z$/.test(time_string)) {
+            //does not end in Z
+            // https://github.com/cryptonomex/graphene/issues/368
+            time_string = time_string + "Z";
+        }
+        return new Date(time_string);
+    },
+
+    toFixedString(x) {
+        if (Math.abs(x) < 1.0) {
+            const e = parseInt(x.toString().split("e-")[1]);
+            if (e) {
+                x *= Math.pow(10, e - 1);
+                x = "0." + new Array(e).join("0") + x.toString().substring(2);
+            }
+        } else {
+            let e = parseInt(x.toString().split("+")[1]);
+            if (e > 20) {
+                e -= 20;
+                x /= Math.pow(10, e);
+                x += new Array(e + 1).join("0");
+            }
+        }
+
+        return x;
     }
 };
 
