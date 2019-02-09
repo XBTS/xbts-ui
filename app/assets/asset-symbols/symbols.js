@@ -159,13 +159,16 @@ require("file-loader?name=asset-symbols/[name].png!./polis.png");
 require("file-loader?name=asset-symbols/[name].png!./xmcc.png");
 require("file-loader?name=asset-symbols/[name].png!./dsr.png");
 require("file-loader?name=asset-symbols/[name].png!./bwk.png");
+require("file-loader?name=asset-symbols/[name].png!./marco.png");
+require("file-loader?name=asset-symbols/[name].png!./pivx.png");
+require("file-loader?name=asset-symbols/[name].png!./vrm.png");
+
 // xbts assets
-/*
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.sth.png");
-require("file-loader?name=asset-symbols/[name].png!./xbtsx.post.png");
-require("file-loader?name=asset-symbols/[name].png!./xbtsx.doge.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.btc.png");
+require("file-loader?name=asset-symbols/[name].png!./xbtsx.doge.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.ltc.png");
+require("file-loader?name=asset-symbols/[name].png!./xbtsx.post.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.dash.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.kec.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.bch.png");
@@ -190,7 +193,8 @@ require("file-loader?name=asset-symbols/[name].png!./xbtsx.egc.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.onion.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.wix.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.vrc.png");
-*/
+require("file-loader?name=asset-symbols/[name].png!./xbtsx.vrm.png");
+require("file-loader?name=asset-symbols/[name].png!./xbtsx.dcnt.png");
 
 // other gateways
 // require("file-loader?name=asset-symbols/[name].png!./rudex.steem.png");
