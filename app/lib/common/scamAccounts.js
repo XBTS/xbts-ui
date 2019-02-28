@@ -1168,5 +1168,13 @@ export const scamAccountsOther = [
     "zilla",
     "1.2.878051",
     "committee-securuti",
-    "1.2.1544160"
+    "1.2.1544160",
+    "openledger-upgrade",
+    "1.2.1544053",
+    "openledger-gex",
+    "1.2.1540900",
+    "openledger-security",
+    "1.2.1547751",
+    "xbts",
+    "1.2.98094"
 ];
