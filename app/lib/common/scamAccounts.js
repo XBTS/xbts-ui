@@ -1176,5 +1176,11 @@ export const scamAccountsOther = [
     "openledger-security",
     "1.2.1547751",
     "xbts",
-    "1.2.98094"
+    "1.2.98094",
+    "dexter228",
+    "1.2.1218196",
+    "sth-rolik2001",
+    "1.2.1002460",
+    "btsrolik20001",
+    "1.2.158585"
 ];
