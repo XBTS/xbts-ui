@@ -1,5 +1,11 @@
 import {getFaucet} from "../branding";
 
+export const xbtsxAPIs = {
+    BASE: "https://apis.xbts.io/api/v1",
+    // BASE: "http://localhost:3080/api/v1",
+    COINS_LIST: "/coin"
+};
+
 export const blockTradesAPIs = {
     BASE: "https://api.blocktrades.us/v2",
     COINS_LIST: "/coins",
@@ -88,11 +94,6 @@ export const gdexAPIs = {
     WITHDRAW_RULE: "/gateway/withdraw/rule"
 };
 
-export const xbtsxAPIs = {
-    BASE: "https://apis.xbts.io/api/v1",
-    COINS_LIST: "/coin"
-};
-
 export const nodeRegions = [
     // region of the node follows roughly https://en.wikipedia.org/wiki/Subregion#/media/File:United_Nations_geographical_subregions.png
     "Northern Europe",
@@ -133,6 +134,14 @@ export const settingsAPIs = {
         {
             url: "ws://127.0.0.1:8090",
             location: "Locally hosted"
+        },
+        {
+            url: "wss://node.xbts.io/ws",
+            region: "Western Europe",
+            country: "Germany",
+            location: "Frankfurt",
+            operator: "XBTS",
+            contact: "telegram:xbtsio"
         },
         {
             url: "wss://dex.iobanker.com:9090",
@@ -257,14 +266,6 @@ export const settingsAPIs = {
             url: "wss://valley.bitshares.apasia.tech/ws",
             location: "Silicon Valley",
             country: "U.S.A.",
-            region: "Northern America",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://canada6.daostreet.com",
-            location: "Toronto",
-            country: "Canada",
             region: "Northern America",
             operator: "Flash Infrastructure Worker",
             contact: "telegram:murda_ra"
