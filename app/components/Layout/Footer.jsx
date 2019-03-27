@@ -82,7 +82,7 @@ class Footer extends React.Component {
     componentDidMount() {
         this.checkNewVersionAvailable.call(this);
 
-        this.downloadLink = "https://bitshares.org/download";
+        this.downloadLink = "https://github.com/XBTS/xbts-ui/releases";
 
         let ensure = this._ensureConnectivity.bind(this);
         ifvisible.on("wakeup", function() {
@@ -110,10 +110,9 @@ class Footer extends React.Component {
 
     checkNewVersionAvailable() {
         if (__ELECTRON__) {
-            fetch(
-                "https://api.github.com/repos/bitshares/bitshares-ui/releases/latest"
-            )
+            fetch("https://api.github.com/repos/xbts/xbts-ui/releases/latest")
                 .then(res => {
+                    return res.json();
                     return res.json();
                 })
                 .then(
@@ -392,8 +391,6 @@ class Footer extends React.Component {
 
         this._ensureConnectivity();
 
-        console.log("asdasd");
-
         return (
             <div>
                 {!!routerTransitioner &&
@@ -491,7 +488,7 @@ class Footer extends React.Component {
                                     />
                                     {__GIT_BRANCH__ === "staging" ? (
                                         <a
-                                            href={`https://github.com/bitshares/bitshares-ui/commit/${version.trim()}`}
+                                            href={`https://github.com/xbts/xbts-ui/commit/${version.trim()}`}
                                             className="version"
                                             target="_blank"
                                             rel="noopener noreferrer"
@@ -518,6 +515,79 @@ class Footer extends React.Component {
                                 )}
                             </div>
                         </div>
+
+                        <div className="footer-right">
+                            <div className="footer-group-one">
+                                <a
+                                    href="https://xbts.io/add-coin.html"
+                                    target="_blank"
+                                    className="footer-group-one-link"
+                                >
+                                    <span className="icon listing">
+                                        <Icon name="listing" title="Add Coin" />
+                                    </span>
+                                    <span className="span-listing">
+                                        Listing
+                                    </span>
+                                </a>
+                            </div>
+
+                            <div className="footer-group-social">
+                                <a
+                                    href="https://github.com/XBTS/xbts-ui/releases"
+                                    target="_blank"
+                                    className="footer-group-social-link"
+                                >
+                                    <span className="icon">
+                                        <Icon
+                                            name="download"
+                                            title="Download XBTS DEX App"
+                                        />
+                                    </span>
+                                </a>
+
+                                <a
+                                    href="https://faucet.smartholdem.io/"
+                                    target="_blank"
+                                    className="footer-group-social-link"
+                                >
+                                    <span className="icon kran">
+                                        <svg
+                                            viewBox="0 0 14 18"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <title>faucet</title>
+                                            <path
+                                                d="M13.5 9.825c.291.101.5.372.5.691a.742.742 0 0 1-.75.734h-4a.742.742 0 0 1-.75-.734c0-.319.209-.59.5-.69v-1.51H7.596a3.254 3.254 0 0 1-2.346.978c-.9 0-1.735-.353-2.346-.979H.75A.742.742 0 0 1 0 7.582V4.647c0-.405.336-.734.75-.734h2.154A3.226 3.226 0 0 1 4.5 3.02V1.467h-.75A.742.742 0 0 1 3 .734C3 .329 3.336 0 3.75 0h3c.414 0 .75.328.75.734a.742.742 0 0 1-.75.733H6V3.02c.608.139 1.16.446 1.596.893h5.154c.414 0 .75.329.75.734v5.178zm-1.707 3.12c.4.41 1.707 1.83 1.707 2.854 0 1.214-1.01 2.201-2.25 2.201S9 17.013 9 15.799c0-1.025 1.307-2.444 1.707-2.854a.758.758 0 0 1 1.086 0z"
+                                                fill="#8C979B"
+                                                fillRule="evenodd"
+                                            />
+                                        </svg>
+                                    </span>
+                                </a>
+
+                                <a
+                                    href="https://t.me/xbtsio"
+                                    target="_blank"
+                                    className="footer-group-social-link"
+                                >
+                                    <span className="icon telegram">
+                                        <svg
+                                            viewBox="0 0 18 16"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <title>telegram</title>
+                                            <path
+                                                d="M.318 7.616l4.147 1.568 1.606 5.232a.486.486 0 0 0 .775.237l2.312-1.91c.243-.2.588-.21.841-.024l4.17 3.068a.487.487 0 0 0 .766-.3L17.989.598a.491.491 0 0 0-.654-.563L.313 6.69a.498.498 0 0 0 .005.927zm5.494.733l8.106-5.06c.146-.09.296.11.17.227l-6.69 6.302a1.412 1.412 0 0 0-.429.841l-.228 1.712c-.03.228-.347.25-.409.03L5.456 9.28a.832.832 0 0 1 .356-.93z"
+                                                fill="#8C979B"
+                                                fillRule="nonzero"
+                                            />
+                                        </svg>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+
                         {!!routerTransitioner &&
                             routerTransitioner.isBackgroundPingingInProgress() && (
                                 <div
@@ -647,6 +717,7 @@ class Footer extends React.Component {
                                 </Tooltip>
 
                                 <div className="grid-block">
+                                    {/*
                                     <Tooltip
                                         title={counterpart.translate(
                                             "tooltip.debug_report"
@@ -663,6 +734,7 @@ class Footer extends React.Component {
                                             <Translate content="modal.report.button" />
                                         </div>
                                     </Tooltip>
+                                    */}
                                     <Tooltip
                                         title={counterpart.translate(
                                             "tooltip.self_help"
@@ -768,6 +840,7 @@ class Footer extends React.Component {
         this.props.history.push("/settings/access");
     }
 }
+
 Footer = BindToChainState(Footer);
 
 class AltFooter extends Component {
