@@ -126,7 +126,7 @@ class MarketRow extends React.Component {
 
                     case "change":
                         let change = utils.format_number(
-                            stats && stats.change ? stats.change : 0,
+                            stats && stats.change * 1 ? stats.change : 0,
                             2
                         );
                         let changeClass =
