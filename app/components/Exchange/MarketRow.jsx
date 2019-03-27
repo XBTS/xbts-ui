@@ -6,6 +6,7 @@ import utils from "common/utils";
 import Icon from "../Icon/Icon";
 import MarketsActions from "actions/MarketsActions";
 import SettingsActions from "actions/SettingsActions";
+import AssetImage from "../Utility/AssetImage";
 import {withRouter} from "react-router-dom";
 
 class MarketRow extends React.Component {
@@ -112,6 +113,7 @@ class MarketRow extends React.Component {
 
                     case "vol":
                         let amount = stats ? stats.volumeBase : 0;
+
                         return (
                             <td
                                 onClick={this._onClick.bind(this, marketID)}
@@ -165,6 +167,11 @@ class MarketRow extends React.Component {
                                 onClick={this._onClick.bind(this, marketID)}
                                 key={column.index}
                             >
+                                <AssetImage
+                                    replaceNoneToBts={false}
+                                    maxWidth={14}
+                                    name={quote.get("symbol")}
+                                />
                                 {this.props.name}
                             </td>
                         );
@@ -195,6 +202,7 @@ class MarketRow extends React.Component {
                         let highPrecisionAssets = [
                             "BTC",
                             "OPEN.BTC",
+                            "XBTSX.BTC",
                             "TRADE.BTC",
                             "GOLD",
                             "SILVER"
@@ -340,6 +348,7 @@ class MarketRow extends React.Component {
         );
     }
 }
+
 MarketRow = withRouter(MarketRow);
 
 export default AssetWrapper(MarketRow, {
