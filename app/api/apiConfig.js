@@ -51,6 +51,7 @@ export const cryptoBridgeAPIs = {
     TRADING_PAIRS: "/trading-pairs"
 };
 
+/*
 export const widechainAPIs = {
     BASE: "https://gateway.winex.pro/api/v0/ol/support",
     COINS_LIST: "/coins",
@@ -60,6 +61,7 @@ export const widechainAPIs = {
     TRADING_PAIRS: "/trading-pairs",
     DEPOSIT_HISTORY: "/latelyRecharge"
 };
+*/
 
 export const citadelAPIs = {
     BASE: "https://citadel.li/trade",
@@ -437,13 +439,6 @@ export const settingsAPIs = {
             country: "Singapore",
             operator: "Infrastructure Worker",
             contact: "email:info@blockchainprojectsbv.com"
-        },
-        {
-            url: "wss://ws.winex.pro",
-            region: "Southeastern Asia",
-            location: "Singapore",
-            operator: "Witness: winex.witness",
-            contact: "telegram:zmaxin"
         },
         {
             url: "wss://api.bts.mobi/ws",
