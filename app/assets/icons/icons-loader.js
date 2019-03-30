@@ -1,4 +1,5 @@
 let icons = [
+    "statistics",
     "listing",
     "chat",
     "explorer",
