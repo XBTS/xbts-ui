@@ -53,6 +53,9 @@ var Utils = {
     },
 
     format_volume(amount, precision = 3) {
+        if (isNaN(amount)) {
+            amount = 0;
+        }
         if (amount < 10000) {
             return this.format_number(amount, precision);
         } else if (amount < 1000000) {
@@ -71,7 +74,7 @@ var Utils = {
         )
             return "";
         let zeros = ".";
-        for (var i = 0; i < decimals; i++) {
+        for (let i = 0; i < decimals; i++) {
             zeros += "0";
         }
         let num = numeral(number).format("0,0" + zeros);

@@ -149,6 +149,34 @@ export default class DropDownMenu extends React.Component {
                 <li
                     className={cnames(
                         {
+                            active: active.indexOf("/deposit-withdraw") !== -1
+                        },
+                        {disabled: !enableDepositWithdraw}
+                    )}
+                    onClick={
+                        !enableDepositWithdraw
+                            ? () => {}
+                            : this.props.onNavigate.bind(
+                                  this,
+                                  "/deposit-withdraw"
+                              )
+                    }
+                >
+                    <div className="table-cell">
+                        <Icon
+                            size="2x"
+                            name="deposit-withdraw"
+                            title="icons.deposit.deposit_withdraw"
+                        />
+                    </div>
+                    <div className="table-cell">
+                        <Translate content="account.deposit_withdraw" />
+                    </div>
+                </li>
+
+                <li
+                    className={cnames(
+                        {
                             active: active.indexOf("/market/") !== -1
                         },
                         "column-show-small"
@@ -198,7 +226,8 @@ export default class DropDownMenu extends React.Component {
                         mainCallback: this.props.showSend,
                         subText: "header.payments_legacy",
                         subURL: "/transfer"
-                    },
+                    }
+                    /*
                     {
                         icon: {
                             name: "deposit",
@@ -221,6 +250,7 @@ export default class DropDownMenu extends React.Component {
                         subText: "header.withdraw_legacy",
                         subURL: "/deposit-withdraw"
                     }
+                    */
                 ].map(
                     (
                         {
@@ -452,7 +482,7 @@ export default class DropDownMenu extends React.Component {
                     <div className="table-cell">
                         <Icon
                             size="2x"
-                            name="text"
+                            name="network"
                             title="icons.text.membership_stats"
                         />
                     </div>
@@ -513,7 +543,7 @@ export default class DropDownMenu extends React.Component {
                     )}
                 >
                     <div className="table-cell">
-                        <Icon size="2x" name="warning" title="icons.warning" />
+                        <Icon size="2x" name="privacy" title="icons.warning" />
                     </div>
                     <div className="table-cell">
                         <Translate content="account.permissions" />

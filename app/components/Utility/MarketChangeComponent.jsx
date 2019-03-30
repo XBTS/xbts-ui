@@ -55,11 +55,16 @@ class MarketChangeComponent extends MarketStats {
             />
         );
 
-        return (
-            <span className={"value " + dayChangeClass}>
-                {marketChangeFormattedValue}%
-            </span>
-        );
+        // this is treating a sympton when MarketStore does not provide a proper value! #2511
+        if (!isNaN(parseFloat(marketChangeValue))) {
+            return (
+                <span className={"value " + dayChangeClass}>
+                    {marketChangeFormattedValue}%
+                </span>
+            );
+        } else {
+            return <span className={"value " + dayChangeClass}>-</span>;
+        }
     }
 }
 MarketChangeComponent = AssetWrapper(MarketChangeComponent, {

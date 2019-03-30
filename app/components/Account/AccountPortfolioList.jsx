@@ -30,6 +30,7 @@ import ReserveAssetModal from "../Modal/ReserveAssetModal";
 import PaginatedList from "../Utility/PaginatedList";
 import MarketUtils from "common/market_utils";
 import {Tooltip, Icon as AntIcon} from "bitshares-ui-style-guide";
+import AssetImage from "../Utility/AssetImage";
 
 class AccountPortfolioList extends React.Component {
     constructor() {
@@ -42,6 +43,12 @@ class AccountPortfolioList extends React.Component {
             isDepositModalVisible: false,
             isWithdrawModalVisible: false,
             isBurnModalVisible: false,
+            isBridgeModalVisibleBefore: false,
+            isSettleModalVisibleBefore: false,
+            isBorrowModalVisibleBefore: false,
+            isDepositModalVisibleBefore: false,
+            isWithdrawModalVisibleBefore: false,
+            isBurnModalVisibleBefore: false,
             borrow: null,
             settleAsset: "1.3.0",
             depositAsset: null,
@@ -120,6 +127,7 @@ class AccountPortfolioList extends React.Component {
             np.hiddenAssets !== this.props.hiddenAssets ||
             np.sortDirection !== this.props.sortDirection ||
             np.sortKey !== this.props.sortKey ||
+            np.isMyAccount !== this.props.isMyAccount ||
             np.allMarketStats.reduce((a, value, key) => {
                 return (
                     utils.check_market_stats(
@@ -133,7 +141,8 @@ class AccountPortfolioList extends React.Component {
 
     showBridgeModal() {
         this.setState({
-            isBridgeModalVisible: true
+            isBridgeModalVisible: true,
+            isBridgeModalVisibleBefore: true
         });
     }
 
@@ -145,7 +154,8 @@ class AccountPortfolioList extends React.Component {
 
     showWithdrawModal() {
         this.setState({
-            isWithdrawModalVisible: true
+            isWithdrawModalVisible: true,
+            isWithdrawModalVisibleBefore: true
         });
     }
 
@@ -157,7 +167,8 @@ class AccountPortfolioList extends React.Component {
 
     showBurnModal() {
         this.setState({
-            isBurnModalVisible: true
+            isBurnModalVisible: true,
+            isBurnModalVisibleBefore: true
         });
     }
 
@@ -169,7 +180,8 @@ class AccountPortfolioList extends React.Component {
 
     showSettleModal() {
         this.setState({
-            isSettleModalVisible: true
+            isSettleModalVisible: true,
+            isSettleModalVisibleBefore: true
         });
     }
 
@@ -181,7 +193,8 @@ class AccountPortfolioList extends React.Component {
 
     showDepositModal() {
         this.setState({
-            isDepositModalVisible: true
+            isDepositModalVisible: true,
+            isDepositModalVisibleBefore: true
         });
     }
 
@@ -194,6 +207,7 @@ class AccountPortfolioList extends React.Component {
     showBorrowModal(quoteAsset, backingAsset, account) {
         this.setState({
             isBorrowModalVisible: true,
+            isBorrowModalVisibleBefore: true,
             borrow: {
                 quoteAsset: quoteAsset,
                 backingAsset: backingAsset,
@@ -354,32 +368,89 @@ class AccountPortfolioList extends React.Component {
                             offIcon="dollar-green"
                             title="icons.dollar.buy"
                             duration={1000}
-                            className="icon-14px"
+                            className="icon-18px"
                         />
                     </a>
                 </span>
             );
         } else {
-            return canBuy && this.props.isMyAccount ? (
-                <span>
-                    <a
-                        onClick={this._showDepositWithdraw.bind(
-                            this,
-                            "bridge_modal",
-                            assetName,
-                            false
-                        )}
-                    >
-                        <Icon
-                            name="dollar"
-                            title="icons.dollar.buy"
-                            className="icon-14px"
-                        />
-                    </a>
-                </span>
-            ) : (
-                emptyCell
+            let modalAction = this._showDepositWithdraw.bind(
+                this,
+                "bridge_modal",
+                assetName,
+                false
             );
+
+            let linkElement = (
+                <span>
+                    <Icon
+                        style={{
+                            cursor: this.props.isMyAccount ? "pointer" : "help"
+                        }}
+                        name="dollar"
+                        title="icons.dollar.buy"
+                        className="icon-14px"
+                        onClick={this.props.isMyAccount ? modalAction : null}
+                    />
+                </span>
+            );
+
+            if (canBuy && this.props.isMyAccount) {
+                return linkElement;
+            } else if (canBuy && !this.props.isMyAccount) {
+                return (
+                    <Tooltip
+                        title={counterpart.translate("tooltip.login_required")}
+                    >
+                        {linkElement}
+                    </Tooltip>
+                );
+            } else {
+                return emptyCell;
+            }
+        }
+    };
+
+    _renderGatewayAction = (type, allowed, assetName, emptyCell) => {
+        let modalAction =
+            type == "deposit"
+                ? this._showDepositModal.bind(this, assetName)
+                : this._showDepositWithdraw.bind(
+                      this,
+                      "withdraw_modal_new",
+                      assetName,
+                      false
+                  );
+
+        let actionTitle =
+            type == "deposit" ? `icons.${type}.${type}` : `icons.${type}`;
+
+        let linkElement = (
+            <span>
+                <Icon
+                    style={{
+                        cursor: this.props.isMyAccount ? "pointer" : "help"
+                    }}
+                    name={type}
+                    title={actionTitle}
+                    className="icon-14x"
+                    onClick={this.props.isMyAccount ? modalAction : null}
+                />
+            </span>
+        );
+
+        if (allowed && this.props.isMyAccount) {
+            return linkElement;
+        } else if (allowed && !this.props.isMyAccount) {
+            return (
+                <Tooltip
+                    title={counterpart.translate("tooltip.login_required")}
+                >
+                    {linkElement}
+                </Tooltip>
+            );
+        } else {
+            return emptyCell;
         }
     };
 
@@ -421,7 +492,7 @@ class AccountPortfolioList extends React.Component {
                             <Icon
                                 name="dollar"
                                 title="icons.dollar.borrow"
-                                className="icon-14px"
+                                className="icon-18px"
                             />
                         </a>
                     )
@@ -460,7 +531,7 @@ class AccountPortfolioList extends React.Component {
                     <Icon
                         name="trade"
                         title="icons.trade.trade"
-                        className="icon-14px"
+                        className="icon-18px"
                     />
                 </Link>
             ) : notCorePrefUnit ? (
@@ -468,7 +539,7 @@ class AccountPortfolioList extends React.Component {
                     <Icon
                         name="trade"
                         title="icons.trade.trade"
-                        className="icon-14px"
+                        className="icon-18px"
                     />
                 </Link>
             ) : (
@@ -479,7 +550,7 @@ class AccountPortfolioList extends React.Component {
                     <Icon
                         name="transfer"
                         title="icons.transfer"
-                        className="icon-14px"
+                        className="icon-18px"
                     />
                 </a>
             );
@@ -495,7 +566,7 @@ class AccountPortfolioList extends React.Component {
                     <Icon
                         name="settle"
                         title="icons.settle"
-                        className="icon-14px"
+                        className="icon-18px"
                     />
                 </a>
             );
@@ -584,6 +655,11 @@ class AccountPortfolioList extends React.Component {
             balances.push(
                 <tr key={asset.get("symbol")} style={{maxWidth: "100rem"}}>
                     <td style={{textAlign: "left"}}>
+                        <AssetImage
+                            replaceNoneToBts={false}
+                            maxWidth={20}
+                            name={asset.get("symbol")}
+                        />
                         <LinkToAssetById asset={asset.get("id")} />
                     </td>
                     <td style={{textAlign: "right"}}>
@@ -651,7 +727,7 @@ class AccountPortfolioList extends React.Component {
                                     style={{cursor: "pointer"}}
                                     name="deposit"
                                     title="icons.deposit.deposit"
-                                    className="icon-14x"
+                                    className="icon-18x"
                                     onClick={this._showDepositModal.bind(
                                         this,
                                         assetName
@@ -756,7 +832,7 @@ class AccountPortfolioList extends React.Component {
                                     asset.get("id")
                                 )}
                             >
-                                <Icon name="fire" className="icon-14px" />
+                                <Icon name="fire" className="icon-18px" />
                             </a>
                         ) : null}
                     </td>
@@ -792,7 +868,7 @@ class AccountPortfolioList extends React.Component {
                                         ? "icons.cross_circle.hide_asset"
                                         : "icons.plus_circle.show_asset"
                                 }
-                                className="icon-14px"
+                                className="icon-18px"
                             />
                         </a>
                     </td>
@@ -863,7 +939,7 @@ class AccountPortfolioList extends React.Component {
                                 <Icon
                                     name="trade"
                                     title="icons.trade.trade"
-                                    className="icon-14px"
+                                    className="icon-18px"
                                 />
                             </Link>
                         ) : (
@@ -912,7 +988,7 @@ class AccountPortfolioList extends React.Component {
                                                     <Icon
                                                         name="dollar"
                                                         title="icons.dollar.buy"
-                                                        className="icon-14px"
+                                                        className="icon-18px"
                                                     />
                                                 </a>
                                             </span>
@@ -995,7 +1071,7 @@ class AccountPortfolioList extends React.Component {
                                                         ? "icons.cross_circle.hide_asset"
                                                         : "icons.plus_circle.show_asset"
                                                 }
-                                                className="icon-14px"
+                                                className="icon-18px"
                                             />
                                         </a>
                                     </td>

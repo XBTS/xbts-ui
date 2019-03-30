@@ -51,22 +51,19 @@ $subheader-font-color: scale-color(
 $subheader-font-weight: $font-weight-normal !default;
 $subheader-top-margin: 0.2rem !default;
 $subheader-bottom-margin: 0.5rem !default;
-
 // A general <small> styling
 $small-font-size: 60% !default;
 $small-font-color: scale-color($header-font-color, $lightness: 35%) !default;
-
 // We use these to style paragraphs
 $paragraph-font-family: inherit !default;
 $paragraph-font-weight: $font-weight-normal !default;
-$paragraph-font-size: 1rem !default;
+$paragraph-font-size: 0.92rem !default;
 $paragraph-line-height: 1.6 !default;
 $paragraph-margin-bottom: rem-calc(20) !default;
 $paragraph-aside-font-size: rem-calc(14) !default;
 $paragraph-aside-line-height: 1.35 !default;
 $paragraph-aside-font-style: italic !default;
 $paragraph-text-rendering: optimizeLegibility !default;
-
 // We use these to style <code> tags
 $code-color: grayscale($primary-color) !default;
 $code-font-family: Consolas, "Liberation Mono", Courier, monospace !default;
@@ -79,7 +76,6 @@ $code-border-color: scale-color(
     $lightness: -10%
 ) !default;
 $code-padding: rem-calc(2) rem-calc(5) rem-calc(1) !default;
-
 // We use these to style anchors
 $anchor-text-decoration: none !default;
 $anchor-text-decoration-hover: none !default;
@@ -88,13 +84,11 @@ $anchor-font-color-hover: scale-color(
     $anchor-font-color,
     $lightness: -14%
 ) !default;
-
 // We use these to style the <hr> element
 $hr-border-width: 1px !default;
 $hr-border-style: solid !default;
 $hr-border-color: #ddd !default;
 $hr-margin: rem-calc(20) !default;
-
 // We use these to style lists
 $list-font-family: $paragraph-font-family !default;
 $list-font-size: $paragraph-font-size !default;
@@ -108,7 +102,6 @@ $list-nested-margin: rem-calc(20) !default;
 $definition-list-header-weight: $font-weight-bold !default;
 $definition-list-header-margin-bottom: 0.3rem !default;
 $definition-list-margin-bottom: rem-calc(12) !default;
-
 // We use these to style blockquotes
 $blockquote-font-color: scale-color(
     $header-font-color,
@@ -122,16 +115,13 @@ $blockquote-cite-font-color: scale-color(
     $lightness: 23%
 ) !default;
 $blockquote-cite-link-color: $blockquote-cite-font-color !default;
-
 // Acronym styles
 $acronym-underline: 1px dotted #ddd !default;
-///
-
+// /
 @mixin lead {
     font-size: $paragraph-font-size + rem-calc(3.5);
     line-height: 1.6;
 }
-
 @mixin subheader {
     line-height: $subheader-line-height;
     color: $subheader-font-color;
@@ -139,7 +129,6 @@ $acronym-underline: 1px dotted #ddd !default;
     margin-top: $subheader-top-margin;
     margin-bottom: $subheader-bottom-margin;
 }
-
 @include exports(typography) {
     /* Typography resets */
     div,
@@ -164,17 +153,14 @@ $acronym-underline: 1px dotted #ddd !default;
         margin: 0;
         padding: 0;
     }
-
     /* Default Link Styles */
     a {
         color: $anchor-font-color;
         text-decoration: $anchor-text-decoration;
         line-height: inherit;
-
         &[ui-sref] {
             cursor: pointer;
         }
-
         &:hover,
         &:focus {
             color: $anchor-font-color-hover;
@@ -182,12 +168,10 @@ $acronym-underline: 1px dotted #ddd !default;
                 text-decoration: $anchor-text-decoration-hover;
             }
         }
-
         img {
             border: none;
         }
     }
-
     /* Default paragraph styles */
     p {
         font-family: $paragraph-font-family;
@@ -196,18 +180,15 @@ $acronym-underline: 1px dotted #ddd !default;
         line-height: $paragraph-line-height;
         margin-bottom: $paragraph-margin-bottom;
         text-rendering: $paragraph-text-rendering;
-
         &.lead {
             @include lead;
         }
-
         & aside {
             font-size: $paragraph-aside-font-size;
             line-height: $paragraph-aside-line-height;
             font-style: $paragraph-aside-font-style;
         }
     }
-
     /* Default header styles */
     h1,
     h2,
@@ -223,14 +204,12 @@ $acronym-underline: 1px dotted #ddd !default;
         margin-top: $header-top-margin;
         margin-bottom: $header-bottom-margin;
         line-height: $header-line-height;
-
         small {
             font-size: $small-font-size;
             color: $small-font-color;
             line-height: 0;
         }
     }
-
     h1 {
         font-size: $h1-font-size - $h1-font-reduction;
     }
@@ -249,11 +228,9 @@ $acronym-underline: 1px dotted #ddd !default;
     h6 {
         font-size: $h6-font-size - $h6-font-reduction;
     }
-
     .subheader {
         @include subheader;
     }
-
     hr {
         border: $hr-border-style $hr-border-color;
         border-width: $hr-border-width 0 0;
@@ -261,7 +238,6 @@ $acronym-underline: 1px dotted #ddd !default;
         margin: $hr-margin 0 ($hr-margin - rem-calc($hr-border-width));
         height: 0;
     }
-
     /* Helpful Typography Defaults */
     em,
     i {
@@ -274,13 +250,11 @@ $acronym-underline: 1px dotted #ddd !default;
         font-weight: $font-weight-bold;
         line-height: inherit;
     }
-
     small {
         font-size: $small-font-size;
         color: $small-font-color;
         line-height: inherit;
     }
-
     code {
         font-family: $code-font-family;
         font-weight: $code-font-weight;
@@ -291,7 +265,6 @@ $acronym-underline: 1px dotted #ddd !default;
         border-color: $code-border-color;
         padding: $code-padding;
     }
-
     /* Lists */
     ul,
     ol,
@@ -302,7 +275,6 @@ $acronym-underline: 1px dotted #ddd !default;
         list-style-position: $list-style-position;
         font-family: $list-font-family;
     }
-
     /* Lists */
     ul,
     ol {
@@ -315,7 +287,6 @@ $acronym-underline: 1px dotted #ddd !default;
             }
         }
     }
-
     /* Lists without bullets */
     ul.no-bullet {
         &,
@@ -325,7 +296,6 @@ $acronym-underline: 1px dotted #ddd !default;
         }
         margin-left: $list-side-margin-no-bullet;
     }
-
     /* Definition Lists */
     dl {
         dt {
@@ -336,7 +306,6 @@ $acronym-underline: 1px dotted #ddd !default;
             margin-bottom: $definition-list-margin-bottom;
         }
     }
-
     /* Abbreviations */
     abbr,
     acronym {
@@ -349,13 +318,11 @@ $acronym-underline: 1px dotted #ddd !default;
     abbr {
         text-transform: none;
     }
-
     /* Blockquotes */
     blockquote {
         margin: 0 0 $paragraph-margin-bottom;
         padding: $blockquote-padding;
         border-left: $blockquote-border;
-
         cite {
             display: block;
             font-size: $blockquote-cite-font-size;
@@ -363,7 +330,6 @@ $acronym-underline: 1px dotted #ddd !default;
             &:before {
                 content: "\2014 \0020";
             }
-
             a,
             a:visited {
                 color: $blockquote-cite-link-color;
@@ -375,7 +341,6 @@ $acronym-underline: 1px dotted #ddd !default;
         line-height: $paragraph-line-height;
         color: $blockquote-font-color;
     }
-
     @include breakpoint(medium) {
         h1,
         h2,

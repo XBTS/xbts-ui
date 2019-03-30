@@ -6,7 +6,6 @@
 import {
     rudexAPIs,
     bitsparkAPIs,
-    widechainAPIs,
     openledgerAPIs,
     cryptoBridgeAPIs,
     gdex2APIs,
@@ -16,6 +15,21 @@ import {
 import {allowedGateway} from "branding";
 
 export const availableGateways = {
+    XBTSX: {
+        id: "XBTSX",
+        name: "XBTSX",
+        baseAPI: xbtsxAPIs,
+        isEnabled: allowedGateway("XBTSX"),
+        isSimple: true,
+        selected: false,
+        simpleAssetGateway: false,
+        addressValidatorMethod: "POST",
+        options: {
+            enabled: false,
+            selected: false
+        }
+    },
+
     OPEN: {
         id: "OPEN",
         name: "OPENLEDGER",
@@ -53,17 +67,6 @@ export const availableGateways = {
             selected: false
         }
     },
-    WIN: {
-        id: "WIN",
-        name: "Winex",
-        baseAPI: widechainAPIs,
-        isEnabled: allowedGateway("WIN"),
-        selected: false,
-        options: {
-            enabled: false,
-            selected: false
-        }
-    },
     BRIDGE: {
         id: "BRIDGE",
         name: "CRYPTO-BRIDGE",
@@ -84,20 +87,6 @@ export const availableGateways = {
         name: "GDEX",
         baseAPI: gdex2APIs,
         isEnabled: allowedGateway("GDEX"),
-        options: {
-            enabled: false,
-            selected: false
-        }
-    },
-    XBTSX: {
-        id: "XBTSX",
-        name: "XBTSX",
-        baseAPI: xbtsxAPIs,
-        isEnabled: allowedGateway("XBTSX"),
-        isSimple: true,
-        selected: false,
-        simpleAssetGateway: false,
-        addressValidatorMethod: "POST",
         options: {
             enabled: false,
             selected: false

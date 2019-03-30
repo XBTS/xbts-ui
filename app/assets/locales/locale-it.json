@@ -624,6 +624,8 @@
                 "reduce_scrollbars": "Reduce Scroll Bars",
                 "reverse_order_book": "Reverse Order Book",
                 "settlements": "Settlements",
+                "show_market_depth": "Show market depth",
+                "show_price_chart": "Show price chart",
                 "single_colum_order_form": "Single Column Order Form"
             },
             "tooltip": {
@@ -1392,6 +1394,53 @@
             "withdraw": "Withdraw"
         }
     },
+    "validation": {
+        "messages": {
+            "required": "The field is required",
+            "requiredNamed": "%(name)s is required",
+            "types": {
+                "array": "The field should be array",
+                "arrayNamed": "%(name)s should be array",
+                "regexp": "The field should be regexp",
+                "regexpNamed": "%(name)s should be regexp",
+                "date": "The field should be date",
+                "dateNamed": "%(name)s should be date",
+                "object": "The field should be object",
+                "objectNamed": "%(name)s should be object",
+                "method": "The field should be method",
+                "methodNamed": "%(name)s should be method",
+                "hex": "The field should be hex",
+                "hexNamed": "%(name)s should be hex",
+                "string": "The field should be string",
+                "stringNamed": "%(name)s should be string",
+                "boolean": "The field should be boolean",
+                "booleanNamed": "%(name)s should be boolean",
+                "enum": "The field should be one of %(list)s",
+                "enumNamed": "%(name)s should be one of %(list)s"
+            },
+            "range": "The field should be in range from %(min)s to %(max)s",
+            "rangeNamed": "%(name)s should in range from %(min)s to %(max)s",
+            "max": "The field should be less than %(max)s",
+            "maxNamed": "%(name)s should be less than %(max)s",
+            "min": "The field should higher than %(min)s",
+            "minNamed": "%(name)s should be higher than %(min)s",
+            "number": "The field should be number",
+            "numberNamed": "%(name)s should be number",
+            "integer": "The field should be integer",
+            "integerNamed": "%(name)s should be integer",
+            "float": "The field should be float",
+            "floatNamed": "%(name)s should be float",
+            "email": "The field should be email",
+            "emailNamed": "%(name)s should be email",
+            "url": "The field should be url",
+            "urlNamed": "%(name)s should be url",
+            "oneOf": "The field should be one of: %(list)s",
+            "oneOfNamed": "%(name)s should be one of: %(list)s",
+            "balance": "Insufficient balance. Available only: %(balance)s",
+
+            "test": ""
+        }
+    },
     "news": {
         "author": "Author",
         "errors": {
@@ -1399,6 +1448,29 @@
         },
         "news": "News",
         "subject": "Subject"
+    },
+    "scaled_orders": {
+        "please_log_in": "You need to login before use Scaled Orders",
+        "title": "Scaled Order",
+        "price_lower": "Price Lower",
+        "price_upper": "Price Upper",
+        "quantity": "Quantity",
+        "distribution": {
+            "title": "Distribution",
+            "flat": "Flat"
+        },
+        "order_count": "Order Count",
+        "action": {
+            "title": "Action",
+            "buy": "Buy",
+            "sell": "Sell"
+        },
+        "total": "Total",
+        "fee": "Fee",
+        "market_fee": "Market Fee",
+        "preview_table": {
+            "price": "Price"
+        }
     },
     "notifications": {
         "account_create_failure": "Failed to create account: %(account_name)s - %(error_msg)s",
@@ -1646,7 +1718,7 @@
         "lookup_text": "Clicca il pulsante sotto per verificare la presenza di saldi non riscossi da BTS 1.0",
         "low_latency": "Bassa latenza",
         "medium_latency": "Media latenza",
-        "midnightTheme": "Midnight",
+        "midnightTheme": "Black Lambo",
         "my_nodes": "Personal",
         "no": "No",
         "no_accounts": "Questo portafoglio non contiene alcun account.",
@@ -2242,6 +2314,36 @@
         "withdraw": {
             "finalNumber": "Actual amount ：%(final_number)s",
             "winAmount": "Minimum amount: %(min_amount)s %(asset)s"
+        }
+    },
+    "xbtsx": {
+        "account": {
+            "id": "STH Staking ID",
+            "title": "Stake your SmartHoldem Coin (STH) to earn profits from the DEX",
+            "staking_amount": "Staking amount",
+            "remaining": "Remaining in staking period",
+            "staking_text1": "Everyone who stakes their STH is entitled to %(percent)s of the trading profits from the <b>XBTS decentralized exchange</b>. Staking will lock your coins for the time you specify below. During the staking period you automatically take part in the payout distributions. Payouts happen bi-weekly.",
+            "staking_text2": "A longer staking duration results in a bigger payout factor. After the staking period has been reached, you can reclaim your staked STH balance with the <b>'Claim Now'</b> button. The blockchain fee to start a new staking position is currently set at <b>%(fee)s STH</b>. The blockchain fee to reclaim your staked STH is currently set at <b>%(reclaimFee)s STH.</b>",
+            "staking_text3": "You can only stake STH that you have deposited into the <b>XBTS decentralized exchange</b>. You can find more information about the advantages of the <b>XBTS decentralized exchange</b> and its profit sharing at <a target=\"_new\" href=\"https://xbts.io\">xbts.io</a>. More details on how payouts happen and how bonuses are applied are also available on the <a target=\"_new\" href=\"https://xbts.io/smartholder.html\">SmartHolder page</a>. ",
+            "status": "Status",
+            "staking": "SmartHolder",
+            "days": "%(days)s Days",
+            "available": "Available for claiming",
+            "month_1": "1 Month (%(bonus)s bonus)",
+            "month_3": "3 Month (%(bonus)s bonus)",
+            "month_6": "6 Month (%(bonus)s bonus)",
+            "month_12": "12 Month (%(bonus)s bonus)",
+            "mpone": "1 month",
+            "mpthree": "3 Months",
+            "mpsix": "6 Months",
+            "mptwelve": "12 Months",
+            "amount_sth": "Amount of STH to stake",
+            "stake_sth": "Create a new STH staking position",
+            "length": "Staking duration",
+            "understand": "I hereby agree that by staking %(amount)s STH, I fully understand that they will be locked away for %(month)s and that there is no way of claiming the funds before the staking term is over. I also accept the share in the profits of XBTS platform which is attributed to my staked funds.",
+            "no_balances": "You have no open XBTS staking positions.",
+            "sth_available": "Available: ",
+            "sth_not_available": "No STH available "
         }
     }
 }

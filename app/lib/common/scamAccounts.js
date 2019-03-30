@@ -1182,5 +1182,7 @@ export const scamAccountsOther = [
     "sth-rolik2001",
     "1.2.1002460",
     "btsrolik20001",
-    "1.2.158585"
+    "1.2.158585",
+    "mwr",
+    "1.2.83146"
 ];
