@@ -661,7 +661,7 @@ class Header extends React.Component {
                     <Icon
                         size="1_5x"
                         style={{position: "relative", top: 0, left: -8}}
-                        name="text"
+                        name="chat"
                         title="icons.text.signed_messages"
                     />
                     <Translate
@@ -683,7 +683,7 @@ class Header extends React.Component {
                     <Icon
                         size="1_5x"
                         style={{position: "relative", top: 0, left: -8}}
-                        name="text"
+                        name="network"
                         title="icons.text.membership_stats"
                     />
                     <Translate
@@ -749,7 +749,7 @@ class Header extends React.Component {
                     <Icon
                         size="1_5x"
                         style={{position: "relative", top: 0, left: -8}}
-                        name="warning"
+                        name="privacy"
                         title="icons.warning"
                     />
                     <Translate
@@ -1073,6 +1073,7 @@ class Header extends React.Component {
                                     />
                                 </a>
                             </li>
+
                             {/*                            <li>
                                 <a
                                     style={{flexFlow: "row"}}
