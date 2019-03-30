@@ -534,6 +534,19 @@ class Footer extends React.Component {
 
                             <div className="footer-group-social">
                                 <a
+                                    href="https://coinpaprika.com/exchanges/xbts/"
+                                    target="_blank"
+                                    className="footer-group-social-link"
+                                >
+                                    <span className="icon">
+                                        <Icon
+                                            name="pie-chart"
+                                            title="Marketcaps"
+                                        />
+                                    </span>
+                                </a>
+
+                                <a
                                     href="https://github.com/XBTS/xbts-ui/releases"
                                     target="_blank"
                                     className="footer-group-social-link"
