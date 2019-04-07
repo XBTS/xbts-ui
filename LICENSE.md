@@ -1,4 +1,5 @@
-Copyright (c) 2015 Cryptonomex, Inc., and contributors.
+Copyright (c) 2019 The BitShares UI worker and and contributors.
+Copyright (c) 2019 The XBTS UI.
 
 The MIT License
 
