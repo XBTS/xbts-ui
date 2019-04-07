@@ -15,21 +15,6 @@ import {
 import {allowedGateway} from "branding";
 
 export const availableGateways = {
-    XBTSX: {
-        id: "XBTSX",
-        name: "XBTSX",
-        baseAPI: xbtsxAPIs,
-        isEnabled: allowedGateway("XBTSX"),
-        isSimple: true,
-        selected: false,
-        simpleAssetGateway: false,
-        addressValidatorMethod: "POST",
-        options: {
-            enabled: false,
-            selected: false
-        }
-    },
-
     OPEN: {
         id: "OPEN",
         name: "OPENLEDGER",
@@ -87,6 +72,20 @@ export const availableGateways = {
         name: "GDEX",
         baseAPI: gdex2APIs,
         isEnabled: allowedGateway("GDEX"),
+        options: {
+            enabled: false,
+            selected: false
+        }
+    },
+    XBTSX: {
+        id: "XBTSX",
+        name: "XBTSX",
+        baseAPI: xbtsxAPIs,
+        isEnabled: allowedGateway("XBTSX"),
+        isSimple: true,
+        selected: false,
+        simpleAssetGateway: false,
+        addressValidatorMethod: "POST",
         options: {
             enabled: false,
             selected: false
