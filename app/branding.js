@@ -170,7 +170,8 @@ export function getMyMarketsQuotes() {
             "OCT",
             "SMOKE",
             "STEALTH",
-            "YOYOW"
+            "YOYOW",
+            "EVRAZ"
         ]
     };
 
@@ -238,7 +239,7 @@ export function getAssetNamespaces() {
  */
 export function getAssetHideNamespaces() {
     // e..g "OPEN.", "bit"
-    return [];
+    return ["XBTSX."];
 }
 
 /**
