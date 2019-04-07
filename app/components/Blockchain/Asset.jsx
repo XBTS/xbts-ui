@@ -6,7 +6,6 @@ import LinkToAssetById from "../Utility/LinkToAssetById";
 import AssetWrapper from "../Utility/AssetWrapper";
 import FormattedAsset from "../Utility/FormattedAsset";
 import FormattedPrice from "../Utility/FormattedPrice";
-import AssetImage from "../Utility/AssetImage";
 import AssetName from "../Utility/AssetName";
 import TimeAgo from "../Utility/TimeAgo";
 import HelpContent from "../Utility/HelpContent";
@@ -24,6 +23,7 @@ import AssetOwnerUpdate from "./AssetOwnerUpdate";
 import AssetPublishFeed from "./AssetPublishFeed";
 import BidCollateralOperation from "./BidCollateralOperation";
 import {Tab, Tabs} from "../Utility/Tabs";
+import AssetImage from "../Utility/AssetImage";
 
 class AssetFlag extends React.Component {
     render() {
@@ -98,7 +98,7 @@ class Asset extends React.Component {
 
             let feedPrice = this._getFeedPrice();
 
-            if (feedPrice) {
+            if (!!feedPrice) {
                 try {
                     Apis.instance()
                         .db_api()
@@ -121,7 +121,6 @@ class Asset extends React.Component {
                 } catch (e) {
                     // console.log(err);
                 }
-
                 try {
                     Apis.instance()
                         .db_api()
@@ -169,6 +168,14 @@ class Asset extends React.Component {
             "settlement_price"
         ]);
 
+        // if there has been no feed price, settlePrice has 0 amount
+        if (
+            settlePrice.getIn(["base", "amount"]) == 0 &&
+            settlePrice.getIn(["quote", "amount"]) == 0
+        ) {
+            return null;
+        }
+
         let feedPrice;
 
         /* Prediction markets don't need feeds for shorting, so the settlement price can be set to 1:1 */
@@ -177,10 +184,11 @@ class Asset extends React.Component {
             settlePrice.getIn(["base", "asset_id"]) ===
                 settlePrice.getIn(["quote", "asset_id"])
         ) {
-            if (!assets[this.props.backingAsset.get("id")])
+            if (!assets[this.props.backingAsset.get("id")]) {
                 assets[this.props.backingAsset.get("id")] = {
                     precision: this.props.asset.get("precision")
                 };
+            }
             settlePrice = settlePrice.setIn(["base", "amount"], 1);
             settlePrice = settlePrice.setIn(
                 ["base", "asset_id"],
@@ -358,7 +366,6 @@ class Asset extends React.Component {
             }
         }
         if (asset.symbol === core_asset.get("symbol")) preferredMarket = "USD";
-
         if (urls && urls.length) {
             urls.forEach(url => {
                 let markdownUrl = `<a target="_blank" rel="noopener noreferrer" href="${url}">${url}</a>`;
@@ -367,7 +374,6 @@ class Asset extends React.Component {
         }
 
         let {name, prefix} = utils.replaceName(originalAsset);
-
         return (
             <div style={{overflow: "visible"}}>
                 <h2>
@@ -395,6 +401,13 @@ class Asset extends React.Component {
                     issuer={issuerName}
                     hide_issuer="true"
                 />
+                {short_name ? <p>{short_name}</p> : null}
+                <Link
+                    className="button market-button"
+                    to={`/market/${asset.symbol}_${preferredMarket}`}
+                >
+                    <Translate content="exchange.market" />
+                </Link>
             </div>
         );
     }
@@ -652,6 +665,9 @@ class Asset extends React.Component {
                 )]: this.props.backingAsset.toJS()
             };
             let feedPrice = this._getFeedPrice();
+
+            // Invalid feedPrice returned for asset
+            if (!feedPrice) return;
 
             // Convert supply to calculable values
             let current_supply_value = currentSupply;
