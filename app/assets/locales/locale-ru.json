@@ -1001,7 +1001,7 @@
         "convert_now": "Обменять сейчас",
         "copy_address": "Скопировать адрес",
         "copy_memo": "Скопировать примечание",
-        "deposit": "Пополнить счет",
+        "deposit": "Пополнить",
         "deposit_address": "Адрес депозита",
         "deposit_from_wallet": "Депозит из кошелька",
         "deposit_history_status": {
