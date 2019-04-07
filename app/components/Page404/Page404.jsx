@@ -4,9 +4,9 @@ import {connect} from "alt-react";
 import SettingsStore from "stores/SettingsStore";
 import Translate from "react-translate-component";
 
-const light = require("assets/logo-404.png");
-const dark = require("assets/logo-404.png");
-const midnight = require("assets/logo-404.png");
+const light = require("assets/logo-404-light.png");
+const dark = require("assets/logo-404-dark.png");
+const midnight = require("assets/logo-404-midnight.png");
 
 class Page404 extends React.Component {
     static defaultProps = {
