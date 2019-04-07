@@ -14,6 +14,7 @@ let icons = [
     "adjust",
     "alarm",
     "assets",
+    "autolock",
     "barter",
     "borrow",
     "checkmark-circle",
