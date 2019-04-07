@@ -59,8 +59,7 @@ class AssetImage extends React.Component {
             .replace("XBTSX.", "")
             .replace("BRIDGE.", "")
             .replace("OPEN.", "")
-            .replace("RUDEX.", "")
-            .replace("GDEX.", "");
+            .replace("RUDEX.", "");
 
         return (
             <img
