@@ -415,7 +415,8 @@
         "ws_status": "Состояние подключения полного узла"
     },
     "assets": {
-        "BTS": "BTS is the core token of the BitShares Blockchain"
+        "BTS": "BTS is the core token of the BitShares Blockchain",
+        "XBTSX.STH": "Core Coin XBTS DEX & SmartHoldem BlockChain"
     },
     "boolean": {
         "false": "Неверно",
@@ -1610,27 +1611,27 @@
     },
     "scaled_orders": {
         "action": {
-            "buy": "Buy",
-            "sell": "Sell",
-            "title": "Action"
+            "buy": "Купить",
+            "sell": "Продать",
+            "title": "Действие"
         },
         "distribution": {
             "flat": "Flat",
-            "title": "Distribution"
+            "title": "Распределение"
         },
-        "fee": "Fee",
-        "market_fee": "Market Fee",
-        "order_count": "Order Count",
-        "order_s": "Order(s)",
+        "fee": "Комиссия",
+        "market_fee": "Комиссия Рынка",
+        "order_count": "Число Ордеров",
+        "order_s": "Ордера",
         "please_log_in": "You need to login before use Scaled Orders",
         "preview_table": {
-            "price": "Price"
+            "price": "Цена"
         },
-        "price_lower": "Price Lower",
-        "price_upper": "Price Upper",
-        "quantity": "Quantity",
-        "title": "Scaled Order",
-        "total": "Total"
+        "price_lower": "Минимальная Цена",
+        "price_upper": "Максимальная Цена",
+        "quantity": "Количество",
+        "title": "Масштабируемый Ордер",
+        "total": "Итого"
     },
     "settings": {
         "access": "Доступ",

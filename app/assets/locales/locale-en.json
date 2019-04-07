@@ -415,7 +415,8 @@
         "ws_status": "Full node connection status"
     },
     "assets": {
-        "BTS": "BTS is the core token of the BitShares Blockchain"
+        "BTS": "BTS is the core token of the BitShares Blockchain",
+        "XBTSX.STH": "Core Coin XBTS DEX & SmartHoldem BlockChain"
     },
     "boolean": {
         "false": "False",
