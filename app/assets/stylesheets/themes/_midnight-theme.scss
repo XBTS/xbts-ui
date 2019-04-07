@@ -195,7 +195,6 @@ body.midnightTheme .ant-select {
     line-height: 1.25rem;
     height: 1.25rem;
 }
-
 .buy-sell-balance {
     /* color: #09dc7b; */
 }
@@ -222,10 +221,10 @@ h6 {
 .midnightTheme tr.activeMarket:hover {
     color: #a1f5b3;
 }
-
 .midnightTheme table.table.dashboard-table > tbody > tr > td {
     font-size: 0.8rem;
-    background-color: #191a1f; // 27384b;
+    background-color: #191a1f;
+    // 27384b;
     color: white;
     border-color: #323131;
 }
@@ -280,8 +279,7 @@ body.midnightTheme .ant-input {
 .midnightTheme .menu-group.primary .menu-bar,
 .midnightTheme .menu-group.primary li > a.active,
 .midnightTheme .header-container {
-    background: #191a1f;
-    /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
+    background: #191a1f; /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
     background: -webkit-linear-gradient(top, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     background: linear-gradient(to bottom, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#262c3b', endColorstr='#0a121b',GradientType=0 ); */
@@ -318,7 +316,6 @@ body.midnightTheme .ant-input {
     box-shadow: 0px 0px 0.4em #212425;
     overflow-y: hidden;
 }
-
 .midnightTheme {
     background: rgb(55, 132, 131);
     background: -moz-linear-gradient(
@@ -368,7 +365,6 @@ body.midnightTheme .ant-tabs-bar {
 .midnightTheme .footer-group-social-link .icon {
     margin-right: 5px;
 }
-
 .footer-group-one {
     margin: 0 15px;
     overflow-y: hidden;
@@ -381,22 +377,18 @@ body.midnightTheme .ant-tabs-bar {
     color: #8c979b !important;
     font-size: 18px;
 }
-
 .footer-group-one-link .icon {
     margin-right: 5px;
 }
 .footer-group-one-link .span-listing {
     margin-top: 0px;
 }
-
 .asset-card .account-selector .header-area {
     margin-left: 0px;
 }
-
 .midnightTheme div.tabs-container {
     background-color: #2c2e37;
 }
-
 .midnightTheme .menu-group.primary .menu-bar li > a.active,
 .midnightTheme ul.account-overview li.is-active {
     // text-shadow: -6px 0px 1.6em #7ad1d1;
@@ -419,7 +411,8 @@ body.midnightTheme .ant-tabs-nav .ant-tabs-tab-active {
     height: 2.5rem;
 }
 .midnightTheme .left-order-book {
-    background-color: #191a1f; /* background: #0a121b; */
+    background-color: #191a1f;
+    /* background: #0a121b; */
     background: -moz-linear-gradient(left, #191a1f 0%, #0a121b 100%);
     background: -webkit-linear-gradient(left, #191a1f 0%, #0a121b 100%);
     background: linear-gradient(to right, #191a1f 0%, #1a1d1f 100%);
@@ -446,7 +439,6 @@ body.midnightTheme .ant-tabs-ink-bar {
         margin-left: 10px;
     }
 }
-
 @media screen and (max-width: 480px) {
     .midnightTheme .showcases-grid--wrapper--item--wrapper.xbts-top.top-item-3,
     .midnightTheme .showcases-grid--wrapper--item--wrapper.xbts-top.top-item-2,
@@ -525,7 +517,6 @@ span.icon-18px {
 .midnightTheme .value.negative {
     color: #cf5888 !important;
 }
-
 .midnightTheme .ask {
     background-color: #cf5888 !important;
     border-color: #cf5888 !important;
@@ -535,7 +526,6 @@ span.icon-18px {
     color: #cf5888 !important;
     border-color: #cf5888;
 }
-
 .midnightTheme .order-table .my-order span.price-integer,
 .midnightTheme .order-table .my-order span.price-decimal,
 .midnightTheme .order-table .my-order > .vertical-order-table-cell,
@@ -563,7 +553,6 @@ body.midnightTheme .ant-collapse-header {
 .midnightTheme .introjs-launcher {
     background-color: #0bb2a1 !important;
 }
-
 .buy-sell-balance {
     color: #0bb2a1 !important;
 }
@@ -572,6 +561,12 @@ body.midnightTheme .ant-collapse-header {
 }
 .midnightTheme .exchange-content-header.bid {
     border-bottom: 1px solid #0bb2a1;
+}
+.midnightTheme .order-form.bid {
+    border-top: 2px solid #0bb2a1;
+}
+.midnightTheme .order-form.ask {
+    border-top: 2px solid #cf5888;
 }
 .create-asset {
     padding: 0 20px !important;
@@ -583,8 +578,7 @@ body.midnightTheme .ant-collapse-header {
         #673ab7 0%,
         #673ab7 36%,
         #9c27b0 100%
-    );
-    /* background: linear-gradient(135deg, #673AB7 0%,#E91E63 100%); */
+    ); /* background: linear-gradient(135deg, #673AB7 0%,#E91E63 100%); */
 }
 .midnightTheme .showcases-grid--wrapper--item--wrapper--disabled {
     background: #7d7e7d;
@@ -667,7 +661,6 @@ body.midnightTheme .ant-collapse-header {
 .midnightTheme table.table.dashboard-table > tbody > tr.total-value td {
     background-color: #242629;
 }
-
 .tab-content .page-membership {
     padding: 0 1.5rem !important;
 }
