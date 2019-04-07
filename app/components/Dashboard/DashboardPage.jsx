@@ -65,7 +65,7 @@ class DashboardPage extends React.Component {
                                     className="showcases-grid--wrapper--item--wrapper xbts-top top-item-2"
                                     tabIndex="1"
                                 >
-                                    <h2 className="no-margin">XBTS Lotto</h2>
+                                    <h2 className="no-margin">XBTS Games</h2>
                                     <div className="showcases-grid--wrapper--item--wrapper--content">
                                         Blockchain Based Lottery STH & BTS
                                         [Coming Soon]
@@ -82,6 +82,7 @@ class DashboardPage extends React.Component {
                                     </div>
                                 </div>
                             </div>
+
                             <div className="tabs-container generic-bordered-box">
                                 <Tabs
                                     defaultActiveTab={1}
