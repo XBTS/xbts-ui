@@ -32,7 +32,11 @@ class DepositWithdrawAssetSelector extends React.Component {
                         let [gateway, backedCoin] = item.symbol.split(".");
 
                         // Return null if backedCoin is already stored
-                        if (!idMap[backedCoin] && backedCoin && gateway) {
+                        if (
+                            !idMap[backedCoin] &&
+                            backedCoin &&
+                            gateway === "XBTSX"
+                        ) {
                             idMap[backedCoin] = true;
 
                             return {
@@ -124,9 +128,9 @@ class DepositWithdrawAssetSelector extends React.Component {
                 showSearch
                 style={{width: "100%"}}
             >
-                {/* 
+                {/*
                     NOTE
-                    On Deposit, it would be useful to view Min Deposit 
+                    On Deposit, it would be useful to view Min Deposit
                     and Gateway Fee to the right of the selection so the
                     user doesn't have to select a specific gateway to view
                     this information.
