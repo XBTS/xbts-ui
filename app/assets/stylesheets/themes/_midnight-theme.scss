@@ -669,3 +669,6 @@ body.midnightTheme .ant-collapse-header {
 .shrink .footer .grid-block {
     overflow-y: hidden;
 }
+.ant-tabs-tabpane > div {
+    padding-right: 0 !important;
+}
