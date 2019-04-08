@@ -102,7 +102,7 @@ export function getMyMarketsQuotes() {
         ],
         bridgeTokens: ["BRIDGE.BCO"],
         gdexTokens: [],
-        openledgerTokens: ["OBITS", "OPEN.EOS", "OPEN.STEEM", "OPEN.XMR"],
+        openledgerTokens: [],
         rudexTokens: [],
         sparkTokens: ["ZEPH"],
         xbtsxTokens: [
@@ -208,7 +208,7 @@ export function getFeaturedMarkets(quotes = []) {
 export function getAssetNamespaces() {
     return [
         "OPEN.",
-        "RUDEX.",
+        // "RUDEX.",
         "BRIDGE.",
         "GDEX.",
         "XBTSX.",
@@ -235,11 +235,11 @@ export function allowedGateway(gateway) {
     return (
         [
             "OPEN",
-            "RUDEX",
+            // "RUDEX",
             "BRIDGE",
             "GDEX",
             "XBTSX",
-            "SPARKDEX",
+            // "SPARKDEX",
             "CITADEL"
         ].indexOf(gateway) >= 0
     );
