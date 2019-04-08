@@ -102,17 +102,7 @@ export function getMyMarketsQuotes() {
         ],
         bridgeTokens: ["BRIDGE.BCO"],
         gdexTokens: [],
-        openledgerTokens: [
-            "OBITS",
-            "OPEN.DGD",
-            "OPEN.EOS",
-            "OPEN.KRM",
-            "OPEN.NEO",
-            "OPEN.STEEM",
-            "OPEN.XMR",
-            "OPEN.ZEC",
-            "OPEN.ZRX"
-        ],
+        openledgerTokens: ["OBITS", "OPEN.EOS", "OPEN.STEEM", "OPEN.XMR"],
         rudexTokens: [],
         sparkTokens: ["ZEPH"],
         xbtsxTokens: [
@@ -222,7 +212,7 @@ export function getAssetNamespaces() {
         "BRIDGE.",
         "GDEX.",
         "XBTSX.",
-        "SPARKDEX.",
+        // "SPARKDEX.",
         "CITADEL."
     ];
 }

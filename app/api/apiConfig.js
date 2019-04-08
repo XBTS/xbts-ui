@@ -203,6 +203,7 @@ export const settingsAPIs = {
             operator: "Witness: xeldal",
             contact: "telegram:xeldal"
         },
+        /*
         {
             url: "wss://api.bts.blckchnd.com",
             region: "Western Europe",
@@ -221,6 +222,7 @@ export const settingsAPIs = {
             contact:
                 "email:admin@blckchnd.com;telegram:ruslansalikhov;github:blckchnd"
         },
+        */
         {
             url: "wss://api.bitsharesdex.com",
             region: "Northern America",
