@@ -116,6 +116,9 @@ class AccountStore extends BaseStore {
                 if (referralAccount) break;
             }
         }
+        if (!referralAccount) {
+            referralAccount = "xbtsx";
+        }
         if (referralAccount) {
             ss.set("referralAccount", referralAccount); // Reset to empty string when the user returns with no ref code
         } else {
