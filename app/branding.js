@@ -100,7 +100,7 @@ export function getMyMarketsQuotes() {
             "SILVER",
             "USD"
         ],
-        bridgeTokens: ["BRIDGE.BCO", "BRIDGE.MONA", "BRIDGE.ZNY"],
+        bridgeTokens: ["BRIDGE.BCO"],
         gdexTokens: [],
         openledgerTokens: [
             "OBITS",
@@ -155,18 +155,12 @@ export function getMyMarketsQuotes() {
         otherTokens: [
             "BKT",
             "BLOCKPAY",
-            "BTWTY",
-            "TWENTIX",
             "BTSR",
-            "CADASTRAL",
             "CVCOIN",
-            "HEMPSWEET",
-            "HERO",
+            // "HEMPSWEET",
             "HERTZ",
             "ICOO",
-            "IOU.CNY",
             "KAPITAL",
-            "KEXCOIN",
             "OCT",
             "SMOKE",
             "STEALTH",
