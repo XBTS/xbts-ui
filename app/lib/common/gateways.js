@@ -5,7 +5,7 @@
 
 import {
     rudexAPIs,
-    bitsparkAPIs,
+    // bitsparkAPIs,
     openledgerAPIs,
     cryptoBridgeAPIs,
     gdex2APIs,
@@ -41,6 +41,7 @@ export const availableGateways = {
             selected: false
         }
     },
+    /*
     SPARKDEX: {
         id: "SPARKDEX",
         name: "SPARKDEX",
@@ -52,6 +53,7 @@ export const availableGateways = {
             selected: false
         }
     },
+     */
     BRIDGE: {
         id: "BRIDGE",
         name: "CRYPTO-BRIDGE",
