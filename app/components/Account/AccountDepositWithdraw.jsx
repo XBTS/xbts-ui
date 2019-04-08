@@ -10,18 +10,18 @@ import OpenledgerGateway from "../DepositWithdraw/OpenledgerGateway";
 import OpenLedgerFiatDepositWithdrawal from "../DepositWithdraw/openledger/OpenLedgerFiatDepositWithdrawal";
 import OpenLedgerFiatTransactionHistory from "../DepositWithdraw/openledger/OpenLedgerFiatTransactionHistory";
 import BlockTradesBridgeDepositRequest from "../DepositWithdraw/blocktrades/BlockTradesBridgeDepositRequest";
-import CitadelBridgeDepositRequest from "../DepositWithdraw/citadel/CitadelBridgeDepositRequest";
+// import CitadelBridgeDepositRequest from "../DepositWithdraw/citadel/CitadelBridgeDepositRequest";
 import HelpContent from "../Utility/HelpContent";
 import AccountStore from "stores/AccountStore";
 import SettingsStore from "stores/SettingsStore";
 import SettingsActions from "actions/SettingsActions";
 import {openledgerAPIs} from "api/apiConfig";
-import BitKapital from "../DepositWithdraw/BitKapital";
+// import BitKapital from "../DepositWithdraw/BitKapital";
 // import RuDexGateway from "../DepositWithdraw/rudex/RuDexGateway";
 import GatewayStore from "stores/GatewayStore";
 import AccountImage from "../Account/AccountImage";
 // import BitsparkGateway from "../DepositWithdraw/bitspark/BitsparkGateway";
-import GdexGateway from "../DepositWithdraw/gdex/GdexGateway";
+// import GdexGateway from "../DepositWithdraw/gdex/GdexGateway";
 import XbtsxGateway from "../DepositWithdraw/xbtsx/XbtsxGateway";
 import PropTypes from "prop-types";
 import DepositModal from "../Modal/DepositModal";
@@ -51,7 +51,7 @@ class AccountDepositWithdraw extends React.Component {
             */
             xbtsxService: props.viewSettings.get("xbtsxService", "gateway"),
             btService: props.viewSettings.get("btService", "bridge"),
-            citadelService: props.viewSettings.get("citadelService", "bridge"),
+            // citadelService: props.viewSettings.get("citadelService", "bridge"),
             metaService: props.viewSettings.get("metaService", "bridge"),
             activeService: props.viewSettings.get("activeService", 0)
         };
@@ -69,16 +69,18 @@ class AccountDepositWithdraw extends React.Component {
                 nextProps.openLedgerBackedCoins,
                 this.props.openLedgerBackedCoins
             ) ||
+            /*
             !utils.are_equal_shallow(
                 nextProps.citadelBackedCoins,
                 this.props.citadelBackedCoins
             ) ||
+             */
             nextState.olService !== this.state.olService ||
             // nextState.rudexService !== this.state.rudexService ||
             // nextState.bitsparkService !== this.state.bitsparkService ||
             nextState.xbtsxService !== this.state.xbtsxService ||
             nextState.btService !== this.state.btService ||
-            nextState.citadelService !== this.state.citadelService ||
+            // nextState.citadelService !== this.state.citadelService ||
             nextState.metaService !== this.state.metaService ||
             nextState.activeService !== this.state.activeService
         );
@@ -142,6 +144,7 @@ class AccountDepositWithdraw extends React.Component {
         });
     }
 
+    /*
     toggleCitadelService(service) {
         this.setState({
             citadelService: service
@@ -150,6 +153,7 @@ class AccountDepositWithdraw extends React.Component {
             citadelService: service
         });
     }
+    */
 
     toggleMetaService(service) {
         this.setState({
@@ -186,8 +190,8 @@ class AccountDepositWithdraw extends React.Component {
             btService,
             // rudexService,
             // bitsparkService,
-            xbtsxService,
-            citadelService
+            xbtsxService
+            // citadelService
         } = this.state;
 
         serList.push({
@@ -467,6 +471,7 @@ class AccountDepositWithdraw extends React.Component {
             )
         });
 
+        /*
         serList.push({
             name: "Citadel",
             template: (
@@ -510,7 +515,9 @@ class AccountDepositWithdraw extends React.Component {
                 </div>
             )
         });
+         */
 
+        /*
         serList.push({
             name: "BitKapital",
             template: (
@@ -520,7 +527,8 @@ class AccountDepositWithdraw extends React.Component {
                 />
             )
         });
-
+         */
+        /*
         serList.push({
             name: "GDEX",
             template: (
@@ -529,6 +537,7 @@ class AccountDepositWithdraw extends React.Component {
                 </div>
             )
         });
+         */
 
         return serList;
     }
@@ -597,14 +606,14 @@ class AccountDepositWithdraw extends React.Component {
         });
 
         const serviceNames = [
-            "GDEX",
+            // "GDEX",
             "OPEN",
             // "RUDEX",
             // "SPARKDEX",
             "TRADE",
-            "BITKAPITAL",
-            "XBTSX",
-            "CITADEL"
+            // "BITKAPITAL",
+            "XBTSX"
+            // "CITADEL"
         ];
         const currentServiceName = serviceNames[activeService];
         const currentServiceDown = servicesDown.get(currentServiceName);
@@ -799,10 +808,12 @@ export default connect(
                     "TRADE",
                     []
                 ),
+                /*
                 citadelBackedCoins: GatewayStore.getState().backedCoins.get(
                     "CITADEL",
                     []
                 ),
+                */
                 xbtsxBackedCoins: GatewayStore.getState().backedCoins.get(
                     "XBTSX",
                     []
