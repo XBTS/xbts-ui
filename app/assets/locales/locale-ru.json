@@ -1755,7 +1755,7 @@
             "balance_warning_line": "wants to send a total of %(asset_amount)s %(asset_symbol)s, but only has %(asset_balance)s %(asset_symbol)s",
             "balance_warning_tooltip": "%(peer)s does not have enough funds to execute the transfers when the proposal gets approved and executes. This is not an issue when creating the proposal, but the balances must match when executed",
             "bartering_asset": "Bartering asset",
-            "description": "с Позволяет вам предложить обмен активами с другим аккаунтом; это происходит за пределами биржевого стакана и может включать в процесусловное депонирование.",
+            "description": "Позволяет вам предложить обмен активами с другим аккаунтом; это происходит за пределами биржевого стакана и может включать в процесусловное депонирование.",
             "error_fill_in_escrow_name": "Please fill in the account name of the escrow",
             "error_fill_in_peer_left_name": "Please fill in the account name of Peer 1",
             "error_fill_in_peer_right_name": "Please fill in the account name of Peer 2",
