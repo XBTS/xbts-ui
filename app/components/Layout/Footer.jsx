@@ -539,7 +539,7 @@ class Footer extends React.Component {
                                 >
                                     <span className="icon">
                                         <Icon
-                                            name="pie-chart"
+                                            name="coinpaprika"
                                             title="Marketcaps"
                                         />
                                     </span>
