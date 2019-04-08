@@ -8,9 +8,9 @@ import {
     // bitsparkAPIs,
     openledgerAPIs,
     cryptoBridgeAPIs,
-    gdex2APIs,
-    xbtsxAPIs,
-    citadelAPIs
+    // gdex2APIs,
+    xbtsxAPIs
+    // citadelAPIs
 } from "api/apiConfig";
 import {allowedGateway} from "branding";
 
@@ -71,6 +71,7 @@ export const availableGateways = {
             selected: false
         }
     },
+    /*
     GDEX: {
         id: "GDEX",
         name: "GDEX",
@@ -81,6 +82,7 @@ export const availableGateways = {
             selected: false
         }
     },
+     */
     XBTSX: {
         id: "XBTSX",
         name: "XBTSX",
@@ -94,7 +96,8 @@ export const availableGateways = {
             enabled: false,
             selected: false
         }
-    },
+    }
+    /*
     CITADEL: {
         id: "CITADEL",
         name: "CITADEL",
@@ -107,6 +110,7 @@ export const availableGateways = {
             selected: false
         }
     }
+     */
 };
 
 export const gatewayPrefixes = Object.keys(availableGateways);

@@ -262,8 +262,7 @@ body.midnightTheme .ant-modal-close-x {
 form.order-form {
     background: #212227;
     background: linear-gradient(to bottom, #2c3131 0%, rgb(34, 35, 39) 100%);
-    box-shadow: 2px 3px 0.6em #0c0c0c;
-    border-radius: 0px 0px 6px 6px; /* box-shadow: inset 0px 0px 0.8em #0c0c0c; */
+    box-shadow: 2px 3px 0.6em #0c0c0c; /* border-radius: 0px 0px 6px 6px; /* box-shadow: inset 0px 0px 0.8em #0c0c0c; */
 }
 .buy-sell-container {
     padding: 8px;
@@ -671,4 +670,11 @@ body.midnightTheme .ant-collapse-header {
 }
 .ant-tabs-tabpane > div {
     padding-right: 0 !important;
+}
+body.midnightTheme .ant-form-item-control,
+body.midnightTheme .ant-form-item-label {
+    line-height: 35px;
+}
+.orderbook .order-1 {
+    border-right: solid 3px #15151936 !important;
 }

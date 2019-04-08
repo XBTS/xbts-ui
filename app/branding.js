@@ -143,14 +143,10 @@ export function getMyMarketsQuotes() {
             "XBTSX.XSM"
         ],
         otherTokens: [
-            "BKT",
             "BLOCKPAY",
             "CVCOIN",
-            // "HEMPSWEET",
-            "HERTZ",
+            // "HERTZ",
             "ICOO",
-            // "KAPITAL",
-            "OCT",
             "SMOKE",
             "STEALTH",
             "YOYOW",
@@ -209,10 +205,10 @@ export function getAssetNamespaces() {
         "OPEN.",
         // "RUDEX.",
         "BRIDGE.",
-        "GDEX.",
-        "XBTSX.",
+        // "GDEX.",
+        "XBTSX."
         // "SPARKDEX.",
-        "CITADEL."
+        // "CITADEL."
     ];
 }
 
@@ -236,10 +232,10 @@ export function allowedGateway(gateway) {
             "OPEN",
             // "RUDEX",
             "BRIDGE",
-            "GDEX",
-            "XBTSX",
+            // "GDEX",
+            "XBTSX"
             // "SPARKDEX",
-            "CITADEL"
+            // "CITADEL"
         ].indexOf(gateway) >= 0
     );
 }

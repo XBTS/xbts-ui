@@ -124,7 +124,7 @@ class AccountStore extends BaseStore {
         } else {
             ss.remove("referralAccount");
         }
-        if (referralAccount) console.log("referralAccount", referralAccount);
+        // if (referralAccount) console.log("referralAccount", referralAccount);
         return referralAccount;
     }
 
