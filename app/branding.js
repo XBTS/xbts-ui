@@ -145,12 +145,11 @@ export function getMyMarketsQuotes() {
         otherTokens: [
             "BKT",
             "BLOCKPAY",
-            "BTSR",
             "CVCOIN",
             // "HEMPSWEET",
             "HERTZ",
             "ICOO",
-            "KAPITAL",
+            // "KAPITAL",
             "OCT",
             "SMOKE",
             "STEALTH",
