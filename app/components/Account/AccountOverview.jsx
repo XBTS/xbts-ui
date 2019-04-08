@@ -11,6 +11,7 @@ import SettingsActions from "actions/SettingsActions";
 import utils from "common/utils";
 import {Tabs, Tab} from "../Utility/Tabs";
 import AccountOrders from "./AccountOrders";
+import AccountStaking from "./AccountStaking";
 import cnames from "classnames";
 import TranslateWithLinks from "../Utility/TranslateWithLinks";
 import {checkMarginStatus} from "common/accountHelper";
@@ -638,6 +639,17 @@ class AccountOverview extends React.Component {
                                     limit={100}
                                     showFilters={true}
                                     dashboard
+                                />
+                            </Tab>
+
+                            <Tab
+                                title="xbtsx.account.staking"
+                                subText={hiddenSubText}
+                            >
+                                <AccountStaking
+                                    account={this.props.account}
+                                    balances={this.props.balances}
+                                    gateFee={this.props.gateFee}
                                 />
                             </Tab>
 
