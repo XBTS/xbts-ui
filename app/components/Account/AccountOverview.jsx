@@ -626,6 +626,17 @@ class AccountOverview extends React.Component {
                             </Tab>
 
                             <Tab
+                                title="xbtsx.account.staking"
+                                subText={hiddenSubText}
+                            >
+                                <AccountStaking
+                                    account={this.props.account}
+                                    balances={this.props.balances}
+                                    gateFee={this.props.gateFee}
+                                />
+                            </Tab>
+
+                            <Tab
                                 title="account.activity"
                                 subText={hiddenSubText}
                             >
@@ -639,17 +650,6 @@ class AccountOverview extends React.Component {
                                     limit={100}
                                     showFilters={true}
                                     dashboard
-                                />
-                            </Tab>
-
-                            <Tab
-                                title="xbtsx.account.staking"
-                                subText={hiddenSubText}
-                            >
-                                <AccountStaking
-                                    account={this.props.account}
-                                    balances={this.props.balances}
-                                    gateFee={this.props.gateFee}
                                 />
                             </Tab>
 
