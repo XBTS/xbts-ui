@@ -140,7 +140,8 @@ export function getMyMarketsQuotes() {
             "XBTSX.SLB",
             "XBTSX.GRS",
             "XBTSX.MNX",
-            "XBTSX.XSM"
+            "XBTSX.XSM",
+            "XBTSX.XBB"
         ],
         otherTokens: [
             "BLOCKPAY",
