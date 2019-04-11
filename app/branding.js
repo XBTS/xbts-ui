@@ -96,6 +96,7 @@ export function getMyMarketsQuotes() {
             "EUR",
             "GOLD",
             "KRW",
+            "JPY",
             "RUBLE",
             "SILVER",
             "USD"
@@ -150,8 +151,8 @@ export function getMyMarketsQuotes() {
             "CVCOIN",
             // "HERTZ",
             "ICOO",
-            "SMOKE",
-            "STEALTH",
+            // "SMOKE",
+            // "STEALTH",
             "YOYOW",
             "EVRAZ"
         ]
