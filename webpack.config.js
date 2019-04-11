@@ -71,12 +71,13 @@ module.exports = function(env) {
         new HtmlWebpackPlugin({
             template: "!!handlebars-loader!app/assets/index.hbs",
             templateParameters: {
-                title: "BitShares " + __VERSION__,
+                title: "XBTS " + __VERSION__,
                 INCLUDE_BASE: !!env.prod && !env.hash,
                 PRODUCTION: !!env.prod,
                 ELECTRON: !!env.electron
             }
         }),
+
         new webpack.DefinePlugin({
             APP_VERSION: JSON.stringify(__VERSION__),
             __ELECTRON__: !!env.electron,
@@ -188,6 +189,16 @@ module.exports = function(env) {
                         "dictionary_en.json"
                     ),
                     to: path.join(outputPath, "dictionary.json"),
+                    toType: "file"
+                },
+                {
+                    from: path.join(
+                        root_dir,
+                        "app",
+                        "assets",
+                        "outdated_browser.css"
+                    ),
+                    to: path.join(outputPath, "outdated_browser.css"),
                     toType: "file"
                 }
             ],
