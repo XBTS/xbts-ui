@@ -3,7 +3,6 @@ import {FormattedNumber} from "react-intl";
 import AssetWrapper from "./AssetWrapper";
 import {connect} from "alt-react";
 import MarketsStore from "stores/MarketsStore";
-import ReactTooltip from "react-tooltip";
 import {MarketStats} from "../Utility/MarketPrice";
 
 /**
@@ -23,10 +22,6 @@ class MarketChangeComponent extends MarketStats {
 
     constructor(props) {
         super(props);
-    }
-
-    componentDidMount() {
-        ReactTooltip.rebuild();
     }
 
     shouldComponentUpdate(np) {

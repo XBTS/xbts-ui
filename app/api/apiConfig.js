@@ -1,11 +1,5 @@
 import {getFaucet} from "../branding";
 
-export const xbtsxAPIs = {
-    BASE: "https://apis.xbts.io/api/v1",
-    // BASE: "http://localhost:3080/api/v1",
-    COINS_LIST: "/coin"
-};
-
 export const blockTradesAPIs = {
     BASE: "https://api.blocktrades.us/v2",
     COINS_LIST: "/coins",
@@ -84,6 +78,12 @@ export const gdexAPIs = {
     WITHDRAW_RULE: "/gateway/withdraw/rule"
 };
 
+export const xbtsxAPIs = {
+    BASE: "https://apis.xbts.io/api/v1",
+    // BASE: "http://localhost:3080/api/v1",
+    COINS_LIST: "/coin"
+};
+
 export const nodeRegions = [
     // region of the node follows roughly https://en.wikipedia.org/wiki/Subregion#/media/File:United_Nations_geographical_subregions.png
     "Northern Europe",
@@ -126,14 +126,6 @@ export const settingsAPIs = {
             location: "Locally hosted"
         },
         {
-            url: "wss://node.xbts.io/ws",
-            region: "Western Europe",
-            country: "Germany",
-            location: "Frankfurt",
-            operator: "XBTS",
-            contact: "telegram:xbtsio"
-        },
-        {
             url: "wss://dex.iobanker.com:9090",
             region: "Western Europe",
             country: "Germany",
@@ -173,22 +165,6 @@ export const settingsAPIs = {
             contact: "QQ:58291;email:58291@qq.com"
         },
         {
-            url: "wss://bitshares.nu/ws",
-            location: "Stockholm",
-            region: "Northern Europe",
-            country: "Sweden",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:StaflunD"
-        },
-        {
-            url: "wss://api.open-asset.tech/ws",
-            location: "Frankfurt",
-            region: "Western Europe",
-            country: "Germany",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:StaflunD"
-        },
-        {
             url: "wss://bitshares.crypto.fans/ws",
             region: "Western Europe",
             country: "Germany",
@@ -213,14 +189,6 @@ export const settingsAPIs = {
             contact: "keybase:rnglab"
         },
         {
-            url: "wss://la.dexnode.net/ws",
-            region: "Northern America",
-            country: "U.S.A.",
-            location: "Los Angeles",
-            operator: "Witness: Sahkan",
-            contact: "telegram:Sahkan_bitshares"
-        },
-        {
             url: "wss://dexnode.net/ws",
             region: "Northern America",
             country: "U.S.A.",
@@ -236,6 +204,7 @@ export const settingsAPIs = {
             operator: "Witness: xeldal",
             contact: "telegram:xeldal"
         },
+        /*
         {
             url: "wss://api.bts.blckchnd.com",
             region: "Western Europe",
@@ -254,15 +223,7 @@ export const settingsAPIs = {
             contact:
                 "email:admin@blckchnd.com;telegram:ruslansalikhov;github:blckchnd"
         },
-        {
-            url: "wss://node.market.rudex.org",
-            region: "Western Europe",
-            country: "Germany",
-            location: "Falkenstein",
-            operator: "Witness: blckchnd",
-            contact:
-                "email:admin@blckchnd.com;telegram:ruslansalikhov;github:blckchnd"
-        },
+        */
         {
             url: "wss://api.bitsharesdex.com",
             region: "Northern America",
@@ -387,22 +348,6 @@ export const settingsAPIs = {
             contact: "telegram:plus_wave"
         },
         {
-            url: "wss://de.bts.dcn.cx/ws",
-            region: "Western Europe",
-            country: "Germany",
-            location: "Nuremberg",
-            operator: "Witness: fla01",
-            contact: "telegram:Otherego;telegram:BarefootMouse"
-        },
-        {
-            url: "wss://fi.bts.dcn.cx/ws",
-            region: "Northern Europe",
-            country: "Finland",
-            location: "Helsinki",
-            operator: "Witness: fla01",
-            contact: "telegram:Otherego;telegram:BarefootMouse"
-        },
-        {
             url: "wss://crazybit.online",
             region: "Asia",
             country: "China",
@@ -491,15 +436,7 @@ export const settingsAPIs = {
             contact: "email:citadel.li;support"
         },
         {
-            url: "wss://us-east-1.bts.crypto-bridge.org",
-            region: "Northern America",
-            country: "U.S.A.",
-            location: "North Virginia",
-            operator: "CryptoBridge",
-            contact: "email:support@crypto-bridge.org"
-        },
-        {
-            url: "wss://us-west-1.bts.crypto-bridge.org",
+            url: "wss://us-west-2.bts.crypto-bridge.org",
             region: "Northern America",
             country: "U.S.A.",
             location: "North California",
@@ -509,24 +446,8 @@ export const settingsAPIs = {
         {
             url: "wss://eu-central-1.bts.crypto-bridge.org",
             region: "Western Europe",
-            country: "Germany",
-            location: "Frankfurt",
-            operator: "CryptoBridge",
-            contact: "email:support@crypto-bridge.org"
-        },
-        {
-            url: "wss://eu-west-1.bts.crypto-bridge.org",
-            region: "Northern Europe",
-            country: "Ireland",
-            location: "Dublin",
-            operator: "CryptoBridge",
-            contact: "email:support@crypto-bridge.org"
-        },
-        {
-            url: "wss://eu-west-2.bts.crypto-bridge.org",
-            region: "Northern Europe",
-            country: "United Kingdom",
-            location: "London",
+            country: "Netherlands",
+            location: "Amsterdam",
             operator: "CryptoBridge",
             contact: "email:support@crypto-bridge.org"
         },
@@ -554,6 +475,14 @@ export const settingsAPIs = {
             operator: "CryptoBridge",
             contact: "email:support@crypto-bridge.org"
         },
+        {
+            url: "wss://ap-southeast-3.bts.crypto-bridge.org",
+            region: "Southeastern Asia",
+            country: "Singapore",
+            location: "Singapore",
+            operator: "CryptoBridge",
+            contact: "email:support@crypto-bridge.org"
+        },
         // Testnet
         {
             url: "wss://node.testnet.bitshares.eu",
@@ -578,14 +507,6 @@ export const settingsAPIs = {
             location: "Paris",
             operator: "Witness: zapata42-witness",
             contact: "telegram:Zapata_42"
-        },
-        {
-            url: "wss://testnet.bts.dcn.cx/ws",
-            region: "TESTNET - Europe",
-            country: "Germany / Finland",
-            location: "Nurenberg / Helsinki",
-            operator: "Witness: fla-test",
-            contact: "telegram:Otherego;telegram:BarefootMouse"
         }
     ],
     DEFAULT_FAUCET: getFaucet().url,

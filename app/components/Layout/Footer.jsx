@@ -113,7 +113,6 @@ class Footer extends React.Component {
             fetch("https://api.github.com/repos/xbts/xbts-ui/releases/latest")
                 .then(res => {
                     return res.json();
-                    return res.json();
                 })
                 .then(
                     function(json) {
@@ -486,7 +485,7 @@ class Footer extends React.Component {
                                         content="footer.title"
                                         wallet_name={getWalletName()}
                                     />
-                                    {__GIT_BRANCH__ === "staging" ? (
+                                    {__GIT_BRANCH__ === "release" ? (
                                         <a
                                             href={`https://github.com/xbts/xbts-ui/commit/${version.trim()}`}
                                             className="version"
@@ -540,7 +539,7 @@ class Footer extends React.Component {
                                 >
                                     <span className="icon">
                                         <Icon
-                                            name="pie-chart"
+                                            name="coinpaprika"
                                             title="Marketcaps"
                                         />
                                     </span>
@@ -639,14 +638,22 @@ class Footer extends React.Component {
                         {this.props.backup_recommended ? (
                             <span>
                                 <div className="grid-block">
-                                    <a
-                                        className="shrink txtlabel facolor-alert"
-                                        data-tip="Please understand that you are responsible for making your own backup&hellip;"
-                                        data-type="warning"
-                                        onClick={this.onBackup.bind(this)}
+                                    <Tooltip
+                                        overlay={
+                                            <div>
+                                                Please understand that you are
+                                                responsible for making your own
+                                                backup&hellip;
+                                            </div>
+                                        }
                                     >
-                                        <Translate content="footer.backup" />
-                                    </a>
+                                        <a
+                                            className="shrink txtlabel facolor-alert"
+                                            onClick={this.onBackup.bind(this)}
+                                        >
+                                            <Translate content="footer.backup" />
+                                        </a>
+                                    </Tooltip>
                                     &nbsp;&nbsp;
                                 </div>
                             </span>
@@ -853,7 +860,6 @@ class Footer extends React.Component {
         this.props.history.push("/settings/access");
     }
 }
-
 Footer = BindToChainState(Footer);
 
 class AltFooter extends Component {

@@ -27,8 +27,8 @@ export function getWalletURL() {
  */
 export function getFaucet() {
     return {
-        url: "https://faucet.bitshares.eu/onboarding", // https://faucet.rudex.org //"https://faucet.bitshares.eu/onboarding", // 2017-12-infrastructure worker proposal
-        show: false,
+        url: "https://faucet.bitshares.eu/onboarding", // 2017-12-infrastructure worker proposal
+        show: true,
         editable: false
     };
 }
@@ -38,7 +38,7 @@ export function getFaucet() {
  * @returns {*}
  */
 export function getLogo() {
-    return require("assets/logo-xbts.png");
+    return require("assets/logo-ico-blue.png");
 }
 
 /**
@@ -66,7 +66,7 @@ export function getDefaultLogin() {
  */
 export function getUnits(chainId = "4018d784") {
     if (chainId === "4018d784")
-        return ["BTS", "USD", "CNY", "BTC", "EUR", "GBP", "RUBLE"];
+        return ["BTS", "USD", "CNY", "BTC", "EUR", "GBP"];
     else if (chainId === "39f5e2ed") return ["TEST"];
     // unknown chain id: (need to return at least one unit)
     else return ["BTS"];
@@ -79,15 +79,7 @@ export function getUnits(chainId = "4018d784") {
  */
 
 export function getMyMarketsBases() {
-    return [
-        "BTS",
-        "XBTSX.BTC",
-        "XBTSX.STH",
-        "XBTSX.ETH",
-        "USD",
-        "CNY",
-        "RUBLE"
-    ];
+    return ["BTS", "XBTSX.BTC", "XBTSX.STH", "XBTSX.ETH", "USD", "CNY"];
 }
 
 /**
@@ -98,24 +90,21 @@ export function getMyMarketsBases() {
 export function getMyMarketsQuotes() {
     let tokens = {
         nativeTokens: [
-            // "BTC",
+            "BTC",
             "BTS",
             "CNY",
             "EUR",
             "GOLD",
+            "KRW",
             "RUBLE",
             "SILVER",
-            "USD",
-            "KRW",
-            "MXN",
-            "JPY"
+            "USD"
         ],
         bridgeTokens: ["BRIDGE.BCO"],
         gdexTokens: [],
         openledgerTokens: [],
         rudexTokens: [],
-        sparkTokens: [],
-        winTokens: [],
+        sparkTokens: ["ZEPH"],
         xbtsxTokens: [
             "XBTSX.STH",
             "XBTSX.POST",
@@ -151,13 +140,20 @@ export function getMyMarketsQuotes() {
             "XBTSX.SLB",
             "XBTSX.GRS",
             "XBTSX.MNX",
-            "XBTSX.XSM"
+            "XBTSX.XSM",
+            "XBTSX.XBB",
+            "XBTSX.NOBT",
+            "XBTSX.EXR"
         ],
         otherTokens: [
-            "EVRAZ",
-            // "CVCOIN",
+            "BLOCKPAY",
+            "CVCOIN",
+            // "HERTZ",
+            "ICOO",
+            "SMOKE",
+            "STEALTH",
             "YOYOW",
-            "INTFREE"
+            "EVRAZ"
         ]
     };
 
@@ -177,18 +173,25 @@ export function getFeaturedMarkets(quotes = []) {
     return [
         ["USD", "BTS"],
         ["USD", "GOLD"],
+        ["USD", "HERO"],
+        ["USD", "OPEN.EOSDAC"],
         ["CNY", "BTS"],
+        ["CNY", "OPEN.BTC"],
         ["CNY", "USD"],
+        ["CNY", "OPEN.ETH"],
+        ["CNY", "YOYOW"],
+        ["BTS", "OPEN.ETH"],
+        ["BTS", "OPEN.EOS"],
+        ["BTS", "PPY"],
+        ["BTS", "OPEN.STEEM"],
+        ["BTS", "OBITS"],
         ["BTS", "RUBLE"],
+        ["BTS", "HERO"],
+        ["BTS", "OCT"],
         ["BTS", "SILVER"],
         ["BTS", "GOLD"],
         ["BTS", "XBTSX.STH"],
-        ["BTS", "XBTSX.ETH"],
-        ["BTS", "XBTSX.BTC"],
-        ["BTS", "XBTSX.WAVES"],
-        ["BTS", "XBTSX.COF"],
-        ["BTS", "XBTSX.XRUP"],
-        ["BTS", "XBTSX.EGC"]
+        ["BTS", "XBTSX.WAVES"]
     ].filter(a => {
         if (!quotes.length) return true;
         return quotes.indexOf(a[0]) !== -1;
@@ -203,12 +206,12 @@ export function getFeaturedMarkets(quotes = []) {
 export function getAssetNamespaces() {
     return [
         "OPEN.",
-        "RUDEX.",
+        // "RUDEX.",
         "BRIDGE.",
-        "GDEX.",
-        "XBTSX.",
-        "SPARKDEX.",
-        "CITADEL."
+        // "GDEX.",
+        "XBTSX."
+        // "SPARKDEX.",
+        // "CITADEL."
     ];
 }
 
@@ -230,12 +233,12 @@ export function allowedGateway(gateway) {
     return (
         [
             "OPEN",
-            "RUDEX",
+            // "RUDEX",
             "BRIDGE",
-            "GDEX",
-            "XBTSX",
-            "SPARKDEX",
-            "CITADEL"
+            // "GDEX",
+            "XBTSX"
+            // "SPARKDEX",
+            // "CITADEL"
         ].indexOf(gateway) >= 0
     );
 }

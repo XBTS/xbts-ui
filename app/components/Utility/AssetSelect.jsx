@@ -1,10 +1,11 @@
-import React, {PureComponent} from "react";
+import React from "react";
 import Translate from "react-translate-component";
 import PropTypes from "prop-types";
 import {Form, Select} from "bitshares-ui-style-guide";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import {Map} from "immutable";
+import AssetName from "../Utility/AssetName";
 
 const AssetSelectView = ({
     label,
@@ -13,6 +14,7 @@ const AssetSelectView = ({
     formItemStyle,
     style,
     placeholder,
+    value,
     ...props
 }) => {
     const select = (
@@ -24,11 +26,15 @@ const AssetSelectView = ({
                     content={placeholder || "utility.asset_select_placeholder"}
                 />
             }
+            value={<AssetName noTip name={value} />}
             {...props}
         >
             {assets.filter(Map.isMap).map(asset => (
-                <Select.Option key={asset.get("symbol")}>
-                    {asset.get("symbol")}
+                <Select.Option
+                    key={asset.get("symbol")}
+                    value={asset.get("id")}
+                >
+                    <AssetName noTip name={asset.get("symbol")} />
                 </Select.Option>
             ))}
         </Select>
@@ -60,6 +66,15 @@ AssetSelectView.propTypes = {
     selectStyle: PropTypes.object // Select style
 
     // all other props are passed to the Select component
+};
+
+AssetSelectView.defaultPropTypes = {
+    assets: [],
+    placeholder: null,
+    label: null,
+    style: "",
+    formItemStyle: "",
+    selectStyle: ""
 };
 
 const AssetSelect = BindToChainState(AssetSelectView);

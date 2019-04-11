@@ -77,6 +77,7 @@ module.exports = function(env) {
                 ELECTRON: !!env.electron
             }
         }),
+
         new webpack.DefinePlugin({
             APP_VERSION: JSON.stringify(__VERSION__),
             __ELECTRON__: !!env.electron,
@@ -188,6 +189,16 @@ module.exports = function(env) {
                         "dictionary_en.json"
                     ),
                     to: path.join(outputPath, "dictionary.json"),
+                    toType: "file"
+                },
+                {
+                    from: path.join(
+                        root_dir,
+                        "app",
+                        "assets",
+                        "outdated_browser.css"
+                    ),
+                    to: path.join(outputPath, "outdated_browser.css"),
                     toType: "file"
                 }
             ],

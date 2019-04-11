@@ -1,4 +1,5 @@
 let icons = [
+    "coinpaprika",
     "statistics",
     "listing",
     "chat",
@@ -14,6 +15,7 @@ let icons = [
     "adjust",
     "alarm",
     "assets",
+    "autolock",
     "barter",
     "borrow",
     "checkmark-circle",
