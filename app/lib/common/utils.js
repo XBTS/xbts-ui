@@ -2,6 +2,7 @@ var numeral = require("numeral");
 let id_regex = /\b\d+\.\d+\.(\d+)\b/;
 
 import {ChainTypes} from "bitsharesjs";
+
 var {object_type} = ChainTypes;
 
 import {getAssetNamespaces, getAssetHideNamespaces} from "../../branding";
@@ -36,6 +37,26 @@ var Utils = {
         );
     },
 
+    convert_satoshi_to_typed: function(amount, asset) {
+        if (amount === 0) return amount;
+        if (!amount) return null;
+        return (
+            amount /
+            this.get_asset_precision(
+                asset.toJS ? asset.get("precision") : asset.precision
+            )
+        );
+    },
+
+    convert_typed_to_satoshi: function(amount, asset) {
+        return (
+            amount *
+            this.get_asset_precision(
+                asset.toJS ? asset.get("precision") : asset.precision
+            )
+        );
+    },
+
     get_asset_price: function(
         quoteAmount,
         quoteAsset,
@@ -53,6 +74,9 @@ var Utils = {
     },
 
     format_volume(amount, precision = 3) {
+        if (isNaN(amount)) {
+            amount = "0";
+        }
         if (amount < 10000) {
             return this.format_number(amount, precision);
         } else if (amount < 1000000) {
@@ -113,6 +137,7 @@ var Utils = {
         let baseID = base.toJS ? base.get("id") : base.id;
         let basePrecision = base.toJS ? base.get("precision") : base.precision;
         let fixedPrecisionAssets = {
+            "1.3.4157": 8, // XBTSX.BTC
             "1.3.113": 5, // bitCNY
             "1.3.121": 5 // bitUSD
         };
@@ -447,6 +472,52 @@ var Utils = {
             prefix,
             isBitAsset: !!isBitAsset
         };
+    },
+
+    timeStringToGrapheneDate(time_string) {
+        if (!time_string) return new Date("1970-01-01T00:00:00.000Z");
+        if (!/Z$/.test(time_string)) {
+            //does not end in Z
+            // https://github.com/cryptonomex/graphene/issues/368
+            time_string = time_string + "Z";
+        }
+        return new Date(time_string);
+    },
+
+    toFixedString(x) {
+        if (Math.abs(x) < 1.0) {
+            const e = parseInt(x.toString().split("e-")[1]);
+            if (e) {
+                x *= Math.pow(10, e - 1);
+                x = "0." + new Array(e).join("0") + x.toString().substring(2);
+                if (x === "0.00000007000000000000001") {
+                    x = "0.00000007";
+                }
+                if (x[10] === "9") {
+                    let ten = x.substr(2, 8) * 1 + 1;
+                    x = x.substr(0, 8) + ten;
+                }
+            } else {
+                x = x.toString();
+            }
+
+            /*
+            if (x.length < 10 && x.length > 8) {
+                while (x.length < 10) {
+                    x = x + "0";
+                }
+            }
+             */
+        } else {
+            let e = parseInt(x.toString().split("+")[1]);
+            if (e > 20) {
+                e -= 20;
+                x /= Math.pow(10, e);
+                x += new Array(e + 1).join("0");
+            }
+        }
+
+        return x;
     }
 };
 

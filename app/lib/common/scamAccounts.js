@@ -1196,5 +1196,19 @@ export const scamAccountsOther = [
     "my-change",
     "1.2.637403",
     "openledger-upgrade",
-    "1.2.1544053"
+    "1.2.1544053",
+    "openledger-gex",
+    "1.2.1540900",
+    "openledger-security",
+    "1.2.1547751",
+    "xbts",
+    "1.2.98094",
+    "dexter228",
+    "1.2.1218196",
+    "sth-rolik2001",
+    "1.2.1002460",
+    "btsrolik20001",
+    "1.2.158585",
+    "mwr",
+    "1.2.83146"
 ];

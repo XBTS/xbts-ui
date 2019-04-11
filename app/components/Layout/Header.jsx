@@ -411,7 +411,7 @@ class Header extends React.Component {
 
         let tradeUrl = this.props.lastMarket
             ? `/market/${this.props.lastMarket}`
-            : "/market/USD_BTS";
+            : "/market/XBTSX.STH_BTS";
 
         // Account selector: Only active inside the exchange
         let account_display_name, accountsList;
@@ -807,6 +807,29 @@ class Header extends React.Component {
                         className="column-hide-small"
                         component="span"
                         content="showcases.barter.title"
+                    />
+                </a>
+            );
+        }
+
+        if (active.indexOf("/direct-debit") !== -1) {
+            dynamicMenuItem = (
+                <a
+                    style={{flexFlow: "row"}}
+                    className={cnames({
+                        active: active.indexOf("/direct-debit") !== -1
+                    })}
+                >
+                    <Icon
+                        size="1_5x"
+                        style={{position: "relative", top: 0, left: -8}}
+                        name="direct_debit"
+                        title="icons.direct_debit"
+                    />
+                    <Translate
+                        className="column-hide-small"
+                        component="span"
+                        content="showcases.direct_debit.title"
                     />
                 </a>
             );

@@ -102,11 +102,11 @@ class ReportModal extends React.Component {
                         <br />
                         &nbsp;&nbsp;
                         <a
-                            href="https://github.com/bitshares/bitshares-ui/issues"
+                            href="https://github.com/xbts/xbts-ui/issues"
                             target="_blank"
                             style={{textAlign: "center", width: "100%"}}
                         >
-                            https://github.com/bitshares/bitshares-ui/issues
+                            https://github.com/xbts/xbts-ui/issues
                         </a>
                         <br />
                         <Translate content="modal.report.explanatory_text_3" />
