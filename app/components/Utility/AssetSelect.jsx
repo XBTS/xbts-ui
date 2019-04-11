@@ -5,7 +5,12 @@ import {Form, Select} from "bitshares-ui-style-guide";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import {Map} from "immutable";
-import AssetName from "../Utility/AssetName";
+import utils from "../../lib/common/utils";
+
+const replaceName = asset => {
+    let {name, prefix} = utils.replaceName(asset);
+    return prefix + "" + name;
+};
 
 const AssetSelectView = ({
     label,
@@ -14,7 +19,6 @@ const AssetSelectView = ({
     formItemStyle,
     style,
     placeholder,
-    value,
     ...props
 }) => {
     const select = (
@@ -26,15 +30,11 @@ const AssetSelectView = ({
                     content={placeholder || "utility.asset_select_placeholder"}
                 />
             }
-            value={<AssetName noTip name={value} />}
             {...props}
         >
             {assets.filter(Map.isMap).map(asset => (
-                <Select.Option
-                    key={asset.get("symbol")}
-                    value={asset.get("id")}
-                >
-                    <AssetName noTip name={asset.get("symbol")} />
+                <Select.Option key={asset.get("symbol")}>
+                    {replaceName(asset)}
                 </Select.Option>
             ))}
         </Select>
