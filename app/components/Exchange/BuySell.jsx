@@ -1158,7 +1158,7 @@ class BuySell extends React.Component {
                                             className="small-4 buy-sell-label"
                                             content="exchange.balance"
                                         />
-                                        <div className="small-8 buy-sell-label">
+                                        <div className="small-8 buy-sell-label buy-sell-balance">
                                             <span
                                                 style={{
                                                     borderBottom:

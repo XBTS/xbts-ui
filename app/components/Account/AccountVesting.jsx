@@ -41,6 +41,10 @@ class VestingBalance extends React.Component {
                 vestingPeriod === 0 ? 1 : earned / (vestingPeriod * balance);
         }
 
+        if (vb.balance.asset_id === "1.3.4099") {
+            return null;
+        }
+
         if (!cvbAsset) {
             return null;
         }

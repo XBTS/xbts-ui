@@ -11,6 +11,7 @@ import SettingsActions from "actions/SettingsActions";
 import utils from "common/utils";
 import {Tabs, Tab} from "../Utility/Tabs";
 import AccountOrders from "./AccountOrders";
+import AccountStaking from "./AccountStaking";
 import cnames from "classnames";
 import TranslateWithLinks from "../Utility/TranslateWithLinks";
 import {checkMarginStatus} from "common/accountHelper";
@@ -79,6 +80,7 @@ class AccountOverview extends React.Component {
         return (
             !utils.are_equal_shallow(nextProps.balances, this.props.balances) ||
             nextProps.account !== this.props.account ||
+            nextProps.isMyAccount !== this.props.isMyAccount ||
             nextProps.settings !== this.props.settings ||
             nextProps.hiddenAssets !== this.props.hiddenAssets ||
             !utils.are_equal_shallow(nextState, this.state) ||
@@ -621,6 +623,17 @@ class AccountOverview extends React.Component {
                                         </MarginPositionsTable>
                                     </div>
                                 </div>
+                            </Tab>
+
+                            <Tab
+                                title="xbtsx.account.staking"
+                                subText={hiddenSubText}
+                            >
+                                <AccountStaking
+                                    account={this.props.account}
+                                    balances={this.props.balances}
+                                    gateFee={this.props.gateFee}
+                                />
                             </Tab>
 
                             <Tab

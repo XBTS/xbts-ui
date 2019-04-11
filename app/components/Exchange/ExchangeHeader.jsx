@@ -98,7 +98,10 @@ export default class ExchangeHeader extends React.Component {
                     : "positive";
         const volumeBase = marketStats.get("volumeBase");
         const volumeQuote = marketStats.get("volumeQuote");
-        const dayChangeWithSign = dayChange > 0 ? "+" + dayChange : dayChange;
+        let dayChangeWithSign = dayChange > 0 ? "+" + dayChange : dayChange;
+        if (isNaN(dayChangeWithSign)) {
+            dayChangeWithSign = "0.00";
+        }
 
         const volume24h = this.state.volumeShowQuote ? volumeQuote : volumeBase;
         const volume24hAsset = this.state.volumeShowQuote

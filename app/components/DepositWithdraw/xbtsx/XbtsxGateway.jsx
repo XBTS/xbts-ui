@@ -29,10 +29,10 @@ class XbtsxGateway extends React.Component {
         );
         let firstTimeCoin = null;
         if (state.action == "deposit") {
-            firstTimeCoin = "PPY";
+            firstTimeCoin = "XBTSX.STH";
         }
         if (state.action == "withdraw") {
-            firstTimeCoin = "PPY";
+            firstTimeCoin = "XBTSX.STH";
         }
         let activeCoin = cachedCoin ? cachedCoin : firstTimeCoin;
         return activeCoin;
@@ -124,7 +124,8 @@ class XbtsxGateway extends React.Component {
                             >
                                 <Translate
                                     content={"gateway.choose_" + action}
-                                />:{" "}
+                                />
+                                :{" "}
                             </label>
                             <select
                                 className="external-coin-types bts-select"
@@ -195,6 +196,8 @@ class XbtsxGateway extends React.Component {
                                 receive_coin_type={coin.symbol.toLowerCase()}
                                 supports_output_memos={coin.memoSupport}
                                 min_amount={coin.minAmount}
+                                withdraw_fee={coin.withdrawFee}
+                                deposit_fee={coin.depositFee}
                                 asset_precision={coin.precision}
                                 action={this.state.action}
                             />
@@ -269,13 +272,16 @@ class XbtsxGateway extends React.Component {
     }
 }
 
-export default connect(XbtsxGateway, {
-    listenTo() {
-        return [SettingsStore];
-    },
-    getProps() {
-        return {
-            viewSettings: SettingsStore.getState().viewSettings
-        };
+export default connect(
+    XbtsxGateway,
+    {
+        listenTo() {
+            return [SettingsStore];
+        },
+        getProps() {
+            return {
+                viewSettings: SettingsStore.getState().viewSettings
+            };
+        }
     }
-});
+);
