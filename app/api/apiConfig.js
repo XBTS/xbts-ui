@@ -80,6 +80,7 @@ export const gdexAPIs = {
 
 export const xbtsxAPIs = {
     BASE: "https://apis.xbts.io/api/v1",
+    // BASE: "http://localhost:3080/api/v1",
     COINS_LIST: "/coin"
 };
 
@@ -164,150 +165,6 @@ export const settingsAPIs = {
             contact: "QQ:58291;email:58291@qq.com"
         },
         {
-            url: "wss://japan.bitshares.apasia.tech/ws",
-            location: "Tokyo",
-            country: "Japan",
-            region: "Southeastern Asia",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://singapore.bitshares.apasia.tech/ws",
-            location: "Singapore",
-            country: "Singapore",
-            region: "Southeastern Asia",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://status200.bitshares.apasia.tech/ws",
-            location: "New Jersey",
-            country: "U.S.A.",
-            region: "Northern America",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://new-york.bitshares.apasia.tech/ws",
-            location: "New York",
-            country: "U.S.A.",
-            region: "Northern America",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://dallas.bitshares.apasia.tech/ws",
-            location: "Dallas",
-            country: "U.S.A.",
-            region: "Northern America",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://chicago.bitshares.apasia.tech/ws",
-            location: "Chicago",
-            country: "U.S.A.",
-            region: "Northern America",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://atlanta.bitshares.apasia.tech/ws",
-            location: "Atlanta",
-            country: "U.S.A.",
-            region: "Northern America",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://us-la.bitshares.apasia.tech/ws",
-            location: "Los Angeles",
-            country: "U.S.A.",
-            region: "Northern America",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://seattle.bitshares.apasia.tech/ws",
-            location: "Seattle",
-            country: "U.S.A.",
-            region: "Northern America",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://miami.bitshares.apasia.tech/ws",
-            location: "Miami",
-            country: "U.S.A.",
-            region: "Northern America",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://valley.bitshares.apasia.tech/ws",
-            location: "Silicon Valley",
-            country: "U.S.A.",
-            region: "Northern America",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://canada6.daostreet.com",
-            location: "Toronto",
-            country: "Canada",
-            region: "Northern America",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://bitshares.nu/ws",
-            location: "Stockholm",
-            region: "Northern Europe",
-            country: "Sweden",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:StaflunD"
-        },
-        {
-            url: "wss://api.open-asset.tech/ws",
-            location: "Frankfurt",
-            region: "Western Europe",
-            country: "Germany",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:StaflunD"
-        },
-        {
-            url: "wss://france.bitshares.apasia.tech/ws",
-            location: "Paris",
-            country: "France",
-            region: "Western Europe",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://england.bitshares.apasia.tech/ws",
-            location: "London",
-            country: "England",
-            region: "Northern Europe",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://netherlands.bitshares.apasia.tech/ws",
-            location: "Amsterdam",
-            country: "Netherlands",
-            region: "Northern Europe",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://australia.bitshares.apasia.tech/ws",
-            location: "Sidney",
-            country: "Australia",
-            region: "Australia",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
             url: "wss://bitshares.crypto.fans/ws",
             region: "Western Europe",
             country: "Germany",
@@ -332,14 +189,6 @@ export const settingsAPIs = {
             contact: "keybase:rnglab"
         },
         {
-            url: "wss://la.dexnode.net/ws",
-            region: "Northern America",
-            country: "U.S.A.",
-            location: "Los Angeles",
-            operator: "Witness: Sahkan",
-            contact: "telegram:Sahkan_bitshares"
-        },
-        {
             url: "wss://dexnode.net/ws",
             region: "Northern America",
             country: "U.S.A.",
@@ -355,6 +204,7 @@ export const settingsAPIs = {
             operator: "Witness: xeldal",
             contact: "telegram:xeldal"
         },
+        /*
         {
             url: "wss://api.bts.blckchnd.com",
             region: "Western Europe",
@@ -373,6 +223,7 @@ export const settingsAPIs = {
             contact:
                 "email:admin@blckchnd.com;telegram:ruslansalikhov;github:blckchnd"
         },
+        */
         {
             url: "wss://api.bitsharesdex.com",
             region: "Northern America",
@@ -495,22 +346,6 @@ export const settingsAPIs = {
             location: "Hangzhou",
             operator: "Witness: magicwallet.witness",
             contact: "telegram:plus_wave"
-        },
-        {
-            url: "wss://de.bts.dcn.cx/ws",
-            region: "Western Europe",
-            country: "Germany",
-            location: "Nuremberg",
-            operator: "Witness: fla01",
-            contact: "telegram:Otherego;telegram:BarefootMouse"
-        },
-        {
-            url: "wss://fi.bts.dcn.cx/ws",
-            region: "Northern Europe",
-            country: "Finland",
-            location: "Helsinki",
-            operator: "Witness: fla01",
-            contact: "telegram:Otherego;telegram:BarefootMouse"
         },
         {
             url: "wss://crazybit.online",
@@ -666,36 +501,12 @@ export const settingsAPIs = {
             contact: "email:info@blockchainprojectsbv.com"
         },
         {
-            url: "wss://testnet.bitshares.apasia.tech/ws",
-            region: "TESTNET - Northern America",
-            country: "U.S.A.",
-            location: "Dallas",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
-            url: "wss://testnet-eu.bitshares.apasia.tech/ws",
-            region: "TESTNET - Northern Europe",
-            country: "Netherlands",
-            location: "Amsterdam",
-            operator: "Flash Infrastructure Worker",
-            contact: "telegram:murda_ra"
-        },
-        {
             url: "wss://testnet.dex.trading/",
             region: "TESTNET - Western Europe",
             country: "France",
             location: "Paris",
             operator: "Witness: zapata42-witness",
             contact: "telegram:Zapata_42"
-        },
-        {
-            url: "wss://testnet.bts.dcn.cx/ws",
-            region: "TESTNET - Europe",
-            country: "Germany / Finland",
-            location: "Nurenberg / Helsinki",
-            operator: "Witness: fla-test",
-            contact: "telegram:Otherego;telegram:BarefootMouse"
         }
     ],
     DEFAULT_FAUCET: getFaucet().url,
