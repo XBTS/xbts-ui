@@ -154,7 +154,8 @@ export function getMyMarketsQuotes() {
             // "SMOKE",
             // "STEALTH",
             "YOYOW",
-            "EVRAZ"
+            "EVRAZ",
+            "INTFREE"
         ]
     };
 
