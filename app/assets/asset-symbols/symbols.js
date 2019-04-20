@@ -217,6 +217,7 @@ require("file-loader?name=asset-symbols/[name].png!./grs.png");
 require("file-loader?name=asset-symbols/[name].png!./nobt.png");
 require("file-loader?name=asset-symbols/[name].png!./xbb.png");
 require("file-loader?name=asset-symbols/[name].png!./exr.png");
+require("file-loader?name=asset-symbols/[name].png!./bkbt.png");
 
 // xbts assets
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.sth.png");
@@ -266,3 +267,9 @@ require("file-loader?name=asset-symbols/[name].png!./bridge.bco.png");
 require("file-loader?name=asset-symbols/[name].png!./gdex.eos.png");
 require("file-loader?name=asset-symbols/[name].png!./bridge.btc.png");
 require("file-loader?name=asset-symbols/[name].png!./citadel.btc.png");
+require("file-loader?name=asset-symbols/[name].png!./gdex.bkbt.png");
+require("file-loader?name=asset-symbols/[name].png!./gdex.iq.png");
+require("file-loader?name=asset-symbols/[name].png!./gdex.bto.png");
+require("file-loader?name=asset-symbols/[name].png!./gdex.eth.png");
+require("file-loader?name=asset-symbols/[name].png!./gdex.btm.png");
+require("file-loader?name=asset-symbols/[name].png!./gdex.cpc.png");
