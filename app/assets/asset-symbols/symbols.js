@@ -12,6 +12,7 @@ require("file-loader?name=asset-symbols/[name].png!./krw.png");
 require("file-loader?name=asset-symbols/[name].png!./mxn.png");
 require("file-loader?name=asset-symbols/[name].png!./jpy.png");
 require("file-loader?name=asset-symbols/[name].png!./xem.png");
+require("file-loader?name=asset-symbols/[name].png!./aud.png");
 
 // 3rd party assets
 require("file-loader?name=asset-symbols/[name].png!./eth.png");
@@ -219,6 +220,7 @@ require("file-loader?name=asset-symbols/[name].png!./xbb.png");
 require("file-loader?name=asset-symbols/[name].png!./exr.png");
 require("file-loader?name=asset-symbols/[name].png!./bkbt.png");
 require("file-loader?name=asset-symbols/[name].png!./lcrt.png");
+require("file-loader?name=asset-symbols/[name].png!./applecom.png");
 
 // xbts assets
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.sth.png");

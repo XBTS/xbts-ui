@@ -99,7 +99,8 @@ export function getMyMarketsQuotes() {
             "JPY",
             "RUBLE",
             "SILVER",
-            "USD"
+            "USD",
+            "AUD"
         ],
         bridgeTokens: ["BRIDGE.BCO"],
         gdexTokens: [],
@@ -148,15 +149,28 @@ export function getMyMarketsQuotes() {
             "XBTSX.LCRT"
         ],
         otherTokens: [
-            "BLOCKPAY",
+            // "BLOCKPAY",
             "CVCOIN",
             // "HERTZ",
             "ICOO",
             // "SMOKE",
             // "STEALTH",
             "YOYOW",
-            "EVRAZ",
-            "INTFREE"
+            "EVRAZ"
+            // "INTFREE",
+            /*
+            "AMAZONCOM",
+            "GOOGL",
+            "EBAYCOM",
+            "BAIDUCOM",
+            "FACEBOOKCOM",
+            "APPLECOM",
+            "TWITTERCOM",
+            "VISACOM",
+            "TESLACOM",
+            "BOEINGCOM",
+            "NIKKEIINDEX"
+             */
         ]
     };
 
