@@ -221,6 +221,7 @@ require("file-loader?name=asset-symbols/[name].png!./exr.png");
 require("file-loader?name=asset-symbols/[name].png!./bkbt.png");
 require("file-loader?name=asset-symbols/[name].png!./lcrt.png");
 require("file-loader?name=asset-symbols/[name].png!./applecom.png");
+require("file-loader?name=asset-symbols/[name].png!./deex.png");
 
 // xbts assets
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.sth.png");
