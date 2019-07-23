@@ -1,6 +1,6 @@
 {
     "name": "XBTS-light",
-    "version": "2.0.190411-rc1",
+    "version": "2.0.190412",
     "description": "Advanced wallet interface for the BitShares financial blockchain & XBTS DEX.",
     "homepage": "https://github.com/xbts/xbts-ui",
     "keywords": [
@@ -134,7 +134,7 @@
                 "AppImage",
                 "snap"
             ],
-            "synopsis": "XBTS: Cryptocurrency and Decentralized Exchange"
+            "synopsis": "XBTS: Cryptocurrency Decentralized Exchange"
         },
         "directories": {
             "buildResources": "resources",
