@@ -150,6 +150,7 @@ export function getMyMarketsQuotes() {
         ],
         otherTokens: [
             // "BLOCKPAY",
+            "DEEX",
             "CVCOIN",
             // "HERTZ",
             "ICOO",
@@ -250,12 +251,12 @@ export function allowedGateway(gateway) {
     return (
         [
             "OPEN",
-            // "RUDEX",
+            "RUDEX",
             "BRIDGE",
-            // "GDEX",
-            "XBTSX"
-            // "SPARKDEX",
-            // "CITADEL"
+            "GDEX",
+            "XBTSX",
+            "SPARKDEX",
+            "CITADEL"
         ].indexOf(gateway) >= 0
     );
 }
