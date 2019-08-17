@@ -21,7 +21,7 @@ import {openledgerAPIs} from "api/apiConfig";
 import GatewayStore from "stores/GatewayStore";
 import AccountImage from "../Account/AccountImage";
 // import BitsparkGateway from "../DepositWithdraw/bitspark/BitsparkGateway";
-// import GdexGateway from "../DepositWithdraw/gdex/GdexGateway";
+import GdexGateway from "../DepositWithdraw/gdex/GdexGateway";
 import XbtsxGateway from "../DepositWithdraw/xbtsx/XbtsxGateway";
 import PropTypes from "prop-types";
 import DepositModal from "../Modal/DepositModal";
@@ -528,7 +528,7 @@ class AccountDepositWithdraw extends React.Component {
             )
         });
          */
-        /*
+
         serList.push({
             name: "GDEX",
             template: (
@@ -537,7 +537,6 @@ class AccountDepositWithdraw extends React.Component {
                 </div>
             )
         });
-         */
 
         return serList;
     }
@@ -606,7 +605,7 @@ class AccountDepositWithdraw extends React.Component {
         });
 
         const serviceNames = [
-            // "GDEX",
+            "GDEX",
             "OPEN",
             // "RUDEX",
             // "SPARKDEX",
