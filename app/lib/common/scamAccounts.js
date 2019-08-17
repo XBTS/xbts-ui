@@ -1218,5 +1218,7 @@ export const scamAccountsOther = [
     "mir6",
     "1.2.1208789",
     "committee-update",
-    "1.2.1600131"
+    "1.2.1600131",
+    "committee-collateral",
+    "1.2.1607515"
 ];
