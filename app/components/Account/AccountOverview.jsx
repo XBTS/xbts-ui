@@ -653,6 +653,7 @@ class AccountOverview extends React.Component {
                                 />
                             </Tab>
 
+                            {/*
                             {account.get("proposals") &&
                             account.get("proposals").size ? (
                                 <Tab
@@ -689,6 +690,7 @@ class AccountOverview extends React.Component {
                                     />
                                 </Tab>
                             ) : null}
+                            */}
                         </Tabs>
                     </div>
                 </div>
