@@ -126,6 +126,26 @@ export const settingsAPIs = {
             location: "Locally hosted"
         },
         {
+            url: "wss://chicago.us.api.bitshares.org/ws",
+            country: "USA",
+            location: "Chicago"
+        },
+        {
+            url: "wss://new-york.us.api.bitshares.org/ws",
+            country: "USA",
+            location: "New-York"
+        },
+        {
+            url: "wss://toronto.ca.api.bitshares.org/ws",
+            country: "Canada",
+            location: "Toronto"
+        },
+        {
+            url: "wss://dallas.us.api.bitshares.org/ws",
+            country: "USA",
+            location: "Dallas"
+        },
+        {
             url: "wss://dex.iobanker.com:9090",
             region: "Western Europe",
             country: "Germany",
