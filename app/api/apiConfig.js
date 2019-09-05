@@ -122,22 +122,6 @@ export const settingsAPIs = {
             location: {translate: "settings.api_closest"}
         },
         {
-            url: "wss://node1.deexnodes.net/ws",
-            location: "node1_deexnodes"
-        },
-        {
-            url: "wss://node2.deexnet.org/ws",
-            location: "node2_deexnet"
-        },
-        {
-            url: "wss://node1.deex.exchange/ws",
-            location: "deex_exchange"
-        },
-        {
-            url: "wss://node7.deexnodes.net/ws",
-            location: "node7_deexnodes"
-        },
-        {
             url: "ws://127.0.0.1:8090",
             location: "Locally hosted"
         },
@@ -499,30 +483,45 @@ export const settingsAPIs = {
             operator: "CryptoBridge",
             contact: "email:support@crypto-bridge.org"
         },
-        // Testnet
         {
-            url: "wss://node.testnet.bitshares.eu",
-            region: "TESTNET - Western Europe",
-            country: "Germany",
-            location: "Frankfurt",
-            operator: "BitShares Europe",
-            contact: "telegram:xeroc"
+            url: "wss://node1.deexnodes.net/ws",
+            location: "node1_deexnodes",
+            operator: "deex"
         },
         {
-            url: "wss://testnet.nodes.bitshares.ws",
-            region: "TESTNET - Western Europe",
-            country: "Germany",
-            location: "Nuremberg",
-            operator: "Infrastructure Worker",
-            contact: "email:info@blockchainprojectsbv.com"
+            url: "wss://node2.deexnet.org/ws",
+            location: "node2_deexnet",
+            operator: "deex"
         },
         {
-            url: "wss://testnet.dex.trading/",
-            region: "TESTNET - Western Europe",
-            country: "France",
-            location: "Paris",
-            operator: "Witness: zapata42-witness",
-            contact: "telegram:Zapata_42"
+            url: "wss://node3.deexnet.com/ws",
+            location: "node3_deexnet",
+            operator: "deex"
+        },
+        {
+            url: "wss://node4.deexnet.org/ws",
+            location: "node4_deexnet",
+            operator: "deex"
+        },
+        {
+            url: "wss://node5.deexnet.org/ws",
+            location: "node5_deexnet",
+            operator: "deex"
+        },
+        {
+            url: "wss://node6.deexnet.org/ws",
+            location: "node6_deexnet",
+            operator: "deex"
+        },
+        {
+            url: "wss://node1.deex.exchange/ws",
+            location: "node1_exchange",
+            operator: "deex"
+        },
+        {
+            url: "wss://node2.deex.exchange/ws",
+            location: "node2_exchange",
+            operator: "deex"
         }
     ],
     DEFAULT_FAUCET: getFaucet().url,
