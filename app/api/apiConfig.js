@@ -122,6 +122,22 @@ export const settingsAPIs = {
             location: {translate: "settings.api_closest"}
         },
         {
+            url: "wss://node1.deexnodes.net/ws",
+            location: "node1_deexnodes"
+        },
+        {
+            url: "wss://node2.deexnet.org/ws",
+            location: "node2_deexnet"
+        },
+        {
+            url: "wss://node1.deex.exchange/ws",
+            location: "deex_exchange"
+        },
+        {
+            url: "wss://node7.deexnodes.net/ws",
+            location: "node7_deexnodes"
+        },
+        {
             url: "ws://127.0.0.1:8090",
             location: "Locally hosted"
         },
