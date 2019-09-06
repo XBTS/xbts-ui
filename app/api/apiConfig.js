@@ -126,6 +126,22 @@ export const settingsAPIs = {
             location: "Locally hosted"
         },
         {
+            url: "wss://node5.xbts.io/ws",
+            region: "Western Europe",
+            country: "Germany",
+            location: "Falkenstein-12",
+            operator: "Witness: xbtsio-wallet",
+            contact: "telegram:xbtsio"
+        },
+        {
+            url: "wss://node.xbts.io/ws",
+            region: "Western Europe",
+            country: "Germany",
+            location: "Falkenstein-5",
+            operator: "Witness: xbtsio-wallet",
+            contact: "telegram:xbtsio"
+        },
+        {
             url: "wss://chicago.us.api.bitshares.org/ws",
             country: "USA",
             location: "Chicago"
