@@ -156,7 +156,7 @@ export function getMyMarketsQuotes() {
             // "HERTZ",
             "ICOO",
             // "SMOKE",
-            // "STEALTH",
+            "STEALTH",
             "YOYOW",
             "EVRAZ"
             // "INTFREE",
