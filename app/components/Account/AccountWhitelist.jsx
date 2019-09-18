@@ -1,7 +1,4 @@
 import React from "react";
-import {ChainStore} from "bitsharesjs";
-import SettingsStore from "stores/SettingsStore";
-import {connect} from "alt-react";
 import {Tabs, Tab} from "../Utility/Tabs";
 import constants from "chain/account_constants.js";
 import AccountSelector from "../Account/AccountSelector";
@@ -56,10 +53,7 @@ class AccountList extends React.Component {
             tr.add_type_operation("account_whitelist", {
                 fee: {
                     amount: 0,
-                    asset_id:
-                        ChainStore.assets_by_symbol.get(
-                            this.props.settings.get("fee_asset")
-                        ) || "1.3.0"
+                    asset_id: "1.3.0"
                 },
                 authorizing_account: this.props.account.get("id"),
                 account_to_list: account,
@@ -132,23 +126,9 @@ class AccountList extends React.Component {
     }
 }
 
-AccountList = connect(
-    AccountList,
-    {
-        listenTo() {
-            return [SettingsStore];
-        },
-        getProps() {
-            return {
-                settings: SettingsStore.getState().settings
-            };
-        }
-    }
-);
-
 class AccountWhitelist extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
 
         this.state = {
             accountName: "",

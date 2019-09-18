@@ -10,7 +10,6 @@ import SettingsActions from "actions/SettingsActions";
 import utils from "common/utils";
 import {Tabs, Tab} from "../Utility/Tabs";
 import AccountOrders from "./AccountOrders";
-import AccountStaking from "./AccountStaking";
 import cnames from "classnames";
 import TranslateWithLinks from "../Utility/TranslateWithLinks";
 import {checkMarginStatus} from "common/accountHelper";
@@ -18,7 +17,7 @@ import BalanceWrapper from "./BalanceWrapper";
 import AccountTreemap from "./AccountTreemap";
 import AssetWrapper from "../Utility/AssetWrapper";
 import AccountPortfolioList from "./AccountPortfolioList";
-import {Input, Icon, Switch, Tooltip} from "bitshares-ui-style-guide";
+import {Icon, Switch, Tooltip} from "bitshares-ui-style-guide";
 import counterpart from "counterpart";
 import SearchInput from "../Utility/SearchInput";
 
@@ -28,13 +27,7 @@ class AccountOverview extends React.Component {
         this.state = {
             shownAssets: props.viewSettings.get("shownAssets", "active"),
             alwaysShowAssets: [
-                "BTS",
-                "XBTSX.STH",
-                "XBTSX.BTC",
-                "XBTSX.ETH",
-                "XBTSX.LTC",
-                "XBTSX.DASH",
-                "XBTSX.DOGE"
+                "BTS"
                 // "USD",
                 // "CNY",
                 // "OPEN.BTC",
@@ -85,8 +78,7 @@ class AccountOverview extends React.Component {
             nextProps.settings !== this.props.settings ||
             nextProps.hiddenAssets !== this.props.hiddenAssets ||
             !utils.are_equal_shallow(nextState, this.state) ||
-            this.state.filterValue !== nextState.filterValue ||
-            this.state.enabledColumns !== nextState.enabledColumns
+            this.state.filterValue !== nextState.filterValue
         );
     }
 
@@ -303,7 +295,6 @@ class AccountOverview extends React.Component {
                 balances={this.props.balances}
                 extraRow={hiddenPortfolioBalance}
                 viewSettings={this.props.viewSettings}
-                enabledColumns={this.state.enabledColumns}
             />
         );
 
@@ -463,17 +454,6 @@ class AccountOverview extends React.Component {
                                         </MarginPositionsTable>
                                     </div>
                                 </div>
-                            </Tab>
-
-                            <Tab
-                                title="xbtsx.account.staking"
-                                subText={hiddenSubText}
-                            >
-                                <AccountStaking
-                                    account={this.props.account}
-                                    balances={this.props.balances}
-                                    gateFee={this.props.gateFee}
-                                />
                             </Tab>
 
                             <Tab

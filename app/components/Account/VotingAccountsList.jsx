@@ -1,4 +1,5 @@
 import React from "react";
+import AccountSelector from "./AccountSelector";
 import Translate from "react-translate-component";
 import Icon from "../Icon/Icon";
 import {ChainStore} from "bitsharesjs";
@@ -70,12 +71,13 @@ class VotingAccountsList extends React.Component {
         placeholder: PropTypes.string, // the placeholder text to be displayed when there is no user_input
         tabIndex: PropTypes.number, // tabindex property to be passed to input tag
         action: PropTypes.string,
-        filterSearch: PropTypes.string
+        withSelector: PropTypes.bool
     };
 
     static defaultProps = {
         action: "remove",
-        filterSearch: null
+        withSelector: true,
+        autosubscribe: false
     };
 
     constructor(props) {
@@ -302,16 +304,7 @@ class VotingAccountsList extends React.Component {
         let item_rows = this.props.items
             .filter(i => {
                 if (!i) return false;
-                if (this.props.filterSearch) {
-                    if (
-                        i.get("name").indexOf(this.props.filterSearch) !== -1 ||
-                        i.get("id").indexOf(this.props.filterSearch) !== -1
-                    ) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
+                //if (this.state.item_name_input) return i.get("name").indexOf(this.state.item_name_input) !== -1;
                 return true;
             })
             .sort((a, b) => {
@@ -369,6 +362,24 @@ class VotingAccountsList extends React.Component {
 
         return (
             <div>
+                {this.props.withSelector ? (
+                    <AccountSelector
+                        style={{maxWidth: "600px"}}
+                        label={this.props.label}
+                        error={error}
+                        placeholder={this.props.placeholder}
+                        account={this.state.item_name_input}
+                        accountName={this.state.item_name_input}
+                        onChange={this.onItemChange}
+                        onAccountChanged={this.onItemAccountChange}
+                        onAction={this.onAddItem}
+                        action_label="account.votes.add_witness"
+                        tabIndex={this.props.tabIndex}
+                    />
+                ) : null}
+                {this.props.title && item_rows.length ? (
+                    <h4>{this.props.title}</h4>
+                ) : null}
                 {item_rows.length ? (
                     <PaginatedList
                         className="table dashboard-table table-hover"
