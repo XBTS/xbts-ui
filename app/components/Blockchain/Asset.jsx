@@ -26,6 +26,7 @@ import AssetResolvePrediction from "./AssetResolvePrediction";
 import BidCollateralOperation from "./BidCollateralOperation";
 import {Tooltip, Icon, Table, Tabs, Collapse} from "bitshares-ui-style-guide";
 const {Panel} = Collapse;
+import AssetImage from "../Utility/AssetImage";
 
 class AssetFlag extends React.Component {
     render() {
@@ -381,6 +382,11 @@ class Asset extends React.Component {
                     prediction={"asdsad"}
                     issuer={issuerName}
                     hide_issuer="true"
+                />
+                <AssetImage
+                    maxWidth={50}
+                    replaceNoneToBts={false}
+                    name={asset.symbol}
                 />
                 {short_name ? <p>{short_name}</p> : null}
 
