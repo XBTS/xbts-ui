@@ -13,11 +13,7 @@ function estimateFeeAsync(type, options = null, data = {}) {
     return new Promise((res, rej) => {
         FetchChain("getObject", "2.0.0")
             .then(obj => {
-                try {
-                    res(estimateFee(type, options, obj, data));
-                } catch (err) {
-                    rej(err);
-                }
+                res(estimateFee(type, options, obj, data));
             })
             .catch(rej);
     });
@@ -29,19 +25,17 @@ function checkFeePoolAsync({
     options = null,
     data
 } = {}) {
-    return new Promise((res, rej) => {
+    return new Promise(res => {
         if (assetID === "1.3.0") {
             res(true);
         } else {
             Promise.all([
                 estimateFeeAsync(type, options, data),
                 FetchChain("getObject", assetID.replace(/^1\./, "2."))
-            ])
-                .then(result => {
-                    const [fee, dynamicObject] = result;
-                    res(parseInt(dynamicObject.get("fee_pool"), 10) >= fee);
-                })
-                .catch(rej);
+            ]).then(result => {
+                const [fee, dynamicObject] = result;
+                res(parseInt(dynamicObject.get("fee_pool"), 10) >= fee);
+            });
         }
     });
 }
@@ -198,9 +192,9 @@ function checkFeeStatusAsync({
                     }, feeStatusTTL);
                 });
             })
-            .catch(err => {
+            .catch(() => {
                 asyncCache[key].queue.forEach(promise => {
-                    promise.rej(err);
+                    promise.rej();
                 });
             });
     });
@@ -346,7 +340,7 @@ function shouldPayFeeWithAssetAsync(fromAccount, feeAmount) {
         const balanceID = fromAccount.getIn(["balances", feeAmount.asset_id]);
         return FetchChain("getObject", balanceID).then(balanceObject => {
             const balance = balanceObject.get("balance");
-            return balance <= feeAmount.amount;
+            if (balance <= feeAmount.amount) return true;
         });
     }
     return new Promise(resolve => resolve(false));
