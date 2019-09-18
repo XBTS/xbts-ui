@@ -82,7 +82,8 @@ class Footer extends React.Component {
     componentDidMount() {
         this.checkNewVersionAvailable.call(this);
 
-        this.downloadLink = "https://github.com/XBTS/xbts-ui/releases";
+        this.downloadLink =
+            "https://github.com/XBTS/xbts-desktop-releases/releases";
 
         let ensure = this._ensureConnectivity.bind(this);
         ifvisible.on("wakeup", function() {
@@ -110,7 +111,9 @@ class Footer extends React.Component {
 
     checkNewVersionAvailable() {
         if (__ELECTRON__) {
-            fetch("https://api.github.com/repos/xbts/xbts-ui/releases/latest")
+            fetch(
+                "https://github.com/XBTS/xbts-desktop-releases/releases/latest"
+            )
                 .then(res => {
                     return res.json();
                 })
@@ -191,6 +194,9 @@ class Footer extends React.Component {
         const {props} = this;
 
         const testNet = node.url.indexOf("testnet") !== -1;
+
+        if (!!node.location && node.location.translate)
+            node.location = counterpart.translate(node.location.translate);
 
         let title = node.operator + " " + !!node.location ? node.location : "";
         if ("country" in node) {
@@ -488,7 +494,7 @@ class Footer extends React.Component {
                                     {__GIT_BRANCH__ === "release" ? (
                                         <a
                                             href={`https://github.com/xbts/xbts-ui/commit/${version.trim()}`}
-                                            className="version"
+                                            className="version external-link"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
@@ -518,7 +524,7 @@ class Footer extends React.Component {
                         <div className="footer-right">
                             <div className="footer-group-one">
                                 <a
-                                    href="https://xbts.io/add-coin.html"
+                                    href="https://xbts.io/listing"
                                     target="_blank"
                                     className="footer-group-one-link"
                                 >
@@ -723,8 +729,9 @@ class Footer extends React.Component {
                                                     ? "-"
                                                     : !activeNode.ping
                                                         ? "-"
-                                                        : activeNode.ping +
-                                                          "ms"}
+                                                        : parseInt(
+                                                              activeNode.ping
+                                                          ) + "ms"}
                                                 &nbsp;/&nbsp;
                                                 <span className="footer-block-title">
                                                     <Translate content="footer.block" />
@@ -737,7 +744,6 @@ class Footer extends React.Component {
                                 </Tooltip>
 
                                 <div className="grid-block">
-                                    {/*
                                     <Tooltip
                                         title={counterpart.translate(
                                             "tooltip.debug_report"
@@ -754,7 +760,6 @@ class Footer extends React.Component {
                                             <Translate content="modal.report.button" />
                                         </div>
                                     </Tooltip>
-                                    */}
                                     <Tooltip
                                         title={counterpart.translate(
                                             "tooltip.self_help"
