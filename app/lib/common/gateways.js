@@ -4,34 +4,50 @@
  */
 
 import {
-    // rudexAPIs,
-    // bitsparkAPIs,
+    rudexAPIs,
+    bitsparkAPIs,
     openledgerAPIs,
     cryptoBridgeAPIs,
-    // gdex2APIs,
-    xbtsxAPIs
-    // citadelAPIs
+    gdex2APIs,
+    xbtsxAPIs,
+    citadelAPIs
 } from "api/apiConfig";
 import {allowedGateway} from "branding";
+import {isGatewayTemporarilyDisabled} from "../chain/onChainConfig";
+
+const _isEnabled = gatewayKey => {
+    return async function() {
+        const allowed = allowedGateway(gatewayKey);
+        if (allowed) {
+            const temporarilyDisabled = await isGatewayTemporarilyDisabled(
+                gatewayKey
+            );
+            if (temporarilyDisabled) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    };
+};
 
 export const availableGateways = {
     OPEN: {
         id: "OPEN",
         name: "OPENLEDGER",
         baseAPI: openledgerAPIs,
-        isEnabled: allowedGateway("OPEN"),
+        isEnabled: () => false,
         selected: false,
         options: {
             enabled: false,
             selected: false
         }
     },
-    /*
     RUDEX: {
         id: "RUDEX",
         name: "RUDEX",
         baseAPI: rudexAPIs,
-        isEnabled: allowedGateway("RUDEX"),
+        isEnabled: _isEnabled("RUDEX"),
         isSimple: true,
         selected: false,
         simpleAssetGateway: true,
@@ -42,25 +58,22 @@ export const availableGateways = {
             selected: false
         }
     },
-     */
-    /*
     SPARKDEX: {
         id: "SPARKDEX",
         name: "SPARKDEX",
         baseAPI: bitsparkAPIs,
-        isEnabled: allowedGateway("SPARKDEX"),
+        isEnabled: _isEnabled("SPARKDEX"),
         selected: false,
         options: {
             enabled: false,
             selected: false
         }
     },
-     */
     BRIDGE: {
         id: "BRIDGE",
         name: "CRYPTO-BRIDGE",
         baseAPI: cryptoBridgeAPIs,
-        isEnabled: allowedGateway("BRIDGE"),
+        isEnabled: _isEnabled("BRIDGE"),
         selected: false,
         singleWallet: true, // Has no coresponging coinType == backingCoinType specific wallet
         addressValidatorAsset: true, // Address validator requires output_asset parameter
@@ -71,23 +84,21 @@ export const availableGateways = {
             selected: false
         }
     },
-    /*
     GDEX: {
         id: "GDEX",
         name: "GDEX",
         baseAPI: gdex2APIs,
-        isEnabled: allowedGateway("GDEX"),
+        isEnabled: _isEnabled("GDEX"),
         options: {
             enabled: false,
             selected: false
         }
     },
-     */
     XBTSX: {
         id: "XBTSX",
         name: "XBTSX",
         baseAPI: xbtsxAPIs,
-        isEnabled: allowedGateway("XBTSX"),
+        isEnabled: _isEnabled("XBTSX"),
         isSimple: true,
         selected: false,
         simpleAssetGateway: false,
@@ -96,13 +107,12 @@ export const availableGateways = {
             enabled: false,
             selected: false
         }
-    }
-    /*
+    },
     CITADEL: {
         id: "CITADEL",
         name: "CITADEL",
         baseAPI: citadelAPIs,
-        isEnabled: allowedGateway("CITADEL"),
+        isEnabled: _isEnabled("CITADEL"),
         selected: false,
         assetWithdrawlAlias: {monero: "xmr"}, // if asset name doesn't equal to memo
         options: {
@@ -110,7 +120,6 @@ export const availableGateways = {
             selected: false
         }
     }
-     */
 };
 
 export const gatewayPrefixes = Object.keys(availableGateways);
