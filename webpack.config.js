@@ -66,7 +66,6 @@ module.exports = function(env) {
         regexString = regexString + (l + (i < locales.length - 1 ? "|" : ""));
     });
     const localeRegex = new RegExp(regexString);
-
     var plugins = [
         new HtmlWebpackPlugin({
             template: "!!handlebars-loader!app/assets/index.hbs",
@@ -223,7 +222,8 @@ module.exports = function(env) {
             filename: env.prod ? "[name].[chunkhash].js" : "[name].js",
             chunkFilename: env.prod ? "[name].[chunkhash].js" : "[name].js",
             pathinfo: !env.prod,
-            sourceMapFilename: "[name].js.map"
+            sourceMapFilename: "[name].js.map",
+            globalObject: "this"
         },
         optimization: {
             splitChunks: {
