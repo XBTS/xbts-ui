@@ -2,7 +2,7 @@
     "name": "XBTS-light",
     "version": "3.1.190820-rc1",
     "description": "Reference UI to showcase all features of the BitShares blockchain.",
-    "homepage": "https://github.com/bitshares/bitshares-ui",
+    "homepage": "https://github.com/technologiespro/xbts-ui",
     "author": "BitShares UI Worker <ui-dev@bitshares.org>",
     "contributors": [
         "Sigve Kvalsvik <kvalsvik.crypto@gmail.com>",
@@ -18,7 +18,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/bitshares/bitshares-ui"
+        "url": "git://github.com/technologiespro/xbts-ui"
     },
     "main": "build/electron/index.js",
     "scripts": {
