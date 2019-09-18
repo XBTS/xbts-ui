@@ -155,7 +155,6 @@ class Borrow extends Component {
                                     "1.3.106",
                                     "1.3.103"
                                 ]}
-                                value={this.state.selectedAsset}
                                 onChange={this.onAssetChange.bind(this)}
                             />
                             <Tooltip
@@ -357,13 +356,13 @@ class Borrow extends Component {
                         <BorrowModal
                             visible={this.state.isBorrowBaseModalVisible}
                             hideModal={this.hideBorrowModal}
-                            quoteAssetObj={selectedAssetObject.get("id")}
-                            backingAssetObj={selectedAssetObject.getIn([
+                            quote_asset={selectedAssetObject.get("id")}
+                            backing_asset={selectedAssetObject.getIn([
                                 "bitasset",
                                 "options",
                                 "short_backing_asset"
                             ])}
-                            accountObj={currentAccount}
+                            account={currentAccount}
                         />
                     )}
             </div>
