@@ -7,7 +7,7 @@ $dark-text-color: #444;
 $primary-text-color: #e0e0e0;
 $secondary-text-color: darken($primary-text-color, 20%);
 $inactive-text-color: darken($primary-text-color, 40%);
-$link-text-color: #009688;
+$link-text-color: #049cce;
 $error-text-color: #e3745b;
 
 $settings-select-bg: #1e1f25;
@@ -20,7 +20,7 @@ $light-panel-bg-color: #353742;
 $super-light-panel-bg-color: lighten($light-panel-bg-color, 8%);
 $settings-menu-hover-bg: darken($light-panel-bg-color, 5%);
 $settings-menu-active-bg: darken($light-panel-bg-color, 5%);
-$button-bg-color: #009688;
+$button-bg-color: #049cce;
 $secondary-button-bg-color: #546979;
 $input-background: lighten($bg-color, 1%);
 
@@ -31,7 +31,7 @@ $warning-color: #fcab53;
 $fee-color: $secondary-text-color;
 
 // Exchange colors
-$bid-color: #2cc788;
+$bid-color: #50d2c2;
 $ask-color: #e3745b;
 $call-color: #bbbf2b;
 $positive-color: #6ec105;
@@ -86,8 +86,90 @@ $explorer--assets--bg: $bg-color;
 
 // * * *
 
+// * * * * Settings
+
+$settings-label-color: rgba(255, 255, 255, 0.5);
+
+//
+
+// color palette
+
+// branding colors
+$primary-color: #337ab7;
+
+// help colors
+$primary-dark: #191a1f;
+$white: #fff;
+$dark: rgba(0, 0, 0, 0.6);
+$dark-1: lighten($dark, 30%);
+$dark-2: lighten($dark, 60%);
+$dark-3: lighten($dark, 90%);
+
+// Header
+$header-background-color: lighten($primary-dark, 10%);
+$header-shadow: 0 2px 9px 0 lighten($primary-dark, 10%) !important;
+$header-item--color: darken($white, 10%);
+$header-item-background-color: lighten($primary-dark, 10%);
+$header-item--active--background-color: lighten($primary-dark, 10%);
+
+$header-item--active--color: $link-text-color;
+
+// Tabs (old, not style-guide)
+$tabs-border-size: 1px;
+$tabs-border-color: lighten($primary-dark, 5%);
+$tabs-background-color: $primary-dark;
+$tabs-item-background-color: $primary-dark;
+$tabs-item-color: $white;
+$tabs-item-border-size: 3px;
+$tabs-item-border-color: $primary-dark;
+$tabs-item--active--color: $dark;
+$tabs-item--active--border-color: $primary-color;
+$tabs-item--active--background-color: $primary-dark;
+$tabs-item--active--border-color: $primary-color;
+$tabs-content-background-color: $primary-dark;
+
+// Selector
+
+$selector-active-border-color: $primary-color;
+$selector-active-text-color: $primary-color;
+
+$selector-border-color: lighten($primary-dark, 5%);
+$selector-text-color: lighten($primary-dark, 35%);
+
+// Header Menu
+
+$header-menu--active--icon-background: $primary-dark;
+$header-menu--active--box-shadow: 0 4px 9px 0 #00000015;
+$header-menu-background-color: lighten($primary-dark, 5%);
+$header-menu-item--hover--background-color: lighten($primary-dark, 10%);
+
 .midnightTheme {
     @include theme(
+        $header-menu--active--icon-background,
+        $header-menu--active--box-shadow,
+        $header-menu-background-color,
+        $header-menu-item--hover--background-color,
+        $selector-active-border-color,
+        $selector-active-text-color,
+        $selector-border-color,
+        $selector-text-color,
+        $tabs-content-background-color,
+        $tabs-border-size,
+        $tabs-border-color,
+        $tabs-background-color,
+        $tabs-item-background-color,
+        $tabs-item-color,
+        $tabs-item-border-size,
+        $tabs-item-border-color,
+        $tabs-item--active--color,
+        $tabs-item--active--border-color,
+        $tabs-item--active--background-color,
+        $header-background-color,
+        $header-shadow,
+        $header-item--color,
+        $header-item-background-color,
+        $header-item--active--background-color,
+        $header-item--active--color,
         $explorer-tab-content-background-color,
         $tab-content-background-color,
         $primary-text-color,
@@ -145,8 +227,13 @@ $explorer--assets--bg: $bg-color;
         $positive-color-alternative,
         $separator-line,
         $medium-color,
-        $dark-help-text
+        $dark-help-text,
+        $settings-label-color
     );
+}
+.ant-spin-container {
+}
+body.midnightTheme a {
 }
 ::-webkit-scrollbar,
 -moz-scrollbar {
@@ -158,7 +245,7 @@ $explorer--assets--bg: $bg-color;
 }
 ::-webkit-scrollbar-thumb {
     background: #000;
-    border: 1px solid rgb(43, 113, 149);
+    border: 1px solid #48372b;
 }
 ::-webkit-scrollbar-track {
     /* background-color: #08091b; */
@@ -223,15 +310,16 @@ h6 {
 }
 .midnightTheme table.table.dashboard-table > tbody > tr > td {
     font-size: 0.8rem;
-    background-color: #191a1f;
-    // 27384b;
+    background-color: #191a1f; // 27384b;
     color: white;
     border-color: #323131;
 }
+
 body.midnightTheme .ant-btn-primary {
     background-color: #009688;
     color: #fff;
 }
+
 .midnightTheme div.grid-content.app-tables {
     background-color: #2c2e37;
 }
@@ -268,7 +356,6 @@ form.order-form {
     padding: 8px;
 }
 .midnightTheme .introjs-launcher {
-    background-color: #009688;
 }
 body.midnightTheme .ant-input {
     font-family: arial;
@@ -278,7 +365,8 @@ body.midnightTheme .ant-input {
 .midnightTheme .menu-group.primary .menu-bar,
 .midnightTheme .menu-group.primary li > a.active,
 .midnightTheme .header-container {
-    background: #191a1f; /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
+    background: #191a1f;
+    /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
     background: -webkit-linear-gradient(top, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     background: linear-gradient(to bottom, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#262c3b', endColorstr='#0a121b',GradientType=0 ); */
@@ -549,9 +637,6 @@ body.midnightTheme a {
 body.midnightTheme .ant-collapse-header {
     color: #0bb2a1 !important;
 }
-.midnightTheme .introjs-launcher {
-    background-color: #0bb2a1 !important;
-}
 .buy-sell-balance {
     color: #0bb2a1 !important;
 }
@@ -685,4 +770,22 @@ body.midnightTheme .ant-form-item-label {
     padding: 6px;
     text-align: center;
     background: #24252d;
+}
+.midnightTheme .header-container .menu-group .menu-bar li a,
+.menu-bar > li > a > img,
+.midnightTheme .header-container .menu-group .menu-bar li a.active {
+    background: none !important;
+}
+.midnightTheme ul.account-overview li.is-active {
+    border-bottom: 3px solid #865e43;
+}
+.midnightTheme .header-container .menu-group .menu-bar li a.active {
+    color: #e0e0e0 !important;
+}
+.midnightTheme .header-container {
+    box-shadow: none !important;
+}
+.midnightTheme .header-container .menu-group .menu-bar li a:hover {
+    background: none !important;
+    color: $bs-green;
 }
