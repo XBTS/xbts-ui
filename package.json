@@ -90,8 +90,8 @@
     },
     "browsersList": "electron 1.7",
     "build": {
-        "productName": "BitShares",
-        "appId": "org.bitshares.graphene",
+        "productName": "XBTS",
+        "appId": "io.xbts.wallet",
         "files": [
             "build/electron",
             "!node_modules"
@@ -131,7 +131,7 @@
                 "AppImage",
                 "snap"
             ],
-            "synopsis": "BitShares: Cryptocurrency and Decentralized Exchange"
+            "synopsis": "XBTS: Cryptocurrency and Decentralized Exchange"
         },
         "directories": {
             "buildResources": "resources",
