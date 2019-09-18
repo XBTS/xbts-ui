@@ -31,7 +31,6 @@ class DashboardPage extends React.Component {
             return <LoginSelector />;
         }
 
-        // let advOrderLink = "";
         return (
             <div className="grid-block page-layout">
                 <div className="grid-block no-padding">
@@ -39,67 +38,7 @@ class DashboardPage extends React.Component {
                         className="grid-content app-tables no-padding"
                         ref="appTables"
                     >
-                        {/*
-                        <div className="advLink">
-                            <a href="#">Просто отправить в примечании текст</a>  {"Рекламная ссылка: стоимость 500 BTS. Ссылка висит до тех пор, пока её не сменит другой пользователь. ICO Покупайте горячие пирожки у Валеры!"}
-                        </div>
-                        */}
-
                         <div className="content-block small-12">
-                            <div className="showcases-grid--wrapper">
-                                <div
-                                    className="showcases-grid--wrapper--item--wrapper xbts-top top-item-1"
-                                    tabIndex="0"
-                                >
-                                    <h2 className="no-margin">XBTS News</h2>
-                                    <div className="showcases-grid--wrapper--item--wrapper--content">
-                                        Available SmartHolder - DEX Staking! Up
-                                        to 50%
-                                    </div>
-                                </div>
-
-                                <div
-                                    className="showcases-grid--wrapper--item--wrapper xbts-top top-item-2"
-                                    tabIndex="1"
-                                >
-                                    <h2 className="no-margin">
-                                        <a
-                                            style={{color: "#fff"}}
-                                            href="https://dexgames.net/home"
-                                            target="_blank"
-                                        >
-                                            XBTS & SmartHoldem Platform
-                                        </a>
-                                    </h2>
-                                    <div className="showcases-grid--wrapper--item--wrapper--content">
-                                        <a
-                                            style={{color: "#fff"}}
-                                            href="https://dexgames.net/home"
-                                            target="_blank"
-                                        >
-                                            DEX Games Available Now
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div
-                                    className="showcases-grid--wrapper--item--wrapper xbts-top top-item-3"
-                                    tabIndex="2"
-                                >
-                                    <h2 className="no-margin">Twitter</h2>
-                                    <div className="showcases-grid--wrapper--item--wrapper--content">
-                                        <a
-                                            style={{color: "#fff"}}
-                                            href="https://twitter.com/xbts_exchange"
-                                            target="_blank"
-                                        >
-                                            Follow on XBTS DEX Exchange Twitter
-                                            News
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div className="tabs-container generic-bordered-box">
                                 <Tabs
                                     defaultActiveTab={1}
