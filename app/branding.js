@@ -1,4 +1,5 @@
 import {Apis} from "bitsharesjs-ws";
+
 /** This file centralized customization and branding efforts throughout the whole wallet and is meant to facilitate
  *  the process.
  *
