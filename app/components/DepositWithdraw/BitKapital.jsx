@@ -136,6 +136,7 @@ class BitKapital extends React.Component {
             confirm_store_state.included &&
             confirm_store_state.broadcasted_transaction
         ) {
+            // this.setState(Transfer.getInitialState());
             TransactionConfirmStore.unlisten(this.onTrxIncluded);
             TransactionConfirmStore.reset();
         } else if (confirm_store_state.closed) {

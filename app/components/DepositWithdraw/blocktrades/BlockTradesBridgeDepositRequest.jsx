@@ -16,8 +16,6 @@ import {Asset} from "common/MarketClasses";
 import {getConversionJson} from "common/gatewayMethods";
 import PropTypes from "prop-types";
 import {Modal} from "bitshares-ui-style-guide";
-import SettingsStore from "stores/SettingsStore";
-import {ChainStore} from "bitsharesjs";
 
 class ButtonConversion extends React.Component {
     static propTypes = {
@@ -48,13 +46,8 @@ class ButtonConversion extends React.Component {
     _getFeeID(props = this.props) {
         const balance = this._getCurrentBalance(props);
         const balances = props.account.get("balances");
-        const defaultFeeAssetId =
-            ChainStore.assets_by_symbol.get(
-                SettingsStore.getState().settings.get("fee_asset")
-            ) || "1.3.0";
-
-        let feeID = balances.has(defaultFeeAssetId)
-            ? defaultFeeAssetId
+        let feeID = balances.has("1.3.0")
+            ? "1.3.0"
             : balance
                 ? balance.get("asset_type")
                 : "1.3.0";
@@ -178,6 +171,7 @@ class ButtonConversion extends React.Component {
             confirm_store_state.included &&
             confirm_store_state.broadcasted_transaction
         ) {
+            // this.setState(Transfer.getInitialState());
             TransactionConfirmStore.unlisten(this.onTrxIncluded);
             TransactionConfirmStore.reset();
         } else if (confirm_store_state.closed) {

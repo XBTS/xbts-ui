@@ -8,9 +8,7 @@ import counterpart from "counterpart";
 import AmountSelector from "components/Utility/AmountSelector";
 import AccountActions from "actions/AccountActions";
 import {validateAddress, WithdrawAddresses} from "common/gatewayMethods";
-import {connect} from "alt-react";
-import SettingsStore from "stores/SettingsStore";
-import {ChainStore} from "bitsharesjs";
+import {ChainStore} from "bitsharesjs/es";
 import {checkFeeStatusAsync, checkBalance} from "common/trxHelper";
 import {debounce} from "lodash-es";
 import {Price, Asset} from "common/MarketClasses";
@@ -52,9 +50,7 @@ class WithdrawModalCitadel extends React.Component {
             withdraw_address_first: true,
             empty_withdraw_value: false,
             from_account: props.account,
-            fee_asset_id:
-                ChainStore.assets_by_symbol.get(props.fee_asset_symbol) ||
-                "1.3.0",
+            fee_asset_id: "1.3.0",
             feeStatus: {}
         };
 
@@ -85,6 +81,7 @@ class WithdrawModalCitadel extends React.Component {
                 {
                     from_account: np.account,
                     feeStatus: {},
+                    fee_asset_id: "1.3.0",
                     feeAmount: new Asset({amount: 0})
                 },
                 () => {
@@ -306,7 +303,7 @@ class WithdrawModalCitadel extends React.Component {
                 });
                 let asset = this.props.asset;
 
-                const {feeAmount, fee_asset_id} = this.state;
+                const {feeAmount} = this.state;
 
                 const amount = parseFloat(
                     String.prototype.replace.call(
@@ -369,7 +366,7 @@ class WithdrawModalCitadel extends React.Component {
                             ? ":" + new Buffer(this.state.memo, "utf-8")
                             : ""),
                     null,
-                    feeAmount ? feeAmount.asset_id : fee_asset_id
+                    feeAmount ? feeAmount.asset_id : "1.3.0"
                 );
 
                 this.setState({
@@ -417,7 +414,7 @@ class WithdrawModalCitadel extends React.Component {
             ""
         );
 
-        const {feeAmount, fee_asset_id} = this.state;
+        const {feeAmount} = this.state;
 
         AccountActions.transfer(
             this.props.account.get("id"),
@@ -431,7 +428,7 @@ class WithdrawModalCitadel extends React.Component {
                     ? ":" + new Buffer(this.state.memo, "utf-8")
                     : ""),
             null,
-            feeAmount ? feeAmount.asset_id : fee_asset_id
+            feeAmount ? feeAmount.asset_id : "1.3.0"
         );
     }
 
@@ -865,20 +862,4 @@ class WithdrawModalCitadel extends React.Component {
     }
 }
 
-export default BindToChainState(
-    connect(
-        WithdrawModalCitadel,
-        {
-            listenTo() {
-                return [SettingsStore];
-            },
-            getProps(props) {
-                return {
-                    fee_asset_symbol: SettingsStore.getState().settings.get(
-                        "fee_asset"
-                    )
-                };
-            }
-        }
-    )
-);
+export default BindToChainState(WithdrawModalCitadel);
