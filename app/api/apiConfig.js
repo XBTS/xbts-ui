@@ -79,8 +79,8 @@ export const gdexAPIs = {
 };
 
 export const xbtsxAPIs = {
+    //BASE: "http://localhost:3080/api/v1", //for tests local
     BASE: "https://apis.xbts.io/api/v1",
-    // BASE: "http://localhost:3080/api/v1",
     COINS_LIST: "/coin"
 };
 
@@ -126,42 +126,6 @@ export const settingsAPIs = {
             location: "Locally hosted"
         },
         {
-            url: "wss://node5.xbts.io/ws",
-            region: "Western Europe",
-            country: "Germany",
-            location: "Falkenstein-12",
-            operator: "Witness: xbtsio-wallet",
-            contact: "telegram:xbtsio"
-        },
-        {
-            url: "wss://node.xbts.io/ws",
-            region: "Western Europe",
-            country: "Germany",
-            location: "Falkenstein-5",
-            operator: "Witness: xbtsio-wallet",
-            contact: "telegram:xbtsio"
-        },
-        {
-            url: "wss://chicago.us.api.bitshares.org/ws",
-            country: "USA",
-            location: "Chicago"
-        },
-        {
-            url: "wss://new-york.us.api.bitshares.org/ws",
-            country: "USA",
-            location: "New-York"
-        },
-        {
-            url: "wss://toronto.ca.api.bitshares.org/ws",
-            country: "Canada",
-            location: "Toronto"
-        },
-        {
-            url: "wss://dallas.us.api.bitshares.org/ws",
-            country: "USA",
-            location: "Dallas"
-        },
-        {
             url: "wss://dex.iobanker.com:9090",
             region: "Western Europe",
             country: "Germany",
@@ -176,6 +140,14 @@ export const settingsAPIs = {
             country: "Germany",
             operator: "Witness: openledger-dc",
             contact: "telegram:mtopenledger"
+        },
+        {
+            url: "wss://node.xbts.io/ws",
+            region: "Western Europe",
+            country: "Germany",
+            location: "Falkenstein-5",
+            operator: "Witness: xbtsio-wallet",
+            contact: "telegram:xbtsio"
         },
         {
             url: "wss://openledger.hk/ws",
@@ -217,6 +189,14 @@ export const settingsAPIs = {
             contact: "telegram:BrianZhang"
         },
         {
+            url: "wss://api.weaccount.cn",
+            region: "Eastern Asia",
+            country: "China",
+            location: "Hangzhou",
+            operator: "Witness: btspp-witness",
+            contact: "telegram:btsplusplus"
+        },
+        {
             url: "wss://dex.rnglab.org",
             region: "Northern Europe",
             country: "Netherlands",
@@ -240,7 +220,6 @@ export const settingsAPIs = {
             operator: "Witness: xeldal",
             contact: "telegram:xeldal"
         },
-        /*
         {
             url: "wss://api.bts.blckchnd.com",
             region: "Western Europe",
@@ -259,7 +238,6 @@ export const settingsAPIs = {
             contact:
                 "email:admin@blckchnd.com;telegram:ruslansalikhov;github:blckchnd"
         },
-        */
         {
             url: "wss://api.bitsharesdex.com",
             region: "Northern America",
@@ -520,6 +498,166 @@ export const settingsAPIs = {
             contact: "email:support@crypto-bridge.org"
         },
         {
+            url: "wss://master.us.api.bitshares.org/ws",
+            region: "Northern America",
+            country: "U.S.A.",
+            location: "New Jersey",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://new-york.us.api.bitshares.org/ws",
+            region: "Northern America",
+            country: "U.S.A.",
+            location: "New York",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://chicago.us.api.bitshares.org/ws",
+            region: "Northern America",
+            country: "U.S.A.",
+            location: "Chicago",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://seattle.us.api.bitshares.org/ws",
+            region: "Northern America",
+            country: "U.S.A.",
+            location: "Seattle",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://losangeles.us.api.bitshares.org/ws",
+            region: "Northern America",
+            country: "U.S.A.",
+            location: "Los Angeles",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://atlanta.us.api.bitshares.org/ws",
+            region: "Northern America",
+            country: "U.S.A.",
+            location: "Atlanta",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://siliconvalley.us.api.bitshares.org/ws",
+            region: "Northern America",
+            country: "U.S.A.",
+            location: "Silicon Valley",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://dallas.us.api.bitshares.org/ws",
+            region: "Northern America",
+            country: "U.S.A.",
+            location: "Dallas",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://miami.us.api.bitshares.org/ws",
+            region: "Northern America",
+            country: "U.S.A.",
+            location: "Miami",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://toronto.ca.api.bitshares.org/ws",
+            region: "Canada",
+            country: "Canada",
+            location: "Toronto",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://toronto2.ca.api.bitshares.org/ws",
+            region: "Canada",
+            country: "Canada",
+            location: "Toronto",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://master.eu.api.bitshares.org/ws",
+            region: "Northern Europe",
+            country: "Germany",
+            location: "Frankfurt",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://amsterdam.eu.api.bitshares.org/ws",
+            region: "Northern Europe",
+            country: "Netherlands",
+            location: "Amsterdam",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://london.eu.api.bitshares.org/ws",
+            region: "Western Europe",
+            country: "England",
+            location: "London",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://paris.eu.api.bitshares.org/ws",
+            region: "Western Europe",
+            country: "France",
+            location: "Paris",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://frankfurt.eu.api.bitshares.org/ws",
+            region: "Western Europe",
+            country: "Germany",
+            location: "Frankfurt",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://sydney.au.api.bitshares.org/ws",
+            region: "Oceania",
+            country: "Australia",
+            location: "Sydney",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://sydney2.au.api.bitshares.org/ws",
+            region: "Oceania",
+            country: "Australia",
+            location: "Sydney",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://singapore.asia.api.bitshares.org/ws",
+            region: "Asia",
+            country: "Singapore",
+            location: "Singapore",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
+            url: "wss://tokyo.eu.api.bitshares.org/ws",
+            region: "Asia",
+            country: "Japan",
+            location: "Tokyo",
+            operator: "'Exotic flavors' infra worker",
+            contact: "telegram:murda_ra;email:hostmaster@bitshares.org"
+        },
+        {
             url: "wss://node1.deexnodes.net/ws",
             location: "node1_deexnodes",
             operator: "deex"
@@ -529,35 +667,40 @@ export const settingsAPIs = {
             location: "node2_deexnet",
             operator: "deex"
         },
+
+        // Testnet
         {
-            url: "wss://node3.deexnet.com/ws",
-            location: "node3_deexnet",
-            operator: "deex"
+            url: "wss://node.testnet.bitshares.eu",
+            region: "TESTNET - Western Europe",
+            country: "Germany",
+            location: "Frankfurt",
+            operator: "BitShares Europe",
+            contact: "telegram:xeroc"
         },
         {
-            url: "wss://node4.deexnet.org/ws",
-            location: "node4_deexnet",
-            operator: "deex"
+            url: "wss://testnet.nodes.bitshares.ws",
+            region: "TESTNET - Western Europe",
+            country: "Germany",
+            location: "Nuremberg",
+            operator: "Infrastructure Worker",
+            contact: "email:info@blockchainprojectsbv.com"
         },
         {
-            url: "wss://node5.deexnet.org/ws",
-            location: "node5_deexnet",
-            operator: "deex"
-        },
+            url: "wss://testnet.dex.trading/",
+            region: "TESTNET - Western Europe",
+            country: "France",
+            location: "Paris",
+            operator: "Witness: zapata42-witness",
+            contact: "telegram:Zapata_42"
+        }
+    ],
+    ES_WRAPPER_LIST: [
         {
-            url: "wss://node6.deexnet.org/ws",
-            location: "node6_deexnet",
-            operator: "deex"
-        },
-        {
-            url: "wss://node1.deex.exchange/ws",
-            location: "node1_exchange",
-            operator: "deex"
-        },
-        {
-            url: "wss://node2.deex.exchange/ws",
-            location: "node2_exchange",
-            operator: "deex"
+            url: "https://wrapper.elasticsearch.bitshares.ws",
+            region: "Western Europe",
+            country: "Germany",
+            operator: "Infrastructure Worker",
+            contact: "email:info@blockchainprojectsbv.com"
         }
     ],
     DEFAULT_FAUCET: getFaucet().url,
