@@ -65,8 +65,7 @@ class TransactionConfirmActions {
         return res;
     }
 
-    close(reject) {
-        reject();
+    close() {
         ZfApi.publish("transaction_confirm_actions", "close");
         return true;
     }
