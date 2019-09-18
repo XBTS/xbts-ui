@@ -778,7 +778,7 @@ body.midnightTheme .ant-form-item-label {
     border-bottom: 3px solid #865e43;
 }
 .midnightTheme .header-container .menu-group .menu-bar li a.active {
-    color: #e0e0e0 !important;
+    color: #f7e8bd !important;
 }
 .midnightTheme .header-container {
     box-shadow: none !important;
@@ -788,15 +788,21 @@ body.midnightTheme .ant-form-item-label {
     color: $bs-green;
 }
 .midnightTheme .header-container .menu-group .menu-bar li a.active svg path {
-    fill: orange !important;
+    fill: #f7e8bd !important;
 }
 .noselect {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none;
-    /* Konqueror HTML */
+    -khtml-user-select: none; /* Konqueror HTML */
     -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
+}
+.ant-table-tbody .icon.trade svg path {
+    fill: #4caf50 !important;
+}
+.ant-table-tbody .icon.transfer > svg > path {
+    fill: #fff27f !important;
 }
