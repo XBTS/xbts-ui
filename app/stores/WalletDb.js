@@ -134,7 +134,6 @@ class WalletDb extends BaseStore {
 
         if (
             !passwordLogin &&
-            this.state.wallet &&
             Apis.instance().chain_id !== this.state.wallet.chain_id
         )
             return Promise.reject(
