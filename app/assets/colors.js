@@ -8,7 +8,7 @@ module.exports = {
         settleColor: "rgba(125, 134, 214, 1)",
         settleFillColor: "rgba(125, 134, 214, 0.5)",
         positiveColor: "#6BA583",
-        negativeColor: "#cf5888",
+        negativeColor: "#DB0000",
         strokeColor: "#FFFF00",
         primaryText: "#e0e0e0",
         volumeColor: "#848484",
