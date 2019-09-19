@@ -1491,7 +1491,7 @@ class Transaction extends React.Component {
                             </td>
                         </tr>
                     );
-                    console.log(stakingPeriod);
+
                     rows.push(
                         <tr key={key++}>
                             <td>
