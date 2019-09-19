@@ -817,7 +817,7 @@ class AccountPortfolioList extends React.Component {
                     <Icon
                         name="trade"
                         title="icons.trade.trade"
-                        className="icon-14px"
+                        className="icon-18px"
                     />
                 </Link>
             ) : (
@@ -828,7 +828,7 @@ class AccountPortfolioList extends React.Component {
                     <Icon
                         name="transfer"
                         title="icons.transfer"
-                        className="icon-14px"
+                        className="icon-18px"
                     />
                 </a>
             );
