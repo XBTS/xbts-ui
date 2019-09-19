@@ -746,22 +746,6 @@ class Footer extends React.Component {
                                 <div className="grid-block">
                                     <Tooltip
                                         title={counterpart.translate(
-                                            "tooltip.debug_report"
-                                        )}
-                                        placement="topRight"
-                                        mouseEnterDelay={0.5}
-                                    >
-                                        <div
-                                            className="introjs-launcher"
-                                            onClick={e => {
-                                                this._showReportModal(e);
-                                            }}
-                                        >
-                                            <Translate content="modal.report.button" />
-                                        </div>
-                                    </Tooltip>
-                                    <Tooltip
-                                        title={counterpart.translate(
                                             "tooltip.self_help"
                                         )}
                                         placement="topRight"
