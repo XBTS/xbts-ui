@@ -203,6 +203,7 @@ class MarketRow extends React.Component {
                             "BTC",
                             "OPEN.BTC",
                             "XBTSX.BTC",
+                            "XBTSX.LTC",
                             "TRADE.BTC",
                             "GOLD",
                             "SILVER"
