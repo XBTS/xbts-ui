@@ -470,13 +470,13 @@ class Header extends React.Component {
 
         let hamburger = this.state.dropdownActive ? (
             <Icon
-                className="icon-14px"
+                className="icon-18px"
                 name="hamburger-x"
                 title="icons.hamburger_x"
             />
         ) : (
             <Icon
-                className="icon-14px"
+                className="icon-18px"
                 name="hamburger"
                 title="icons.hamburger"
             />

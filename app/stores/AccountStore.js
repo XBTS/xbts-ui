@@ -119,13 +119,12 @@ class AccountStore extends BaseStore {
             referralAccount = "xbtsx";
         }
 
-        // Store referral if we have one (will update any old referral)
         if (referralAccount) {
-            ss.set("referralAccount", referralAccount);
-            if (__DEV__)
-                console.log("Stored Referral Account: ", referralAccount);
+            ss.set("referralAccount", referralAccount); // Reset to empty string when the user returns with no ref code
+        } else {
+            ss.remove("referralAccount");
         }
-
+        if (referralAccount) console.log("referralAccount", referralAccount);
         return referralAccount;
     }
 

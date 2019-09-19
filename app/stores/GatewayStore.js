@@ -36,8 +36,7 @@ class GatewayStore {
         this.bindListeners({
             onFetchCoins: GatewayActions.fetchCoins,
             onFetchCoinsSimple: GatewayActions.fetchCoinsSimple,
-            onFetchPairs: GatewayActions.fetchPairs,
-            onTemporarilyDisable: GatewayActions.temporarilyDisable
+            onFetchPairs: GatewayActions.fetchPairs
         });
     }
 
@@ -103,10 +102,6 @@ class GatewayStore {
         if (down) {
             this.down = this.down.set(down, true);
         }
-    }
-
-    onTemporarilyDisable({backer}) {
-        this.down = this.down.set(backer, true);
     }
 }
 

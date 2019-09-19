@@ -365,8 +365,7 @@ body.midnightTheme .ant-input {
 .midnightTheme .menu-group.primary .menu-bar,
 .midnightTheme .menu-group.primary li > a.active,
 .midnightTheme .header-container {
-    background: #191a1f;
-    /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
+    background: #191a1f; /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
     background: -webkit-linear-gradient(top, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     background: linear-gradient(to bottom, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#262c3b', endColorstr='#0a121b',GradientType=0 ); */
@@ -792,10 +791,10 @@ body.midnightTheme .ant-form-item-label {
 .noselect {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
     -moz-user-select: none; /* Firefox */
-    -ms-user-select: none;
-    /* Internet Explorer/Edge */
+    -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
@@ -813,7 +812,7 @@ body.midnightTheme .ant-form-item-label {
     height: 1.5rem;
 }
 .ant-table-tbody a {
-    color: #f3edbc !important;
+    color: #8bc34a !important;
 }
 .midnightTheme ul.account-overview li > a > div.tab-subtext {
     color: #b2ffb2;
@@ -872,4 +871,10 @@ body.midnightTheme .ant-table-thead > tr > th.ant-table-column-sort {
 }
 .hamburger svg > path {
     fill: orange;
+}
+body.midnightTheme .ant-checkbox.ant-checkbox-checked span.ant-checkbox-inner,
+body.midnightTheme
+    .ant-checkbox.ant-checkbox-checked
+    span.ant-checkbox-inner:after {
+    border-color: $bs-orange;
 }
