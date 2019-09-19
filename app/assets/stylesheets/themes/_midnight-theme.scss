@@ -365,7 +365,8 @@ body.midnightTheme .ant-input {
 .midnightTheme .menu-group.primary .menu-bar,
 .midnightTheme .menu-group.primary li > a.active,
 .midnightTheme .header-container {
-    background: #191a1f; /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
+    background: #191a1f;
+    /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
     background: -webkit-linear-gradient(top, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     background: linear-gradient(to bottom, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#262c3b', endColorstr='#0a121b',GradientType=0 ); */
@@ -505,7 +506,7 @@ body.midnightTheme .ant-tabs-bar {
     padding-right: 7px;
 }
 .order-2 .buy-sell-container {
-    padding-right: 16px !important;
+    /* padding-right: 16px !important; */
 }
 @media screen and (max-width: 1440px) and (min-width: 781px) {
     .middle-content {
@@ -877,4 +878,12 @@ body.midnightTheme
     .ant-checkbox.ant-checkbox-checked
     span.ant-checkbox-inner:after {
     border-color: $bs-orange;
+}
+.midnightTheme .button {
+    background: #8bc34a;
+}
+.button.hollow.primary {
+    border-color: #8bc34a !important;
+    background-color: #8bc34a !important;
+    color: #fff !important;
 }
