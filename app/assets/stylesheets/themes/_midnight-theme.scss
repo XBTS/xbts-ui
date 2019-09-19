@@ -615,7 +615,7 @@ span.icon-18px {
 .midnightTheme .order-table .my-order span.price-decimal,
 .midnightTheme .order-table .my-order > .vertical-order-table-cell,
 .midnightTheme .order-table .my-order > td {
-    color: #b3ca62 !important;
+    color: #00bcd4 !important;
 }
 body.midnightTheme a {
     color: #2ac5b3;
@@ -633,7 +633,7 @@ body.midnightTheme a {
 .midnightTheme .change-up,
 .midnightTheme .bid-total,
 body.midnightTheme .ant-collapse-header {
-    color: #0bb2a1 !important;
+    color: #52c756 !important;
 }
 .buy-sell-balance {
     color: #0bb2a1 !important;
@@ -805,4 +805,11 @@ body.midnightTheme .ant-form-item-label {
 }
 .ant-table-tbody .icon.transfer > svg > path {
     fill: #fff27f !important;
+}
+.midnightTheme .header-container span.icon.lock-unlock > svg > path {
+    fill: #fff;
+}
+.midnightTheme .header-container span.icon.lock-unlock > svg {
+    width: 1.5rem;
+    height: 1.5rem;
 }
