@@ -6,6 +6,7 @@
 import {
     rudexAPIs,
     bitsparkAPIs,
+    widechainAPIs,
     openledgerAPIs,
     cryptoBridgeAPIs,
     gdex2APIs,
@@ -13,30 +14,13 @@ import {
     citadelAPIs
 } from "api/apiConfig";
 import {allowedGateway} from "branding";
-import {isGatewayTemporarilyDisabled} from "../chain/onChainConfig";
-
-const _isEnabled = gatewayKey => {
-    return async function() {
-        const allowed = allowedGateway(gatewayKey);
-        if (allowed) {
-            const temporarilyDisabled = await isGatewayTemporarilyDisabled(
-                gatewayKey
-            );
-            if (temporarilyDisabled) {
-                return false;
-            }
-            return true;
-        }
-        return false;
-    };
-};
 
 export const availableGateways = {
     OPEN: {
         id: "OPEN",
         name: "OPENLEDGER",
         baseAPI: openledgerAPIs,
-        isEnabled: () => false,
+        isEnabled: allowedGateway("OPEN"),
         selected: false,
         options: {
             enabled: false,
@@ -47,7 +31,7 @@ export const availableGateways = {
         id: "RUDEX",
         name: "RUDEX",
         baseAPI: rudexAPIs,
-        isEnabled: _isEnabled("RUDEX"),
+        isEnabled: allowedGateway("RUDEX"),
         isSimple: true,
         selected: false,
         simpleAssetGateway: true,
@@ -62,7 +46,7 @@ export const availableGateways = {
         id: "SPARKDEX",
         name: "SPARKDEX",
         baseAPI: bitsparkAPIs,
-        isEnabled: _isEnabled("SPARKDEX"),
+        isEnabled: allowedGateway("SPARKDEX"),
         selected: false,
         options: {
             enabled: false,
@@ -73,7 +57,7 @@ export const availableGateways = {
         id: "BRIDGE",
         name: "CRYPTO-BRIDGE",
         baseAPI: cryptoBridgeAPIs,
-        isEnabled: _isEnabled("BRIDGE"),
+        isEnabled: allowedGateway("BRIDGE"),
         selected: false,
         singleWallet: true, // Has no coresponging coinType == backingCoinType specific wallet
         addressValidatorAsset: true, // Address validator requires output_asset parameter
@@ -88,7 +72,7 @@ export const availableGateways = {
         id: "GDEX",
         name: "GDEX",
         baseAPI: gdex2APIs,
-        isEnabled: _isEnabled("GDEX"),
+        isEnabled: allowedGateway("GDEX"),
         options: {
             enabled: false,
             selected: false
@@ -98,7 +82,7 @@ export const availableGateways = {
         id: "XBTSX",
         name: "XBTSX",
         baseAPI: xbtsxAPIs,
-        isEnabled: _isEnabled("XBTSX"),
+        isEnabled: allowedGateway("XBTSX"),
         isSimple: true,
         selected: false,
         simpleAssetGateway: false,
@@ -112,7 +96,7 @@ export const availableGateways = {
         id: "CITADEL",
         name: "CITADEL",
         baseAPI: citadelAPIs,
-        isEnabled: _isEnabled("CITADEL"),
+        isEnabled: allowedGateway("CITADEL"),
         selected: false,
         assetWithdrawlAlias: {monero: "xmr"}, // if asset name doesn't equal to memo
         options: {
