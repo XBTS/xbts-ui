@@ -24,6 +24,7 @@ import {Link, DirectLink} from "react-scroll";
 import {Tooltip} from "bitshares-ui-style-guide";
 import asset_utils from "../../lib/common/asset_utils";
 import sanitize from "sanitize";
+import {AccountStakingInfo} from "../Account/AccountStakeCreateNew";
 
 require("./operations.scss");
 require("./json-inspector.scss");
@@ -1468,6 +1469,34 @@ class Transaction extends React.Component {
                                 {op[1].balance_owner_key.substring(0, 10)}
                                 ...
                             </td>
+                        </tr>
+                    );
+                    break;
+
+                case "vesting_balance_create":
+                    const stakingPeriod =
+                        AccountStakingInfo.getStakingPeriodByPeriodValue(
+                            op[1].policy[1].vesting_seconds
+                        ) || {};
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate content="xbtsx.account.amount_sth" />
+                            </td>
+                            <td>
+                                <FormattedAsset
+                                    amount={op[1].amount.amount}
+                                    asset={op[1].amount.asset_id}
+                                />
+                            </td>
+                        </tr>
+                    );
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate content="xbtsx.account.length" />
+                            </td>
+                            <td>{stakingPeriod.name}</td>
                         </tr>
                     );
                     break;
