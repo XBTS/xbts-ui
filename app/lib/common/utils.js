@@ -76,9 +76,6 @@ var Utils = {
     },
 
     format_volume(amount, precision = 3) {
-        if (isNaN(amount)) {
-            amount = "0";
-        }
         if (amount < 10000) {
             return this.format_number(amount, precision);
         } else if (amount < 1000000) {
@@ -139,7 +136,6 @@ var Utils = {
         let baseID = base.toJS ? base.get("id") : base.id;
         let basePrecision = base.toJS ? base.get("precision") : base.precision;
         let fixedPrecisionAssets = {
-            "1.3.4157": 8, // XBTSX.BTC
             "1.3.113": 5, // bitCNY
             "1.3.121": 5 // bitUSD
         };
@@ -491,6 +487,20 @@ var Utils = {
             prefix,
             isBitAsset: !!isBitAsset
         };
+    },
+
+    sanitize(string) {
+        // sanitize with package
+        string = sanitize(string, {
+            whiteList: [], // empty, means filter out all tags
+            stripIgnoreTag: true // remove all tags instead of escaping
+        });
+        string = string.replace(/%3A/gi, ":"); // resolve to : to not break links
+        string = string.replace(/javascript:/gi, "");
+        string = string.replace(/vbscript:/gi, "");
+        string = string.replace(/data:/gi, "");
+        string = string.replace(/tcl:/gi, "");
+        return string;
     },
 
     timeStringToGrapheneDate(time_string) {
