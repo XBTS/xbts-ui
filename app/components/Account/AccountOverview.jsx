@@ -20,6 +20,7 @@ import AccountPortfolioList from "./AccountPortfolioList";
 import {Icon, Switch, Tooltip} from "bitshares-ui-style-guide";
 import counterpart from "counterpart";
 import SearchInput from "../Utility/SearchInput";
+import AccountStaking from "./AccountStaking";
 
 class AccountOverview extends React.Component {
     constructor(props) {
@@ -459,6 +460,17 @@ class AccountOverview extends React.Component {
                                         </MarginPositionsTable>
                                     </div>
                                 </div>
+                            </Tab>
+
+                            <Tab
+                                title="xbtsx.account.staking"
+                                subText={hiddenSubText}
+                            >
+                                <AccountStaking
+                                    account={this.props.account}
+                                    balances={this.props.balances}
+                                    gateFee={this.props.gateFee}
+                                />
                             </Tab>
 
                             <Tab
