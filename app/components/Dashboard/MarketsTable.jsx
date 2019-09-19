@@ -340,104 +340,117 @@ class MarketsTable extends React.Component {
             ? "gold-star"
             : "grey-star";
 
-        return {
-            key: marketID,
-            star: (
-                <div
-                    onClick={this._toggleFavoriteMarket.bind(this, quote, base)}
-                >
-                    <Icon
-                        style={{cursor: "pointer"}}
-                        className={starClass}
-                        name="fi-star"
-                        title="icons.fi_star.market"
-                    />
-                </div>
-            ),
-            asset: (
-                <Link to={`/market/${quote}_${base}`}>
-                    <img
-                        ref={imgName.toLowerCase()}
-                        className="column-hide-small"
-                        onError={this._onError.bind(this, imgName)}
-                        style={{maxWidth: 20, marginRight: 10}}
-                        src={`${__BASE_URL__}asset-symbols/${imgName.toLowerCase()}.png`}
-                    />
-                    <AssetName dataPlace="top" name={quote} />
-                    &nbsp;
-                    {this.props.isFavorite ? (
-                        <span>
-                            :&nbsp;
-                            <AssetName dataPlace="top" name={base} />
-                        </span>
-                    ) : null}
-                </Link>
-            ),
-            quote_name: this.props.isFavorite ? null : (
-                <span style={{textAlign: "right"}}>
-                    <AssetName noTip name={base} />
-                </span>
-            ),
-            price: (
-                <div className="column-hide-small" style={{textAlign: "right"}}>
-                    {marketStats && marketStats.price
-                        ? utils.price_text(
-                              marketStats.price.toReal(true),
-                              ChainStore.getAsset(quote),
-                              ChainStore.getAsset(base)
-                          )
-                        : null}
-                </div>
-            ),
-            hour_24:
-                !marketStats ||
-                !marketStats.change ||
-                marketStats.change === "0.00"
-                    ? 0
-                    : marketStats.change,
-            volume:
-                !marketStats || !marketStats.volumeQuote
-                    ? 0
-                    : marketStats.volumeQuote,
-            flip:
-                inverted === null || !this.props.isFavorite ? null : (
-                    <span className="column-hide-small">
-                        <a
-                            onClick={this._handleFlip.bind(
-                                this,
-                                row,
-                                !row.inverted
-                            )}
-                        >
-                            <Icon name="shuffle" title="icons.shuffle" />
-                        </a>
+        if (base !== "OPEN.CNY" && base !== "OPEN.USD") {
+            return {
+                key: marketID,
+                star: (
+                    <div
+                        onClick={this._toggleFavoriteMarket.bind(
+                            this,
+                            quote,
+                            base
+                        )}
+                    >
+                        <Icon
+                            style={{cursor: "pointer"}}
+                            className={starClass}
+                            name="fi-star"
+                            title="icons.fi_star.market"
+                        />
+                    </div>
+                ),
+                asset: (
+                    <Link to={`/market/${quote}_${base}`}>
+                        <img
+                            ref={imgName.toLowerCase()}
+                            className="column-hide-small"
+                            onError={this._onError.bind(this, imgName)}
+                            style={{maxWidth: 20, marginRight: 10}}
+                            src={`${__BASE_URL__}asset-symbols/${imgName.toLowerCase()}.png`}
+                        />
+                        <AssetName dataPlace="top" name={quote} />
+                        &nbsp;
+                        {this.props.isFavorite ? (
+                            <span>
+                                :&nbsp;
+                                <AssetName dataPlace="top" name={base} />
+                            </span>
+                        ) : null}
+                    </Link>
+                ),
+                quote_name: this.props.isFavorite ? null : (
+                    <span style={{textAlign: "right"}}>
+                        <AssetName noTip name={base} />
                     </span>
                 ),
-            hide: (
-                <Tooltip
-                    title={
-                        isHidden ? (
-                            <Translate content="icons.plus_circle.show_market" />
-                        ) : (
-                            <Translate content="icons.cross_circle.hide_market" />
-                        )
-                    }
-                    style={{marginRight: 0}}
-                    onClick={this._handleHide.bind(this, row, !row.isHidden)}
-                >
-                    <Icon
-                        name={isHidden ? "plus-circle" : "cross-circle"}
+                price: (
+                    <div
+                        className="column-hide-small"
+                        style={{textAlign: "right"}}
+                    >
+                        {marketStats && marketStats.price
+                            ? utils.price_text(
+                                  marketStats.price.toReal(true),
+                                  ChainStore.getAsset(quote),
+                                  ChainStore.getAsset(base)
+                              )
+                            : null}
+                    </div>
+                ),
+                hour_24:
+                    !marketStats ||
+                    !marketStats.change ||
+                    marketStats.change === "0.00"
+                        ? 0
+                        : marketStats.change,
+                volume:
+                    !marketStats || !marketStats.volumeQuote
+                        ? 0
+                        : marketStats.volumeQuote,
+                flip:
+                    inverted === null || !this.props.isFavorite ? null : (
+                        <span className="column-hide-small">
+                            <a
+                                onClick={this._handleFlip.bind(
+                                    this,
+                                    row,
+                                    !row.inverted
+                                )}
+                            >
+                                <Icon name="shuffle" title="icons.shuffle" />
+                            </a>
+                        </span>
+                    ),
+                hide: (
+                    <Tooltip
                         title={
-                            isHidden
-                                ? "icons.plus_circle.show_market"
-                                : "icons.cross_circle.hide_market"
+                            isHidden ? (
+                                <Translate content="icons.plus_circle.show_market" />
+                            ) : (
+                                <Translate content="icons.cross_circle.hide_market" />
+                            )
                         }
-                        className="icon-14px"
-                    />
-                </Tooltip>
-            ),
-            basePrecision: basePrecision
-        };
+                        style={{marginRight: 0}}
+                        onClick={this._handleHide.bind(
+                            this,
+                            row,
+                            !row.isHidden
+                        )}
+                    >
+                        <Icon
+                            name={isHidden ? "plus-circle" : "cross-circle"}
+                            title={
+                                isHidden
+                                    ? "icons.plus_circle.show_market"
+                                    : "icons.cross_circle.hide_market"
+                            }
+                            className="icon-14px"
+                        />
+                    </Tooltip>
+                ),
+                basePrecision: basePrecision
+            };
+        }
     }
 
     render() {
