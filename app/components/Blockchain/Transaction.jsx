@@ -1491,12 +1491,13 @@ class Transaction extends React.Component {
                             </td>
                         </tr>
                     );
+                    console.log(stakingPeriod);
                     rows.push(
                         <tr key={key++}>
                             <td>
                                 <Translate content="xbtsx.account.length" />
                             </td>
-                            <td>{stakingPeriod.name}</td>
+                            <td>{stakingPeriod.monthName}</td>
                         </tr>
                     );
                     break;
