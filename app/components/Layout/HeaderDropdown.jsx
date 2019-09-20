@@ -195,9 +195,9 @@ export default class DropDownMenu extends React.Component {
                         },
                         disabled: !showAccountLinks,
                         mainText: "header.payments",
-                        mainCallback: this.props.showSend,
-                        subText: "header.payments_legacy",
-                        subURL: "/transfer"
+                        mainCallback: this.props.showSend
+                        //subText: "header.payments_legacy",
+                        //subURL: "/transfer"
                     },
                     {
                         icon: {

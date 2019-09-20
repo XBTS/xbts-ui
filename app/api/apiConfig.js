@@ -21,12 +21,13 @@ export const openledgerAPIs = {
     RPC_URL: "https://openledger.info/api/"
 };
 
+/*
 export const rudexAPIs = {
     BASE: "https://gateway.rudex.org/api/v0_1",
     COINS_LIST: "/coins",
     NEW_DEPOSIT_ADDRESS: "/new-deposit-address"
 };
-
+*/
 export const bitsparkAPIs = {
     BASE: "https://dex-api.bitspark.io/api/v1",
     COINS_LIST: "/coins",
@@ -37,6 +38,7 @@ export const bitsparkAPIs = {
     ESTIMATE_INPUT: "/estimate-input-amount"
 };
 
+/*
 export const cryptoBridgeAPIs = {
     BASE: "https://api.crypto-bridge.org/api/v1",
     COINS_LIST: "/coins",
@@ -44,6 +46,7 @@ export const cryptoBridgeAPIs = {
     MARKETS: "/markets",
     TRADING_PAIRS: "/trading-pairs"
 };
+*/
 
 export const citadelAPIs = {
     BASE: "https://citadel.li/trade",

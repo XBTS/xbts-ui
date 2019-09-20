@@ -365,8 +365,7 @@ body.midnightTheme .ant-input {
 .midnightTheme .menu-group.primary .menu-bar,
 .midnightTheme .menu-group.primary li > a.active,
 .midnightTheme .header-container {
-    background: #191a1f;
-    /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
+    background: #191a1f; /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
     background: -webkit-linear-gradient(top, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     background: linear-gradient(to bottom, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#262c3b', endColorstr='#0a121b',GradientType=0 ); */
@@ -634,15 +633,6 @@ body.midnightTheme .ant-collapse-header {
 .blue-icon > svg > path {
     fill: #0bb2a1 !important;
 }
-.midnightTheme .exchange-content-header.bid {
-    border-bottom: 1px solid #0bb2a1;
-}
-.midnightTheme .order-form.bid {
-    border-top: 2px solid #0bb2a1;
-}
-.midnightTheme .order-form.ask {
-    border-top: 2px solid #cf5888;
-}
 .create-asset {
     padding: 0 20px !important;
 }
@@ -899,4 +889,20 @@ body.midnightTheme
 }
 .buy-sell-max {
     color: #37d2e6 !important;
+}
+.midnightTheme .order-form.bid {
+    border-top: 2px solid #52c756 !important;
+}
+.midnightTheme .exchange-content-header.bid {
+    border-bottom: 1px solid #52c756;
+}
+.midnightTheme .order-form.ask {
+    border-top: 2px solid #cf5888 !important;
+}
+.exchange-content-header a {
+    color: #fff;
+}
+.exchange--buy-sell-form:hover .exchange-content-header {
+    color: #37d2e6;
+    text-shadow: 1px 1px 0.2em #000;
 }

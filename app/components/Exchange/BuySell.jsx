@@ -1089,7 +1089,8 @@ class BuySell extends React.Component {
                         ref="order_form"
                         className={
                             (!this.props.isOpen ? "hide-container " : "") +
-                            "order-form"
+                            "order-form " +
+                            type
                         }
                         style={{fontSize: "14px"}}
                         noValidate

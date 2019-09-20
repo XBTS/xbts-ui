@@ -7,6 +7,7 @@ import {
     Button,
     Tooltip
 } from "bitshares-ui-style-guide";
+import {Link} from "react-router-dom";
 import cnames from "classnames";
 import translator from "counterpart";
 import guide from "intro.js";
@@ -43,6 +44,7 @@ import SimpleDepositBlocktradesBridge from "../Dashboard/SimpleDepositBlocktrade
 import {Notification} from "bitshares-ui-style-guide";
 import PriceAlert from "./PriceAlert";
 import counterpart from "counterpart";
+import AssetImage from "../Utility/AssetImage";
 
 class Exchange extends React.Component {
     static propTypes = {
@@ -66,8 +68,8 @@ class Exchange extends React.Component {
                 ask: props.exchange.getIn(["lastExpiration", "ask"]) || "YEAR"
             },
             expirationCustomTime: {
-                bid: moment().add(1, "day"),
-                ask: moment().add(1, "day")
+                bid: "Specific",
+                ask: "Specific"
             },
             feeStatus: {}
         };
@@ -301,7 +303,7 @@ class Exchange extends React.Component {
         let chart_height = ws.get("chartHeight", 620);
         if (chart_height == 620 && window.innerWidth < 640) {
             // assume user is on default setting, use smaller for mobile
-            chart_height = 400;
+            chart_height = 425;
         }
 
         return {
@@ -359,8 +361,8 @@ class Exchange extends React.Component {
             panelWidth: 0,
             mirrorPanels: ws.get("mirrorPanels", true),
             panelTabs: ws.get("panelTabs", {
-                my_history: 2,
-                history: 2,
+                my_history: 1,
+                history: 1,
                 my_orders: 2,
                 open_settlement: 2
             }),
@@ -530,13 +532,13 @@ class Exchange extends React.Component {
     }
 
     /*
-    * Force re-rendering component when state changes.
-    * This is required for an updated value of component width
-    *
-    * It will trigger a re-render twice
-    * - Once when state is changed
-    * - Once when forceReRender is set to false
-    */
+     * Force re-rendering component when state changes.
+     * This is required for an updated value of component width
+     *
+     * It will trigger a re-render twice
+     * - Once when state is changed
+     * - Once when forceReRender is set to false
+     */
     _forceRender(np, ns) {
         if (this.state.forceReRender) {
             this.setState({
@@ -563,6 +565,8 @@ class Exchange extends React.Component {
     }
 
     shouldComponentUpdate(np, ns) {
+        let {expirationType} = this.state;
+
         this._forceRender(np, ns);
 
         if (!np.marketReady && !this.props.marketReady) {
@@ -570,6 +574,24 @@ class Exchange extends React.Component {
         }
         let propsChanged = false;
         let stateChanged = false;
+
+        if (
+            np.quoteAsset !== this.props.quoteAsset ||
+            np.baseAsset !== this.props.baseAsset
+        ) {
+            this.setState({
+                expirationType: {
+                    bid:
+                        expirationType["bid"] == "SPECIFIC"
+                            ? expirationType["bid"]
+                            : "YEAR",
+                    ask:
+                        expirationType["ask"] == "SPECIFIC"
+                            ? expirationType["ask"]
+                            : "YEAR"
+                }
+            });
+        }
 
         for (let key in np) {
             if (np.hasOwnProperty(key)) {
@@ -1497,9 +1519,9 @@ class Exchange extends React.Component {
     _orderbookClick(order) {
         const isBid = order.isBid();
         /*
-        * Because we are using a bid order to construct an ask and vice versa,
-        * totalToReceive becomes forSale, and totalForSale becomes toReceive
-        */
+         * Because we are using a bid order to construct an ask and vice versa,
+         * totalToReceive becomes forSale, and totalForSale becomes toReceive
+         */
         let forSale = order.totalToReceive({noCache: true});
         // let toReceive = order.totalForSale({noCache: true});
         let toReceive = forSale.times(order.sellPrice());
@@ -1665,9 +1687,16 @@ class Exchange extends React.Component {
     }
 
     onChangeChartHeight({value, increase}) {
-        const newHeight = value
+        let newHeight = value
             ? value
             : this.state.chartHeight + (increase ? 20 : -20);
+        if (newHeight < 425) {
+            newHeight = 425;
+        }
+        if (newHeight > 1000) {
+            newHeight = 1000;
+        }
+
         this.setState({
             chartHeight: newHeight
         });
@@ -2054,6 +2083,18 @@ class Exchange extends React.Component {
                             }
                         ]}
                     />
+                    &nbsp;
+                    <Link
+                        to={"/asset/" + quote.get("symbol")}
+                        title={"Asset Info"}
+                    >
+                        <AssetImage
+                            style="vertical-align: sub;"
+                            replaceNoneToBts={false}
+                            maxWidth={18}
+                            name={quote.get("symbol")}
+                        />
+                    </Link>
                 </div>
             );
         };
@@ -2077,7 +2118,7 @@ class Exchange extends React.Component {
                             : centerContainerWidth > 800
                                 ? "medium-6"
                                 : "",
-                    "small-12 no-padding middle-content",
+                    "small-12 exchange-padded middle-content",
                     flipBuySell
                         ? `order-${buySellTop ? 2 : 3} large-order-${
                               buySellTop ? 2 : 5
@@ -2243,7 +2284,7 @@ class Exchange extends React.Component {
                             : centerContainerWidth > 800
                                 ? "medium-6"
                                 : "",
-                    "small-12 no-padding middle-content",
+                    "small-12 exchange-padded middle-content",
                     flipBuySell
                         ? `order-${buySellTop ? 1 : 2} large-order-${
                               buySellTop ? 1 : 4
@@ -2403,7 +2444,7 @@ class Exchange extends React.Component {
                     key={`actionCard_${actionCardIndex++}`}
                     className="left-order-book no-overflow order-9"
                     style={{
-                        minWidth: 325,
+                        minWidth: 310,
                         height: smallScreen ? 680 : "calc(100vh - 215px)",
                         padding: smallScreen ? 10 : 0
                     }}
@@ -2514,7 +2555,7 @@ class Exchange extends React.Component {
         // panelWidth = 350;
         // }
 
-        panelWidth = 325;
+        panelWidth = 350;
 
         let marketHistory =
             tinyScreen &&

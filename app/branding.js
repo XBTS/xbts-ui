@@ -308,7 +308,7 @@ export function getFeaturedMarkets(quotes = []) {
 export function getAssetNamespaces() {
     return [
         "OPEN.",
-        "RUDEX.",
+        // "RUDEX.",
         "BRIDGE.",
         "GDEX.",
         "XBTSX.",
@@ -335,12 +335,12 @@ export function allowedGateway(gateway) {
     return (
         [
             "OPEN",
-            "RUDEX",
-            "BRIDGE",
+            // "RUDEX",
+            // "BRIDGE",
             "GDEX",
-            "XBTSX",
-            "SPARKDEX",
-            "CITADEL"
+            "XBTSX"
+            //"SPARKDEX",
+            //"CITADEL"
         ].indexOf(gateway) >= 0
     );
 }
