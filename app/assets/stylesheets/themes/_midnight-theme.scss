@@ -365,7 +365,8 @@ body.midnightTheme .ant-input {
 .midnightTheme .menu-group.primary .menu-bar,
 .midnightTheme .menu-group.primary li > a.active,
 .midnightTheme .header-container {
-    background: #191a1f; /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
+    background: #191a1f;
+    /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
     background: -webkit-linear-gradient(top, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     background: linear-gradient(to bottom, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#262c3b', endColorstr='#0a121b',GradientType=0 ); */
@@ -895,4 +896,7 @@ body.midnightTheme
 }
 .buy-sell-balance {
     color: #8bc34a !important;
+}
+.buy-sell-max {
+    color: #37d2e6 !important;
 }
