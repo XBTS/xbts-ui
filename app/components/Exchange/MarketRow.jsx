@@ -60,8 +60,15 @@ class MarketRow extends React.Component {
         if (!quote || !base) {
             return null;
         }
+        if (
+            base.get("symbol") === "OPEN.CNY" ||
+            base.get("symbol") === "OPEN.USD"
+        ) {
+            return null;
+        }
 
         let marketID = quote.get("symbol") + "_" + base.get("symbol");
+
         let marketName = quote.get("symbol") + ":" + base.get("symbol");
         let dynamic_data = this.props.getDynamicObject(
             quote.get("dynamic_asset_data_id")
