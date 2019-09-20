@@ -1203,6 +1203,7 @@
         "set": "Set"
     },
     "header": {
+        "wallet": "Portafoglio",
         "account": "Account",
         "account_notify": "L'account attivo è ora %(account)s",
         "account_value": "Valore dell'Account",

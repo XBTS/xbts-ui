@@ -1203,6 +1203,7 @@
         "set": "Set"
     },
     "header": {
+        "wallet": "지갑",
         "account": "계정",
         "account_notify": "The active account is now %(account)s",
         "account_value": "계정 값",

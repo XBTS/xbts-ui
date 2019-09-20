@@ -1203,6 +1203,7 @@
         "set": "Set"
     },
     "header": {
+        "wallet": "財布",
         "account": "アカウント",
         "account_notify": "現在のアクティブアカウントは%(account)sです。",
         "account_value": "アカウント値",

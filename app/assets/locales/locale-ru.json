@@ -1209,6 +1209,7 @@
         "set": "Задать"
     },
     "header": {
+        "wallet": "Кошелёк",
         "account": "Аккаунт",
         "account_notify": "В настоящее время активен аккаунт %(account)s",
         "account_value": "Стоимость аккаунта",

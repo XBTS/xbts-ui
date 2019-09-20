@@ -1209,6 +1209,7 @@
         "set": "Establecer"
     },
     "header": {
+        "wallet": "Billetera",
         "account": "Cuenta",
         "account_notify": "La cuenta activa es ahora %(account)s",
         "account_value": "Valor de la cuenta",

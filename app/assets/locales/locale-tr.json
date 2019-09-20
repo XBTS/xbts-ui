@@ -1203,6 +1203,7 @@
         "set": "Set"
     },
     "header": {
+        "wallet": "Cüzdan",
         "account": "Hesap",
         "account_notify": "Aktif hesap: %(account)s",
         "account_value": "Hesap değeri",
