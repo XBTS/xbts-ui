@@ -390,7 +390,7 @@ class Footer extends React.Component {
             ? `.${version_match[1]}`
             : ` ${APP_VERSION}`;
         let rc_match = APP_VERSION.match(/-rc[0-9]$/);
-        if (rc_match) version += rc_match[0];
+        // if (rc_match) version += rc_match[0];
         let updateStyles = {display: "inline-block", verticalAlign: "top"};
         let logoProps = {};
 
