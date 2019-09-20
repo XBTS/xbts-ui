@@ -31,7 +31,10 @@ import AccountBrowsingMode from "../Account/AccountBrowsingMode";
 import {setLocalStorageType, isPersistantType} from "lib/common/localStorage";
 
 import {getLogo} from "branding";
+import {getLogoSmall} from "branding";
+
 var logo = getLogo();
+const logoSmall = getLogoSmall();
 
 // const FlagImage = ({flag, width = 20, height = 20}) => {
 //     return <img height={height} width={width} src={`${__BASE_URL__}language-dropdown/${flag.toUpperCase()}.png`} />;
@@ -390,7 +393,16 @@ class Header extends React.Component {
                 })}
                 onClick={this._onNavigate.bind(this, "/")}
             >
-                <img style={{margin: 0, height: 40}} src={logo} />
+                <img
+                    style={{margin: 0, height: 40}}
+                    className="column-hide-small"
+                    src={logo}
+                />
+                <img
+                    style={{margin: 0, height: 30}}
+                    className="column-show-small"
+                    src={logoSmall}
+                />
             </a>
         );
 
@@ -1165,6 +1177,111 @@ class Header extends React.Component {
                                     />
                                 </a>
                             </li>
+
+                            {!this.props.locked ? (
+                                <li className={"walletdd"}>
+                                    <span
+                                        style={{flexFlow: "row"}}
+                                        className={"walletdd"}
+                                    >
+                                        <Icon
+                                            size="1_5x"
+                                            style={{
+                                                position: "relative",
+                                                top: 8,
+                                                left: -8
+                                            }}
+                                            name="wallet"
+                                            title="icons.wallet"
+                                        />
+                                        <Translate
+                                            className="column-hide-small"
+                                            component="span"
+                                            content="header.wallet"
+                                        />
+                                    </span>
+                                    <span className="wallet-dd">
+                                        <ul>
+                                            <li className="column-hide-small">
+                                                <Link
+                                                    to={
+                                                        "/account/" +
+                                                        currentAccount
+                                                    }
+                                                >
+                                                    <Icon
+                                                        size="1_5x"
+                                                        name="balance"
+                                                    />
+                                                    <Translate
+                                                        component="span"
+                                                        content="account.portfolio"
+                                                    />
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link to={"/deposit-withdraw"}>
+                                                    <Icon
+                                                        size="1_5x"
+                                                        name="deposit-withdraw"
+                                                    />
+                                                    <Translate
+                                                        className=""
+                                                        component="span"
+                                                        content="account.deposit_withdraw"
+                                                    />
+                                                </Link>
+                                            </li>
+                                            <li
+                                                onClick={this._showDeposit.bind(
+                                                    this
+                                                )}
+                                            >
+                                                <Icon
+                                                    size="1_5x"
+                                                    name="deposit"
+                                                />
+                                                <Translate
+                                                    className=""
+                                                    component="span"
+                                                    content="modal.deposit.submit"
+                                                />
+                                            </li>
+                                            <li
+                                                onClick={this._showWithdraw.bind(
+                                                    this
+                                                )}
+                                            >
+                                                <Icon
+                                                    size="1_5x"
+                                                    name="withdraw"
+                                                />
+                                                <Translate
+                                                    className=""
+                                                    component="span"
+                                                    content="modal.withdraw.submit"
+                                                />
+                                            </li>
+                                            <li
+                                                onClick={this._showSend.bind(
+                                                    this
+                                                )}
+                                            >
+                                                <Icon
+                                                    size="1_5x"
+                                                    name="transfer"
+                                                />
+                                                <Translate
+                                                    className=""
+                                                    component="span"
+                                                    content="header.payments"
+                                                />
+                                            </li>
+                                        </ul>
+                                    </span>
+                                </li>
+                            ) : null}
+
                             {/*                            <li>
                                 <a
                                     style={{flexFlow: "row"}}
@@ -1285,6 +1402,7 @@ class Header extends React.Component {
                         </span>
                     )}
                 </div>
+
                 <div className="app-menu">
                     <div
                         onClick={this._toggleDropdownMenu}
