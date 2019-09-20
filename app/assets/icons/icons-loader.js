@@ -1,4 +1,5 @@
 let icons = [
+    "balance",
     "coinpaprika",
     "statistics",
     "listing",
