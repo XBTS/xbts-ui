@@ -889,7 +889,7 @@ class BuySell extends React.Component {
                                     style={{textAlign: "right"}}
                                 >
                                     <Translate
-                                        className="small-3 buy-sell-label buy-sell-balance"
+                                        className="small-3 buy-sell-label"
                                         content="exchange.balance"
                                     />
                                     &nbsp;
@@ -1208,11 +1208,9 @@ class BuySell extends React.Component {
                                             className="small-4 buy-sell-label"
                                             content="exchange.balance"
                                         />
-                                        <div className="small-8 buy-sell-label">
+                                        <div className="small-8 buy-sell-label buy-sell-balance">
                                             <span
                                                 style={{
-                                                    borderBottom:
-                                                        "#A09F9F 1px dotted",
                                                     cursor: "pointer"
                                                 }}
                                                 onClick={this._addBalance.bind(

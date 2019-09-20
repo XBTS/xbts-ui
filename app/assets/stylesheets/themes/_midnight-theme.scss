@@ -365,8 +365,7 @@ body.midnightTheme .ant-input {
 .midnightTheme .menu-group.primary .menu-bar,
 .midnightTheme .menu-group.primary li > a.active,
 .midnightTheme .header-container {
-    background: #191a1f;
-    /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
+    background: #191a1f; /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
     background: -webkit-linear-gradient(top, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     background: linear-gradient(to bottom, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#262c3b', endColorstr='#0a121b',GradientType=0 ); */
@@ -631,9 +630,6 @@ body.midnightTheme a {
 body.midnightTheme .ant-collapse-header {
     color: #52c756 !important;
 }
-.buy-sell-balance {
-    color: #0bb2a1 !important;
-}
 .blue-icon > svg > path {
     fill: #0bb2a1 !important;
 }
@@ -656,7 +652,8 @@ body.midnightTheme .ant-collapse-header {
         #673ab7 0%,
         #673ab7 36%,
         #9c27b0 100%
-    ); /* background: linear-gradient(135deg, #673AB7 0%,#E91E63 100%); */
+    );
+    /* background: linear-gradient(135deg, #673AB7 0%,#E91E63 100%); */
 }
 .midnightTheme .showcases-grid--wrapper--item--wrapper--disabled {
     background: #7d7e7d;
@@ -886,4 +883,16 @@ body.midnightTheme
     border-color: #8bc34a !important;
     background-color: #8bc34a !important;
     color: #fff !important;
+}
+.order-table > thead > tr > th {
+    font-size: 14px;
+    padding: 5px 5px;
+    text-align: right !important;
+}
+.orderbook > tr > td {
+    padding: 0px !important;
+    height: 22px !important;
+}
+.buy-sell-balance {
+    color: #8bc34a !important;
 }
