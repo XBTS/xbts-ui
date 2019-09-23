@@ -191,6 +191,7 @@ class MarketsTable extends React.Component {
                             style={{
                                 whiteSpace: "nowrap"
                             }}
+                            className="asset-tb"
                         >
                             {item}
                         </span>

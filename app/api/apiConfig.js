@@ -1,5 +1,11 @@
 import {getFaucet} from "../branding";
 
+export const xbtsxAPIs = {
+    //BASE: "http://localhost:3080/api/v1", //for tests local
+    BASE: "https://apis.xbts.io/api/v1",
+    COINS_LIST: "/coin"
+};
+
 export const blockTradesAPIs = {
     BASE: "https://api.blocktrades.us/v2",
     COINS_LIST: "/coins",
@@ -38,7 +44,6 @@ export const bitsparkAPIs = {
     ESTIMATE_INPUT: "/estimate-input-amount"
 };
 
-/*
 export const cryptoBridgeAPIs = {
     BASE: "https://api.crypto-bridge.org/api/v1",
     COINS_LIST: "/coins",
@@ -46,7 +51,6 @@ export const cryptoBridgeAPIs = {
     MARKETS: "/markets",
     TRADING_PAIRS: "/trading-pairs"
 };
-*/
 
 export const citadelAPIs = {
     BASE: "https://citadel.li/trade",
@@ -79,12 +83,6 @@ export const gdexAPIs = {
     GET_USER_INFO: "/gateway/user/getUserInfo",
     USER_AGREEMENT: "/gateway/user/isAgree",
     WITHDRAW_RULE: "/gateway/withdraw/rule"
-};
-
-export const xbtsxAPIs = {
-    //BASE: "http://localhost:3080/api/v1", //for tests local
-    BASE: "https://apis.xbts.io/api/v1",
-    COINS_LIST: "/coin"
 };
 
 export const nodeRegions = [
@@ -143,14 +141,6 @@ export const settingsAPIs = {
             country: "Germany",
             operator: "Witness: openledger-dc",
             contact: "telegram:mtopenledger"
-        },
-        {
-            url: "wss://node.xbts.io/ws",
-            region: "Western Europe",
-            country: "Germany",
-            location: "Falkenstein-5",
-            operator: "Witness: xbtsio-wallet",
-            contact: "telegram:xbtsio"
         },
         {
             url: "wss://openledger.hk/ws",
@@ -222,24 +212,6 @@ export const settingsAPIs = {
             location: "Kansas City",
             operator: "Witness: xeldal",
             contact: "telegram:xeldal"
-        },
-        {
-            url: "wss://api.bts.blckchnd.com",
-            region: "Western Europe",
-            country: "Germany",
-            location: "Falkenstein",
-            operator: "Witness: blckchnd",
-            contact:
-                "email:admin@blckchnd.com;telegram:ruslansalikhov;github:blckchnd"
-        },
-        {
-            url: "wss://api-ru.bts.blckchnd.com",
-            region: "Eastern Europe",
-            country: "Russia",
-            location: "Moscow",
-            operator: "Witness: blckchnd",
-            contact:
-                "email:admin@blckchnd.com;telegram:ruslansalikhov;github:blckchnd"
         },
         {
             url: "wss://api.bitsharesdex.com",

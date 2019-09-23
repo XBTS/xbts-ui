@@ -57,6 +57,14 @@ export function getLogo() {
     return require("assets/logo-ico-blue.png");
 }
 
+export function getLogoSmall() {
+    return require("assets/logo-small.png");
+}
+
+export function getLogoDark() {
+    return require("assets/icon-dark.png");
+}
+
 /**
  * Default set theme for the UI
  * @returns {string}
@@ -151,7 +159,7 @@ export function getMyMarketsQuotes() {
             "XBTSX.BCH",
             "XBTSX.VRC",
             "XBTSX.MAG",
-            "XBTSX.DCNT",
+            // "XBTSX.DCNT",
             "XBTSX.VRM",
             "XBTSX.MDL",
             "XBTSX.SKY",

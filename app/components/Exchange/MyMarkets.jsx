@@ -354,7 +354,7 @@ class MyMarkets extends React.Component {
             nextState.activeTab === "find-market" &&
             !nextProps.searchAssets.size
         ) {
-            this._lookupAssets("XBTSX.", true);
+            this._lookupAssets("GDEX.", true);
         }
 
         if (this.state.activeTab !== nextState.activeTab) {

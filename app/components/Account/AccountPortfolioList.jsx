@@ -33,7 +33,6 @@ import {Tooltip, Icon as AntIcon} from "bitshares-ui-style-guide";
 import Translate from "react-translate-component";
 import AssetName from "../Utility/AssetName";
 import TranslateWithLinks from "../Utility/TranslateWithLinks";
-// import AssetImage from "../Utility/AssetImage";
 
 class AccountPortfolioList extends React.Component {
     constructor(props) {
@@ -796,8 +795,7 @@ class AccountPortfolioList extends React.Component {
                 asset.getIn(["options", "description"])
             );
             symbol = asset.get("symbol");
-            if (symbol.indexOf("XBTSX.") !== -1 && !market)
-                market = "XBTSX.STH";
+            if (symbol.indexOf("XBTSX.") !== -1 && !market) market = "BTS";
             let preferredMarket = market ? market : preferredUnit;
 
             if (notCore && preferredMarket === symbol)
@@ -809,7 +807,7 @@ class AccountPortfolioList extends React.Component {
                     <Icon
                         name="trade"
                         title="icons.trade.trade"
-                        className="icon-14px"
+                        className="icon-18px"
                     />
                 </Link>
             ) : notCorePrefUnit ? (
@@ -932,7 +930,12 @@ class AccountPortfolioList extends React.Component {
 
             balances.push({
                 key: asset.get("symbol"),
-                asset: <LinkToAssetById asset={asset.get("id")} />,
+                asset: (
+                    <LinkToAssetById
+                        asset={asset.get("id")}
+                        className="asset-tb"
+                    />
+                ),
                 qty:
                     hasBalance || hasOnOrder ? (
                         <BalanceComponent balance={balance} hide_asset />
@@ -1111,6 +1114,11 @@ class AccountPortfolioList extends React.Component {
                                 .find(
                                     a => a.backingCoin === thisAssetName[1]
                                 ) ||
+                            !!this.props.backedCoins
+                                .get("XBTSX", [])
+                                .find(
+                                    a => a.backingCoin === thisAssetName[1]
+                                ) ||
                             asset.get("symbol") == "BTS";
 
                         const canBuy = !!this.props.bridgeCoins.get(
@@ -1190,7 +1198,7 @@ class AccountPortfolioList extends React.Component {
                                                 style={{cursor: "pointer"}}
                                                 name="deposit"
                                                 title="icons.deposit.deposit"
-                                                className="icon-14x"
+                                                className="icon-18px"
                                                 onClick={this._showDepositModal.bind(
                                                     this,
                                                     asset.get("symbol")

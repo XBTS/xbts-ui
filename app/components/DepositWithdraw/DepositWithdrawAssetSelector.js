@@ -35,7 +35,7 @@ class DepositWithdrawAssetSelector extends React.Component {
                         if (
                             !idMap[backedCoin] &&
                             backedCoin &&
-                            (gateway === "XBTSX" || gateway === "GDEX")
+                            gateway === "XBTSX"
                         ) {
                             idMap[backedCoin] = true;
 
