@@ -233,8 +233,6 @@ $header-menu-item--hover--background-color: lighten($primary-dark, 10%);
 }
 .ant-spin-container {
 }
-body.midnightTheme a {
-}
 ::-webkit-scrollbar,
 -moz-scrollbar {
     width: 7px;
@@ -281,9 +279,6 @@ body.midnightTheme .ant-select {
 .buy-sell-label {
     line-height: 1.25rem;
     height: 1.25rem;
-}
-.buy-sell-balance {
-    /* color: #09dc7b; */
 }
 .midnightTheme .table > tbody > tr > td {
     font-size: 0.75rem;
@@ -355,7 +350,7 @@ form.order-form {
     padding: 8px;
 }
 .midnightTheme .introjs-launcher {
-    background: $bs-orange;
+    background: #009688;
 }
 body.midnightTheme .ant-input {
     font-family: arial;
@@ -478,7 +473,7 @@ body.midnightTheme .ant-tabs-bar {
 .midnightTheme .menu-group.primary .menu-bar li > a.active,
 .midnightTheme ul.account-overview li.is-active {
     // text-shadow: -6px 0px 1.6em #7ad1d1;
-    text-shadow: -2px 0px 1.2em #ffffff8c;
+    /* text-shadow: -2px 0px 1.2em #ffffff8c; */
 }
 .midnightTheme ul.account-overview li > a:hover {
     background: #191a1f !important;
@@ -486,6 +481,12 @@ body.midnightTheme .ant-tabs-bar {
 }
 .span-listing:hover {
     color: #8bc34a;
+    text-decoration: none;
+}
+.icon.listing {
+    width: 20px;
+    height: 20px;
+    top: 0px;
 }
 .midnightTheme .footer svg > path:hover {
     fill: #c5ff00;
@@ -801,10 +802,9 @@ body.midnightTheme .ant-form-item-label {
     height: 1.5rem;
 }
 .ant-table-tbody a {
-    color: #8bc34a !important;
+    color: #59c396 !important;
 }
 .midnightTheme ul.account-overview li > a > div.tab-subtext {
-    color: #b2ffb2;
 }
 .midnightTheme .mymarkets-tabs > li.active {
     color: #ffeb3b;
@@ -856,8 +856,6 @@ body.midnightTheme .ant-table-thead > tr > th {
     font-weight: 500;
     text-align: left;
 }
-body.midnightTheme .ant-table-thead > tr > th.ant-table-column-sort {
-}
 .hamburger svg > path {
     fill: orange;
 }
@@ -887,8 +885,14 @@ body.midnightTheme
 .buy-sell-balance {
     color: #8bc34a !important;
 }
+.buy-sell-balance:hover {
+    color: #89ff00 !important;
+}
 .buy-sell-max {
     color: #37d2e6 !important;
+}
+.buy-sell-max:hover {
+    color: #01e2ff !important;
 }
 .midnightTheme .order-form.bid {
     border-top: 2px solid #52c756 !important;
@@ -905,4 +909,107 @@ body.midnightTheme
 .exchange--buy-sell-form:hover .exchange-content-header {
     color: #37d2e6;
     text-shadow: 1px 1px 0.2em #000;
+}
+.walletdd {
+    font-weight: bold;
+    line-height: 2rem;
+    padding-left: 1.25rem;
+    padding-right: 0.75rem;
+    font-size: 1.1rem;
+    padding-top: 10px;
+}
+.walletdd:hover {
+    cursor: pointer;
+}
+.walletdd .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    vertical-align: text-bottom;
+}
+.wallet-dd {
+    font-weight: 200;
+    text-transform: uppercase;
+    position: absolute;
+    background: #24262d;
+    padding: 10px;
+    padding-bottom: 20px;
+    top: 55px;
+    display: none;
+    z-index: 10000;
+    width: 300px;
+    border-radius: 0px 0px 10px 10px; /* border-top: solid 2px #45484d; */
+    box-shadow: 0 4px 9px 0 #00000015;
+}
+.wallet-dd .icon {
+    margin-right: 10px;
+    vertical-align: sub;
+}
+.icon .balance svg > path {
+    fill: rgb(196, 146, 20) !important;
+}
+.wallet-dd ul {
+    list-style-type: none;
+}
+.wallet-dd ul li {
+    padding: 5px;
+    border-bottom: solid 1px #45484d;
+}
+.wallet-dd ul li a {
+    color: #fff !important;
+    width: 100%;
+}
+.wallet-dd ul li:hover,
+.wallet-dd ul li a:hover {
+    color: orange;
+}
+.walletdd:hover .wallet-dd {
+    display: flex;
+    cursor: pointer;
+}
+.asset-prefix-replaced {
+    font-variant: small-caps;
+    text-transform: none;
+    color: #cecece;
+}
+.asset-tb a,
+.ant-table-column-has-sorters a {
+    // color: #2fbaf9 !important;
+}
+body.midnightTheme .ant-table-tbody > tr > td {
+    padding: 4px 12px;
+}
+.midnightTheme .selector > *:not(.inactive).inline-block {
+    color: #ffc107 !important;
+    border: 1px solid #ffc107 !important;
+}
+body.midnightTheme .ant-table {
+    line-height: 1.45;
+}
+.midnightTheme .button:hover,
+.midnightTheme .button:focus,
+.midnightTheme .button:active {
+    background-color: #04abe2 !important;
+}
+.midnightTheme .ant-table-row .deposit > svg > path {
+    fill: #e6d9ba;
+}
+.midnightTheme .ant-table-row .deposit:hover {
+    opacity: 0.9;
+}
+.midnightTheme .ant-table-row .fire > svg > path {
+    fill: #f58eb1;
+}
+.midnightTheme .ant-table-row .deposit > svg {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+body.chart-page,
+.loading-indicator {
+    background: #2b2e37 !important;
+}
+input[type="checkbox"]:checked + span {
+    color: #ffaf00;
+}
+input[type="checkbox"] + span:hover {
+    cursor: pointer;
 }
