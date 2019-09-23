@@ -196,6 +196,8 @@ class XbtsxGateway extends React.Component {
                                 receive_coin_type={coin.symbol.toLowerCase()}
                                 supports_output_memos={coin.memoSupport}
                                 min_amount={coin.minAmount}
+                                withdraw_fee={coin.withdrawFee}
+                                deposit_fee={coin.depositFee}
                                 asset_precision={coin.precision}
                                 action={this.state.action}
                             />
