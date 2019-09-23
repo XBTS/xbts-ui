@@ -135,7 +135,8 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
-        max-width: calc((450px + 32px) * 3); // 450px + 32px padding * 3 cells
+        max-width: calc((450px + 32px) * 3);
+        // 450px + 32px padding * 3 cells
     }
     .showcases-grid--wrapper--item {
         color: $secondary-text-color;
@@ -2049,7 +2050,6 @@
                         color: $account-dimmed;
                     }
                 }
-
                 .icon.locked > svg > path {
                     fill: $button-bg-color;
                 }
@@ -2197,7 +2197,7 @@
     }
     .introjs-launcher {
         margin-left: 5px;
-        background-color: $bs-orange;
+        background-color: #009688;
         padding: 0 10px;
         font-size: 18px;
         line-height: 1.8;
@@ -2205,7 +2205,7 @@
         color: #fff;
         &:hover {
             cursor: pointer;
-            background-color: darken($bs-yellow, 10%);
+            background-color: darken($bs-green, 10%);
         }
         @include breakpoint(small only) {
             position: absolute;

@@ -23,6 +23,11 @@ import ifvisible from "ifvisible";
 import {getWalletName} from "branding";
 import {Tooltip} from "bitshares-ui-style-guide";
 
+// import {getLogoSmall} from "../../branding";
+// import {getLogoDark} from "../../branding";
+
+// const logoFooter = getLogoDark();
+
 class Footer extends React.Component {
     static propTypes = {
         dynGlobalObject: ChainTypes.ChainObject.isRequired,
@@ -82,8 +87,7 @@ class Footer extends React.Component {
     componentDidMount() {
         this.checkNewVersionAvailable.call(this);
 
-        this.downloadLink =
-            "https://github.com/XBTS/xbts-desktop-releases/releases";
+        this.downloadLink = "https://github.com/XBTS/xbts-ui/releases";
 
         let ensure = this._ensureConnectivity.bind(this);
         ifvisible.on("wakeup", function() {
@@ -111,9 +115,7 @@ class Footer extends React.Component {
 
     checkNewVersionAvailable() {
         if (__ELECTRON__) {
-            fetch(
-                "https://github.com/XBTS/xbts-desktop-releases/releases/latest"
-            )
+            fetch("https://github.com/XBTS/xbts-ui/releases/latest")
                 .then(res => {
                     return res.json();
                 })
@@ -524,15 +526,13 @@ class Footer extends React.Component {
                         <div className="footer-right">
                             <div className="footer-group-one">
                                 <a
-                                    href="https://xbts.io/listing"
+                                    href="https://xbts.io"
                                     target="_blank"
                                     className="footer-group-one-link"
+                                    title={"XBTS Official News & Web"}
                                 >
-                                    <span className="icon listing">
-                                        <Icon name="listing" title="Add Coin" />
-                                    </span>
                                     <span className="span-listing">
-                                        Listing
+                                        xbts.io
                                     </span>
                                 </a>
                             </div>
@@ -574,7 +574,7 @@ class Footer extends React.Component {
                                             viewBox="0 0 14 18"
                                             xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <title>faucet</title>
+                                            <title>SmartHoldem Faucet</title>
                                             <path
                                                 d="M13.5 9.825c.291.101.5.372.5.691a.742.742 0 0 1-.75.734h-4a.742.742 0 0 1-.75-.734c0-.319.209-.59.5-.69v-1.51H7.596a3.254 3.254 0 0 1-2.346.978c-.9 0-1.735-.353-2.346-.979H.75A.742.742 0 0 1 0 7.582V4.647c0-.405.336-.734.75-.734h2.154A3.226 3.226 0 0 1 4.5 3.02V1.467h-.75A.742.742 0 0 1 3 .734C3 .329 3.336 0 3.75 0h3c.414 0 .75.328.75.734a.742.742 0 0 1-.75.733H6V3.02c.608.139 1.16.446 1.596.893h5.154c.414 0 .75.329.75.734v5.178zm-1.707 3.12c.4.41 1.707 1.83 1.707 2.854 0 1.214-1.01 2.201-2.25 2.201S9 17.013 9 15.799c0-1.025 1.307-2.444 1.707-2.854a.758.758 0 0 1 1.086 0z"
                                                 fill="#8C979B"
