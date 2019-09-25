@@ -299,6 +299,7 @@ h5,
 h6 {
     font-family: "Roboto-Light", arial, sans-serif;
 }
+
 .midnightTheme tr.activeMarket,
 .midnightTheme tr.activeMarket:hover {
     color: #a1f5b3;
@@ -310,10 +311,12 @@ h6 {
     color: white;
     border-color: #323131;
 }
+
 body.midnightTheme .ant-btn-primary {
     background-color: #009688;
     color: #fff;
 }
+
 .midnightTheme div.grid-content.app-tables {
     background-color: #191a1f;
 }
@@ -327,9 +330,11 @@ body.midnightTheme .ant-pagination-item-active {
     border-color: #04d2bf;
     font-weight: 500;
 }
+
 ul.dropdown.header-menu > li {
     height: 36px;
 }
+
 .midnightTheme .qr-address-scanner-btn {
     background: #009688;
 }
@@ -341,8 +346,10 @@ body.midnightTheme .ant-modal-close-x {
     font-weight: bold;
     color: #4adbe2;
 }
+
 form.order-form {
     background: #212227;
+
     background: linear-gradient(to bottom, #2c3131 0%, rgb(34, 35, 39) 100%);
     box-shadow: 2px 3px 0.6em #0c0c0c; /* border-radius: 0px 0px 6px 6px; /* box-shadow: inset 0px 0px 0.8em #0c0c0c; */
 }
@@ -361,9 +368,9 @@ body.midnightTheme .ant-input {
 .midnightTheme .menu-group.primary li > a.active,
 .midnightTheme .header-container {
     background: #191a1f; /* background: -moz-linear-gradient(top, rgba(38,44,59,1) 0%, rgba(20,22,28,1) 100%);
-    background: -webkit-linear-gradient(top, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
-    background: linear-gradient(to bottom, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#262c3b', endColorstr='#0a121b',GradientType=0 ); */
+     background: -webkit-linear-gradient(top, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
+     background: linear-gradient(to bottom, rgba(38,44,59,1) 0%,rgba(20,22,28,1) 100%);
+     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#262c3b', endColorstr='#0a121b',GradientType=0 ); */
 }
 .midnightTheme .tab-content,
 .midnightTheme ul.account-overview li.is-active,
@@ -416,6 +423,7 @@ body.midnightTheme .ant-input {
     );
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#378483', endColorstr='#0c261e', GradientType=0);
 }
+
 body.midnightTheme .ant-tabs-bar {
     border-bottom: none !important;
 }
@@ -446,6 +454,7 @@ body.midnightTheme .ant-tabs-bar {
 .midnightTheme .footer-group-social-link .icon {
     margin-right: 5px;
 }
+
 .footer-group-one {
     margin: 0 15px;
     overflow-y: hidden;
@@ -505,6 +514,7 @@ body.midnightTheme .ant-tabs-bar {
 .order-1 .buy-sell-container {
     padding-right: 7px;
 }
+
 .order-2 .buy-sell-container {
     /* padding-right: 16px !important; */
 }
@@ -520,6 +530,7 @@ body.midnightTheme .ant-tabs-bar {
         margin-left: 10px;
     }
 }
+
 @media screen and (max-width: 480px) {
     .midnightTheme .showcases-grid--wrapper--item--wrapper.xbts-top.top-item-3,
     .midnightTheme .showcases-grid--wrapper--item--wrapper.xbts-top.top-item-2,
@@ -652,7 +663,7 @@ body.midnightTheme .ant-collapse-header {
     background: -moz-linear-gradient(45deg, #7d7e7d 0%, #0e0e0e 100%);
     background: -webkit-linear-gradient(45deg, #7d7e7d 0%, #0e0e0e 100%);
     background: linear-gradient(45deg, #7d7e7d 0%, #0e0e0e 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', endColorstr='#0e0e0e',GradientType=1 );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7d7e7d', endColorstr='#0e0e0e', GradientType=1);
 }
 .border-bottom {
     border-bottom: solid 1px #2c3131;
@@ -676,8 +687,9 @@ body.midnightTheme .ant-collapse-header {
     background: -moz-linear-gradient(45deg, #7d7e7d 0%, #0e0e0e 100%);
     background: -webkit-linear-gradient(45deg, #7d7e7d 0%, #0e0e0e 100%);
     background: linear-gradient(to right, #1e1c25 0%, #209a99 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', endColorstr='#0e0e0e',GradientType=1 );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7d7e7d', endColorstr='#0e0e0e', GradientType=1);
 }
+
 .midnightTheme .showcases-grid--wrapper--item--wrapper.xbts-top.top-item-2 {
     background: #cb60b3;
     background: -moz-linear-gradient(
@@ -693,7 +705,7 @@ body.midnightTheme .ant-collapse-header {
         #de47ac 100%
     );
     background: linear-gradient(45deg, #00897b 0%, #b027ac 50%, #00bcd4 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cb60b3', endColorstr='#de47ac',GradientType=1 );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cb60b3', endColorstr='#de47ac', GradientType=1);
 }
 .midnightTheme .showcases-grid--wrapper--item--wrapper.xbts-top.top-item-3 {
     background: #959595;
@@ -723,12 +735,13 @@ body.midnightTheme .ant-collapse-header {
         #1f595d 50%,
         #191b21 100%
     );
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#959595', endColorstr='#1b1b1b',GradientType=1 );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#959595', endColorstr='#1b1b1b', GradientType=1);
 }
 .midnightTheme table.table.dashboard-table > thead > tr > th,
 .midnightTheme table.table.dashboard-table > tbody > tr.total-value td {
     background-color: #242629;
 }
+
 .tab-content .page-membership {
     padding: 0 1.5rem !important;
 }
@@ -743,9 +756,11 @@ body.midnightTheme .ant-form-item-control,
 body.midnightTheme .ant-form-item-label {
     line-height: 35px;
 }
+
 .orderbook .order-1 {
     border-right: solid 3px #15151936 !important;
 }
+
 .exchange-content-header {
     font-size: 0.9rem;
 }
@@ -768,6 +783,7 @@ body.midnightTheme .ant-form-item-label {
 .midnightTheme .header-container {
     box-shadow: none !important;
 }
+
 .midnightTheme .header-container .menu-group .menu-bar li a:hover {
     background: none !important;
     color: $bs-orange;
@@ -785,8 +801,9 @@ body.midnightTheme .ant-form-item-label {
     /* Konqueror HTML */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
+    user-select: none;
+    /* Non-prefixed version, currently
+                                   supported by Chrome and Opera */
 }
 .ant-table-tbody .icon.trade svg path {
     fill: #4caf50 !important;
@@ -794,16 +811,10 @@ body.midnightTheme .ant-form-item-label {
 .ant-table-tbody .icon.transfer > svg > path {
     fill: #fff27f !important;
 }
-.midnightTheme .header-container span.icon.lock-unlock > svg > path {
-    fill: #fff;
-}
-.midnightTheme .header-container span.icon.lock-unlock > svg {
-    width: 1.5rem;
-    height: 1.5rem;
-}
 .ant-table-tbody a {
     color: #59c396 !important;
 }
+
 .midnightTheme ul.account-overview li > a > div.tab-subtext {
 }
 .midnightTheme .mymarkets-tabs > li.active {
@@ -836,6 +847,7 @@ body.midnightTheme
     display: table-cell;
     font-size: 0.8rem;
 }
+
 .spread-value {
     color: $bs-yellow;
 }
@@ -873,6 +885,7 @@ body.midnightTheme
     background-color: #8bc34a !important;
     color: #fff !important;
 }
+
 .order-table > thead > tr > th {
     font-size: 14px;
     padding: 5px 5px;
@@ -910,6 +923,7 @@ body.midnightTheme
     color: #37d2e6;
     text-shadow: 1px 1px 0.2em #000;
 }
+
 .walletdd {
     font-weight: bold;
     line-height: 2rem;
@@ -1003,6 +1017,7 @@ body.midnightTheme .ant-table {
     width: 1.1rem;
     height: 1.1rem;
 }
+
 body.chart-page,
 .loading-indicator {
     background: #2b2e37 !important;
@@ -1010,6 +1025,30 @@ body.chart-page,
 input[type="checkbox"]:checked + span {
     color: #ffaf00;
 }
+
 input[type="checkbox"] + span:hover {
     cursor: pointer;
+}
+.midnightTheme .header-container span.icon.locked > svg > path {
+    fill: #ffaf00;
+}
+.midnightTheme .header-container span.icon.lock-unlock > svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+@media (max-width: 480px) {
+    .header .menu-bar > li > a {
+        font-weight: bold;
+        line-height: 2rem;
+        padding-left: 0.5rem;
+        padding-right: 0.75rem;
+        font-size: 1.1rem;
+    }
+    .wallet-dd {
+        right: 1px;
+    }
+    .walletdd .icon {
+        top: 4px !important;
+    }
 }

@@ -291,6 +291,7 @@ export function getFeaturedMarkets(quotes = []) {
         ["XBTSX.STH", "XBTSX.COF"],
         ["XBTSX.STH", "XBTSX.SLB"],
         ["XBTSX.STH", "XBTSX.SKY"],
+        ["XBTSX.STH", "RUBLE"],
         ["BTS", "ZEPH"],
         ["BTS", "HERTZ"],
         ["BTS", "SPARKDEX.BTC"],
