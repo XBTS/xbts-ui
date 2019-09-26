@@ -135,7 +135,8 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
-        max-width: calc((450px + 32px) * 3); // 450px + 32px padding * 3 cells
+        max-width: calc((450px + 32px) * 3);
+        // 450px + 32px padding * 3 cells
     }
     .showcases-grid--wrapper--item {
         color: $secondary-text-color;
@@ -1556,6 +1557,7 @@
     }
     .exchange-content-header {
         color: $light-text-color;
+        font-size: calc(0.1vw + 0.7rem);
     }
     .exchange-content-header--buy-sell-form {
         border-bottom: 0 !important;
@@ -1589,6 +1591,7 @@
             color: $primary-text-color;
             opacity: 0.6;
         }
+        padding-left: 10px !important;
     }
     .orderHistoryCall {
         > span.price-integer,
