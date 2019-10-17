@@ -384,15 +384,7 @@ class Header extends React.Component {
             ) : null;
 
         let dashboard = (
-            <a
-                className={cnames("logo", {
-                    active:
-                        active === "/" ||
-                        (active.indexOf("dashboard") !== -1 &&
-                            active.indexOf("account") === -1)
-                })}
-                onClick={this._onNavigate.bind(this, "/")}
-            >
+            <a className="logo" target="_blank" href="https://xbts.io">
                 <img
                     style={{margin: 0, height: 40}}
                     className="column-hide-small"
@@ -405,6 +397,31 @@ class Header extends React.Component {
                 />
             </a>
         );
+
+        if (currentAccount) {
+            dashboard = (
+                <a
+                    className={cnames("logo", {
+                        active:
+                            active === "/" ||
+                            (active.indexOf("dashboard") !== -1 &&
+                                active.indexOf("account") === -1)
+                    })}
+                    onClick={this._onNavigate.bind(this, "/")}
+                >
+                    <img
+                        style={{margin: 0, height: 40}}
+                        className="column-hide-small"
+                        src={logo}
+                    />
+                    <img
+                        style={{margin: 0, height: 30}}
+                        className="column-show-small"
+                        src={logoSmall}
+                    />
+                </a>
+            );
+        }
 
         let createAccountLink = myAccountCount === 0 ? true : null;
 
