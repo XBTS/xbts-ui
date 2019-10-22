@@ -92,7 +92,17 @@ export function getUnits() {
     if (_isTestnet()) {
         return ["TEST"];
     } else {
-        return ["BTS", "USD", "CNY", "XBTSX.BTC", "EUR", "GBP", "XBTSX.STH"];
+        return [
+            "BTS",
+            "XBTSX.BTC",
+            "XBTSX.ETH",
+            "XBTSX.STH",
+            "USD",
+            "CNY",
+            "EUR",
+            "GBP",
+            "RUBLE"
+        ];
     }
 }
 
@@ -114,7 +124,7 @@ export function getMyMarketsBases() {
 export function getMyMarketsQuotes() {
     let tokens = {
         nativeTokens: [
-            "BTC",
+            //"BTC",
             "BTS",
             "CNY",
             "EUR",
@@ -124,11 +134,12 @@ export function getMyMarketsQuotes() {
             "RUBLE",
             "SILVER",
             "USD",
-            "AUD"
+            "AUD",
+            "MXN"
         ],
         bridgeTokens: ["BRIDGE.BCO"],
         gdexTokens: ["GDEX.EOS", "GDEX.NEO"],
-        openledgerTokens: ["OBITS", "OPEN.ZEC"],
+        openledgerTokens: ["OBITS"],
         rudexTokens: [],
         sparkTokens: ["ZEPH"],
         xbtsxTokens: [
@@ -171,9 +182,11 @@ export function getMyMarketsQuotes() {
             "XBTSX.NOBT",
             "XBTSX.EXR",
             // "XBTSX.LCRT",
-            "XBTSX.PAISA"
+            "XBTSX.PAISA",
+            "XBTSX.BCCX",
+            "XBTSX.BNB"
         ],
-        otherTokens: ["DEEX", "CVCOIN", "ICOO", "STEALTH", "YOYOW", "EVRAZ"]
+        otherTokens: ["CVCOIN", "ICOO", "STEALTH", "YOYOW", "EVRAZ"]
     };
 
     let allTokens = [];
@@ -293,16 +306,7 @@ export function getFeaturedMarkets(quotes = []) {
         ["XBTSX.STH", "XBTSX.SKY"],
         ["XBTSX.STH", "RUBLE"],
         ["BTS", "ZEPH"],
-        ["BTS", "HERTZ"],
-        ["BTS", "SPARKDEX.BTC"],
-        ["BTS", "SPARKDEX.ETH"],
-        ["BTS", "SPARKDEX.HKD"],
-        ["SPARKDEX.HKD", "SPARKDEX.BTC"],
-        ["SPARKDEX.HKD", "SPARKDEX.ETH"],
-        ["BTS", "SPARKDEX.SGD"],
-        ["BTS", "SPARKDEX.AUD"],
-        ["BTS", "SPARKDEX.EUR"],
-        ["BTS", "SPARKDEX.GBP"]
+        ["BTS", "HERTZ"]
     ].filter(a => {
         if (!quotes.length) return true;
         return quotes.indexOf(a[0]) !== -1;

@@ -135,8 +135,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
-        max-width: calc((450px + 32px) * 3);
-        // 450px + 32px padding * 3 cells
+        max-width: calc((450px + 32px) * 3); // 450px + 32px padding * 3 cells
     }
     .showcases-grid--wrapper--item {
         color: $secondary-text-color;
@@ -2834,4 +2833,7 @@ div.customizable-column--selector--dropdown {
     ul.ant-select-dropdown-menu-vertical {
         max-height: 100% !important;
     }
+}
+.grid-content .grid-block {
+    margin: 0;
 }
