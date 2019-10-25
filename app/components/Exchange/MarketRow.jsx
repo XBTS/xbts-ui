@@ -62,7 +62,8 @@ class MarketRow extends React.Component {
         }
         if (
             base.get("symbol") === "OPEN.CNY" ||
-            base.get("symbol") === "OPEN.USD"
+            base.get("symbol") === "OPEN.USD" ||
+            base.get("symbol") === "SPARKDEX.USD"
         ) {
             return null;
         }
