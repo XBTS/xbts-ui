@@ -183,7 +183,8 @@ export function getMyMarketsQuotes() {
             "XBTSX.EXR",
             // "XBTSX.LCRT",
             "XBTSX.PAISA",
-            "XBTSX.BCCX"
+            "XBTSX.BCCX",
+            "XBTSX.GUAP"
             //"XBTSX.BNB"
         ],
         otherTokens: ["CVCOIN", "ICOO", "STEALTH", "YOYOW", "EVRAZ"]
