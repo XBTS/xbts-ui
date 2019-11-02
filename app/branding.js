@@ -183,8 +183,8 @@ export function getMyMarketsQuotes() {
             "XBTSX.EXR",
             // "XBTSX.LCRT",
             "XBTSX.PAISA",
-            "XBTSX.BCCX",
-            "XBTSX.BNB"
+            "XBTSX.BCCX"
+            //"XBTSX.BNB"
         ],
         otherTokens: ["CVCOIN", "ICOO", "STEALTH", "YOYOW", "EVRAZ"]
     };
@@ -351,8 +351,8 @@ export function allowedGateway(gateway) {
             // "RUDEX",
             // "BRIDGE",
             "GDEX",
-            "XBTSX"
-            //"SPARKDEX",
+            "XBTSX",
+            "SPARKDEX"
             //"CITADEL"
         ].indexOf(gateway) >= 0
     );

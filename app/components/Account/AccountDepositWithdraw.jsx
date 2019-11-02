@@ -9,7 +9,7 @@ import BindToChainState from "../Utility/BindToChainState";
 import OpenledgerGateway from "../DepositWithdraw/OpenledgerGateway";
 import OpenLedgerFiatDepositWithdrawal from "../DepositWithdraw/openledger/OpenLedgerFiatDepositWithdrawal";
 import OpenLedgerFiatTransactionHistory from "../DepositWithdraw/openledger/OpenLedgerFiatTransactionHistory";
-import BlockTradesBridgeDepositRequest from "../DepositWithdraw/blocktrades/BlockTradesBridgeDepositRequest";
+// import BlockTradesBridgeDepositRequest from "../DepositWithdraw/blocktrades/BlockTradesBridgeDepositRequest";
 import CitadelBridgeDepositRequest from "../DepositWithdraw/citadel/CitadelBridgeDepositRequest";
 import HelpContent from "../Utility/HelpContent";
 import AccountStore from "stores/AccountStore";
@@ -57,10 +57,10 @@ class AccountDepositWithdraw extends React.Component {
         return (
             nextProps.account !== this.props.account ||
             nextProps.servicesDown !== this.props.servicesDown ||
-            !utils.are_equal_shallow(
+            /*!utils.are_equal_shallow(
                 nextProps.blockTradesBackedCoins,
                 this.props.blockTradesBackedCoins
-            ) ||
+            ) ||*/
             !utils.are_equal_shallow(
                 nextProps.openLedgerBackedCoins,
                 this.props.openLedgerBackedCoins
@@ -337,14 +337,12 @@ class AccountDepositWithdraw extends React.Component {
                 </div>
             )
         });
-
+        /*
         serList.push({
             name: "BlockTrades",
             template: (
                 <div>
                     <div className="content-block">
-                        {/* <div className="float-right"><a href="https://blocktrades.us" target="__blank" rel="noopener noreferrer"><Translate content="gateway.website" /></a></div> */}
-
                         <div
                             className="service-selector"
                             style={{marginBottom: "2rem"}}
@@ -387,6 +385,7 @@ class AccountDepositWithdraw extends React.Component {
                 </div>
             )
         });
+*/
 
         serList.push({
             name: "Citadel",
@@ -507,7 +506,7 @@ class AccountDepositWithdraw extends React.Component {
             "GDEX",
             "OPEN",
             "SPARKDEX",
-            "TRADE",
+            //"TRADE",
             "BITKAPITAL",
             "CITADEL"
         ];
@@ -696,10 +695,12 @@ export default connect(
                     "SPARKDEX",
                     []
                 ),
+                /*
                 blockTradesBackedCoins: GatewayStore.getState().backedCoins.get(
                     "TRADE",
                     []
                 ),
+                */
                 citadelBackedCoins: GatewayStore.getState().backedCoins.get(
                     "CITADEL",
                     []
