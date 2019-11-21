@@ -527,7 +527,6 @@ class Footer extends React.Component {
                             <div className="footer-group-one">
                                 <a
                                     href="https://xbts.io"
-                                    target="_blank"
                                     className="footer-group-one-link"
                                     title={"XBTS Official News & Web"}
                                 >
