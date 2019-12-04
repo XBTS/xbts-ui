@@ -276,8 +276,10 @@ require("file-loader?name=asset-symbols/[name].png!./gdp.png");
 require("file-loader?name=asset-symbols/[name].png!./biso.png");
 require("file-loader?name=asset-symbols/[name].png!./bnb.png");
 require("file-loader?name=asset-symbols/[name].png!./guap.png");
+require("file-loader?name=asset-symbols/[name].png!./axai.png");
 
 // xbts assets
+require("file-loader?name=asset-symbols/[name].png!./xbtsx.tusd.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.guap.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.sth.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.btc.png");
