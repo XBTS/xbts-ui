@@ -325,6 +325,7 @@ require("file-loader?name=asset-symbols/[name].png!./xbtsx.exr.png");
 require("file-loader?name=asset-symbols/[name].png!./gdex.neo.png");
 
 // other gateways
+require("file-loader?name=asset-symbols/[name].png!./gdex.usdt.png");
 require("file-loader?name=asset-symbols/[name].png!./bridge.bco.png");
 require("file-loader?name=asset-symbols/[name].png!./gdex.eos.png");
 require("file-loader?name=asset-symbols/[name].png!./bridge.btc.png");
