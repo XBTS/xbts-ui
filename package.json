@@ -1,7 +1,7 @@
 {
     "name": "XBTS-light",
-    "version": "3.1.190822-rc1",
-    "description": "Reference UI to showcase all features of the BitShares blockchain.",
+    "version": "3.1.190824-rc1",
+    "description": "Reference XBTS UI to showcase all features of the BitShares blockchain.",
     "homepage": "https://github.com/technologiespro/xbts-ui",
     "author": "BitShares UI Worker <ui-dev@bitshares.org>",
     "contributors": [
@@ -100,6 +100,7 @@
             "category": "public.app-category.finance"
         },
         "dmg": {
+            "icon": "./resources/icon.icns",
             "contents": [
                 {
                     "x": 130,
@@ -125,6 +126,7 @@
             ]
         },
         "linux": {
+            "icon": "./resources/icon.icns",
             "category": "Finance",
             "target": [
                 "deb",
