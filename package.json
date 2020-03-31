@@ -1,6 +1,6 @@
 {
     "name": "XBTS-light",
-    "version": "3.1.190824-rc1",
+    "version": "3.1.190825-rc1",
     "description": "Reference XBTS UI to showcase all features of the BitShares blockchain.",
     "homepage": "https://github.com/technologiespro/xbts-ui",
     "author": "BitShares UI Worker <ui-dev@bitshares.org>",

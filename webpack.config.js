@@ -226,6 +226,7 @@ module.exports = function(env) {
             globalObject: "this"
         },
         optimization: {
+            //minimize: false,
             splitChunks: {
                 cacheGroups: {
                     styles: {
