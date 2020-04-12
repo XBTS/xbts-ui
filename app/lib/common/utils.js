@@ -1,8 +1,10 @@
+import sanitize from "xss";
+import asset_utils from "./asset_utils";
+
 var numeral = require("numeral");
 let id_regex = /\b\d+\.\d+\.(\d+)\b/;
 
 import {ChainTypes} from "bitsharesjs";
-
 var {object_type} = ChainTypes;
 
 import {getAssetNamespaces, getAssetHideNamespaces} from "../../branding";
@@ -74,9 +76,6 @@ var Utils = {
     },
 
     format_volume(amount, precision = 3) {
-        if (isNaN(amount)) {
-            amount = "0";
-        }
         if (amount < 10000) {
             return this.format_number(amount, precision);
         } else if (amount < 1000000) {
@@ -137,7 +136,6 @@ var Utils = {
         let baseID = base.toJS ? base.get("id") : base.id;
         let basePrecision = base.toJS ? base.get("precision") : base.precision;
         let fixedPrecisionAssets = {
-            "1.3.4157": 8, // XBTSX.BTC
             "1.3.113": 5, // bitCNY
             "1.3.121": 5 // bitUSD
         };
@@ -321,18 +319,14 @@ var Utils = {
         if (fromRate.toJS && this.is_object_type(fromRate.get("id"), "asset")) {
             fromID = fromRate.get("id");
             fromRate = fromRate.get("bitasset")
-                ? fromRate
-                      .getIn(["bitasset", "current_feed", "settlement_price"])
-                      .toJS()
+                ? asset_utils.extractRawFeedPrice(fromRate).toJS()
                 : fromRate.getIn(["options", "core_exchange_rate"]).toJS();
         }
 
         if (toRate.toJS && this.is_object_type(toRate.get("id"), "asset")) {
             toID = toRate.get("id");
             toRate = toRate.get("bitasset")
-                ? toRate
-                      .getIn(["bitasset", "current_feed", "settlement_price"])
-                      .toJS()
+                ? asset_utils.extractRawFeedPrice(toRate).toJS()
                 : toRate.getIn(["options", "core_exchange_rate"]).toJS();
         }
 
@@ -423,13 +417,34 @@ var Utils = {
         return inverse ? intB - intA : intA - intB;
     },
 
-    calc_block_time(block_number, globalObject, dynGlobalObject) {
-        if (!globalObject || !dynGlobalObject) return null;
-        const block_interval = globalObject
-            .get("parameters")
-            .get("block_interval");
-        const head_block = dynGlobalObject.get("head_block_number");
-        const head_block_time = new Date(dynGlobalObject.get("time") + "Z");
+    calc_block_time(
+        block_number,
+        globalObject,
+        dynGlobalObject,
+        estimate = false
+    ) {
+        let block_interval = null;
+        let head_block = null;
+        let head_block_time = null;
+        if (!estimate && (!globalObject || !dynGlobalObject)) {
+            return null;
+        }
+        // estimate what is unknown, i.e. fix a block and assume interval and constant production with equal parameters
+        if (!globalObject) {
+            block_interval = 3;
+        } else {
+            block_interval = globalObject
+                .get("parameters")
+                .get("block_interval");
+        }
+        if (!dynGlobalObject) {
+            // mainnet estimation
+            head_block = 37025190;
+            head_block_time = new Date("2019-04-30T07:55:24Z");
+        } else {
+            head_block = dynGlobalObject.get("head_block_number");
+            head_block_time = new Date(dynGlobalObject.get("time") + "Z");
+        }
         const seconds_below = (head_block - block_number) * block_interval;
         return new Date(head_block_time - seconds_below * 1000);
     },
@@ -472,6 +487,20 @@ var Utils = {
             prefix,
             isBitAsset: !!isBitAsset
         };
+    },
+
+    sanitize(string) {
+        // sanitize with package
+        string = sanitize(string, {
+            whiteList: [], // empty, means filter out all tags
+            stripIgnoreTag: true // remove all tags instead of escaping
+        });
+        string = string.replace(/%3A/gi, ":"); // resolve to : to not break links
+        string = string.replace(/javascript:/gi, "");
+        string = string.replace(/vbscript:/gi, "");
+        string = string.replace(/data:/gi, "");
+        string = string.replace(/tcl:/gi, "");
+        return string;
     },
 
     timeStringToGrapheneDate(time_string) {

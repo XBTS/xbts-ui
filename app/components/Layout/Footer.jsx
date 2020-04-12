@@ -23,6 +23,11 @@ import ifvisible from "ifvisible";
 import {getWalletName} from "branding";
 import {Tooltip} from "bitshares-ui-style-guide";
 
+// import {getLogoSmall} from "../../branding";
+// import {getLogoDark} from "../../branding";
+
+// const logoFooter = getLogoDark();
+
 class Footer extends React.Component {
     static propTypes = {
         dynGlobalObject: ChainTypes.ChainObject.isRequired,
@@ -110,7 +115,7 @@ class Footer extends React.Component {
 
     checkNewVersionAvailable() {
         if (__ELECTRON__) {
-            fetch("https://api.github.com/repos/xbts/xbts-ui/releases/latest")
+            fetch("https://github.com/XBTS/xbts-ui/releases/latest")
                 .then(res => {
                     return res.json();
                 })
@@ -191,6 +196,9 @@ class Footer extends React.Component {
         const {props} = this;
 
         const testNet = node.url.indexOf("testnet") !== -1;
+
+        if (!!node.location && node.location.translate)
+            node.location = counterpart.translate(node.location.translate);
 
         let title = node.operator + " " + !!node.location ? node.location : "";
         if ("country" in node) {
@@ -384,7 +392,7 @@ class Footer extends React.Component {
             ? `.${version_match[1]}`
             : ` ${APP_VERSION}`;
         let rc_match = APP_VERSION.match(/-rc[0-9]$/);
-        if (rc_match) version += rc_match[0];
+        // if (rc_match) version += rc_match[0];
         let updateStyles = {display: "inline-block", verticalAlign: "top"};
         let logoProps = {};
 
@@ -488,7 +496,7 @@ class Footer extends React.Component {
                                     {__GIT_BRANCH__ === "release" ? (
                                         <a
                                             href={`https://github.com/xbts/xbts-ui/commit/${version.trim()}`}
-                                            className="version"
+                                            className="version external-link"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
@@ -518,15 +526,12 @@ class Footer extends React.Component {
                         <div className="footer-right">
                             <div className="footer-group-one">
                                 <a
-                                    href="https://xbts.io/add-coin.html"
-                                    target="_blank"
+                                    href="https://xbts.io"
                                     className="footer-group-one-link"
+                                    title={"XBTS Official News & Web"}
                                 >
-                                    <span className="icon listing">
-                                        <Icon name="listing" title="Add Coin" />
-                                    </span>
                                     <span className="span-listing">
-                                        Listing
+                                        xbts.io
                                     </span>
                                 </a>
                             </div>
@@ -559,7 +564,7 @@ class Footer extends React.Component {
                                 </a>
 
                                 <a
-                                    href="https://faucet.smartholdem.io/"
+                                    href="https://smartholdem.io/#/antibounty"
                                     target="_blank"
                                     className="footer-group-social-link"
                                 >
@@ -568,7 +573,7 @@ class Footer extends React.Component {
                                             viewBox="0 0 14 18"
                                             xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <title>faucet</title>
+                                            <title>SmartHoldem Faucet</title>
                                             <path
                                                 d="M13.5 9.825c.291.101.5.372.5.691a.742.742 0 0 1-.75.734h-4a.742.742 0 0 1-.75-.734c0-.319.209-.59.5-.69v-1.51H7.596a3.254 3.254 0 0 1-2.346.978c-.9 0-1.735-.353-2.346-.979H.75A.742.742 0 0 1 0 7.582V4.647c0-.405.336-.734.75-.734h2.154A3.226 3.226 0 0 1 4.5 3.02V1.467h-.75A.742.742 0 0 1 3 .734C3 .329 3.336 0 3.75 0h3c.414 0 .75.328.75.734a.742.742 0 0 1-.75.733H6V3.02c.608.139 1.16.446 1.596.893h5.154c.414 0 .75.329.75.734v5.178zm-1.707 3.12c.4.41 1.707 1.83 1.707 2.854 0 1.214-1.01 2.201-2.25 2.201S9 17.013 9 15.799c0-1.025 1.307-2.444 1.707-2.854a.758.758 0 0 1 1.086 0z"
                                                 fill="#8C979B"
@@ -723,8 +728,9 @@ class Footer extends React.Component {
                                                     ? "-"
                                                     : !activeNode.ping
                                                         ? "-"
-                                                        : activeNode.ping +
-                                                          "ms"}
+                                                        : parseInt(
+                                                              activeNode.ping
+                                                          ) + "ms"}
                                                 &nbsp;/&nbsp;
                                                 <span className="footer-block-title">
                                                     <Translate content="footer.block" />
@@ -737,24 +743,6 @@ class Footer extends React.Component {
                                 </Tooltip>
 
                                 <div className="grid-block">
-                                    {/*
-                                    <Tooltip
-                                        title={counterpart.translate(
-                                            "tooltip.debug_report"
-                                        )}
-                                        placement="topRight"
-                                        mouseEnterDelay={0.5}
-                                    >
-                                        <div
-                                            className="introjs-launcher"
-                                            onClick={e => {
-                                                this._showReportModal(e);
-                                            }}
-                                        >
-                                            <Translate content="modal.report.button" />
-                                        </div>
-                                    </Tooltip>
-                                    */}
                                     <Tooltip
                                         title={counterpart.translate(
                                             "tooltip.self_help"

@@ -8,8 +8,7 @@
 
 Вы можете общаться с другими членами сообщества Bitshares в реальном времени здесь:
 
-- [Telegram](https://t.me/BitSharesDEX)
-- [Telegram (ru)](https://t.me/BitSharesDEX_RU)
+- [Telegram](https://t.me/xbtsio)
 - [Discord](https://discord.gg/GsjQfAJ)
 
 ### Разработчики

@@ -6,9 +6,9 @@ import utils from "common/utils";
 import Icon from "../Icon/Icon";
 import MarketsActions from "actions/MarketsActions";
 import SettingsActions from "actions/SettingsActions";
-import AssetImage from "../Utility/AssetImage";
 import {withRouter} from "react-router-dom";
 import {Tooltip} from "bitshares-ui-style-guide";
+import AssetImage from "../Utility/AssetImage";
 
 class MarketRow extends React.Component {
     static defaultProps = {
@@ -60,8 +60,16 @@ class MarketRow extends React.Component {
         if (!quote || !base) {
             return null;
         }
+        if (
+            base.get("symbol") === "OPEN.CNY" ||
+            base.get("symbol") === "OPEN.USD" ||
+            base.get("symbol") === "SPARKDEX.USD"
+        ) {
+            return null;
+        }
 
         let marketID = quote.get("symbol") + "_" + base.get("symbol");
+
         let marketName = quote.get("symbol") + ":" + base.get("symbol");
         let dynamic_data = this.props.getDynamicObject(
             quote.get("dynamic_asset_data_id")
@@ -114,7 +122,6 @@ class MarketRow extends React.Component {
 
                     case "vol":
                         let amount = stats ? stats.volumeBase : 0;
-
                         return (
                             <td
                                 onClick={this._onClick.bind(this, marketID)}
@@ -204,6 +211,7 @@ class MarketRow extends React.Component {
                             "BTC",
                             "OPEN.BTC",
                             "XBTSX.BTC",
+                            "XBTSX.LTC",
                             "TRADE.BTC",
                             "GOLD",
                             "SILVER"
@@ -352,7 +360,6 @@ class MarketRow extends React.Component {
         );
     }
 }
-
 MarketRow = withRouter(MarketRow);
 
 export default AssetWrapper(MarketRow, {

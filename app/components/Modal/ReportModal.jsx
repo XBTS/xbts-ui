@@ -102,11 +102,12 @@ class ReportModal extends React.Component {
                         <br />
                         &nbsp;&nbsp;
                         <a
-                            href="https://github.com/xbts/xbts-ui/issues"
+                            href="https://github.com/bitshares/bitshares-ui/issues"
                             target="_blank"
                             style={{textAlign: "center", width: "100%"}}
+                            className="external-link"
                         >
-                            https://github.com/xbts/xbts-ui/issues
+                            https://github.com/bitshares/bitshares-ui/issues
                         </a>
                         <br />
                         <Translate content="modal.report.explanatory_text_3" />
@@ -119,6 +120,7 @@ class ReportModal extends React.Component {
                             href="https://hackthedex.io"
                             target="_blank"
                             style={{textAlign: "center", width: "100%"}}
+                            className="external-link"
                         >
                             https://hackthedex.io
                         </a>

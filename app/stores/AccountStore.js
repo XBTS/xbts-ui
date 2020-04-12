@@ -24,8 +24,6 @@ class AccountStore extends BaseStore {
         super();
 
         this.bindListeners({
-            onSetNeverShowBrowsingModeNotice:
-                AccountActions.setNeverShowBrowsingModeNotice,
             onSetCurrentAccount: AccountActions.setCurrentAccount,
             onCreateAccount: AccountActions.createAccount,
             onAccountSearch: AccountActions.accountSearch,
@@ -116,15 +114,17 @@ class AccountStore extends BaseStore {
                 if (referralAccount) break;
             }
         }
+
         if (!referralAccount) {
             referralAccount = "xbtsx";
         }
+
         if (referralAccount) {
             ss.set("referralAccount", referralAccount); // Reset to empty string when the user returns with no ref code
         } else {
             ss.remove("referralAccount");
         }
-        // if (referralAccount) console.log("referralAccount", referralAccount);
+        if (referralAccount) console.log("referralAccount", referralAccount);
         return referralAccount;
     }
 
@@ -667,14 +667,6 @@ class AccountStore extends BaseStore {
                     this.setCurrentAccount(account.name);
                 }
             });
-    }
-
-    onSetNeverShowBrowsingModeNotice(value) {
-        ss.set(this._getStorageKey("neverShowBrowsingModeNotice"), value);
-
-        this.setState({
-            neverShowBrowsingModeNotice: value
-        });
     }
 
     onAddAccountContact(name) {

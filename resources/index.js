@@ -7,6 +7,7 @@
     var env = require("./env_config");
     var devHelper = require("./dev_helper");
     var windowStateKeeper = require("./window_state");
+    const _path = require("path");
     var fs = require("fs");
     require("./electron_context_menu")({
         prepend: (params, browserWindow) => [
@@ -18,6 +19,7 @@
 
     var mainWindow;
 
+    const iconpath = _path.resolve(__dirname, "/resources/icon.png");
     // Preserver of the window size and position between app launches.
     var mainWindowState = windowStateKeeper("main", {
         width: 1000,
@@ -31,7 +33,8 @@
             x: mainWindowState.x,
             y: mainWindowState.y,
             width: mainWindowState.width,
-            height: mainWindowState.height
+            height: mainWindowState.height,
+            icon: iconpath
         });
 
         if (mainWindowState.isMaximized) {
