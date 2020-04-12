@@ -4,17 +4,31 @@
  */
 
 import {
-    // rudexAPIs,
-    // bitsparkAPIs,
+    rudexAPIs,
+    bitsparkAPIs,
     openledgerAPIs,
     cryptoBridgeAPIs,
-    // gdex2APIs,
-    xbtsxAPIs
-    // citadelAPIs
+    gdex2APIs,
+    xbtsxAPIs,
+    citadelAPIs
 } from "api/apiConfig";
 import {allowedGateway} from "branding";
 
 export const availableGateways = {
+    XBTSX: {
+        id: "XBTSX",
+        name: "XBTSX",
+        baseAPI: xbtsxAPIs,
+        isEnabled: allowedGateway("XBTSX"),
+        isSimple: true,
+        selected: true,
+        simpleAssetGateway: false,
+        addressValidatorMethod: "POST",
+        options: {
+            enabled: false,
+            selected: false
+        }
+    },
     OPEN: {
         id: "OPEN",
         name: "OPENLEDGER",
@@ -26,7 +40,6 @@ export const availableGateways = {
             selected: false
         }
     },
-    /*
     RUDEX: {
         id: "RUDEX",
         name: "RUDEX",
@@ -42,8 +55,6 @@ export const availableGateways = {
             selected: false
         }
     },
-     */
-    /*
     SPARKDEX: {
         id: "SPARKDEX",
         name: "SPARKDEX",
@@ -55,7 +66,6 @@ export const availableGateways = {
             selected: false
         }
     },
-     */
     BRIDGE: {
         id: "BRIDGE",
         name: "CRYPTO-BRIDGE",
@@ -71,7 +81,6 @@ export const availableGateways = {
             selected: false
         }
     },
-    /*
     GDEX: {
         id: "GDEX",
         name: "GDEX",
@@ -82,22 +91,6 @@ export const availableGateways = {
             selected: false
         }
     },
-     */
-    XBTSX: {
-        id: "XBTSX",
-        name: "XBTSX",
-        baseAPI: xbtsxAPIs,
-        isEnabled: allowedGateway("XBTSX"),
-        isSimple: true,
-        selected: false,
-        simpleAssetGateway: false,
-        addressValidatorMethod: "POST",
-        options: {
-            enabled: false,
-            selected: false
-        }
-    }
-    /*
     CITADEL: {
         id: "CITADEL",
         name: "CITADEL",
@@ -110,7 +103,6 @@ export const availableGateways = {
             selected: false
         }
     }
-     */
 };
 
 export const gatewayPrefixes = Object.keys(availableGateways);

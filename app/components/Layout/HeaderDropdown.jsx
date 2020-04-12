@@ -149,34 +149,6 @@ export default class DropDownMenu extends React.Component {
                 <li
                     className={cnames(
                         {
-                            active: active.indexOf("/deposit-withdraw") !== -1
-                        },
-                        {disabled: !enableDepositWithdraw}
-                    )}
-                    onClick={
-                        !enableDepositWithdraw
-                            ? () => {}
-                            : this.props.onNavigate.bind(
-                                  this,
-                                  "/deposit-withdraw"
-                              )
-                    }
-                >
-                    <div className="table-cell">
-                        <Icon
-                            size="2x"
-                            name="deposit-withdraw"
-                            title="icons.deposit.deposit_withdraw"
-                        />
-                    </div>
-                    <div className="table-cell">
-                        <Translate content="account.deposit_withdraw" />
-                    </div>
-                </li>
-
-                <li
-                    className={cnames(
-                        {
                             active: active.indexOf("/market/") !== -1
                         },
                         "column-show-small"
@@ -214,6 +186,33 @@ export default class DropDownMenu extends React.Component {
                         <Translate content="header.explorer" />
                     </div>
                 </li>
+                <li
+                    className={cnames(
+                        {
+                            active: active.indexOf("/deposit-withdraw") !== -1
+                        },
+                        {disabled: !enableDepositWithdraw}
+                    )}
+                    onClick={
+                        !enableDepositWithdraw
+                            ? () => {}
+                            : this.props.onNavigate.bind(
+                                  this,
+                                  "/deposit-withdraw"
+                              )
+                    }
+                >
+                    <div className="table-cell">
+                        <Icon
+                            size="2x"
+                            name="deposit-withdraw"
+                            title="icons.deposit.deposit_withdraw"
+                        />
+                    </div>
+                    <div className="table-cell">
+                        <Translate content="account.deposit_withdraw" />
+                    </div>
+                </li>
 
                 {[
                     {
@@ -223,9 +222,9 @@ export default class DropDownMenu extends React.Component {
                         },
                         disabled: !showAccountLinks,
                         mainText: "header.payments",
-                        mainCallback: this.props.showSend,
-                        subText: "header.payments_legacy",
-                        subURL: "/transfer"
+                        mainCallback: this.props.showSend
+                        //subText: "header.payments_legacy",
+                        //subURL: "/transfer"
                     }
                     /*
                     {
@@ -236,8 +235,8 @@ export default class DropDownMenu extends React.Component {
                         disabled: !enableDepositWithdraw,
                         mainText: "modal.deposit.submit",
                         mainCallback: this.props.showDeposit,
-                        subText: "header.deposit_legacy",
-                        subURL: "/deposit-withdraw"
+                        //subText: "header.deposit_legacy",
+                        //subURL: "/deposit-withdraw"
                     },
                     {
                         icon: {
@@ -247,10 +246,10 @@ export default class DropDownMenu extends React.Component {
                         disabled: !enableDepositWithdraw,
                         mainText: "modal.withdraw.submit",
                         mainCallback: this.props.showWithdraw,
-                        subText: "header.withdraw_legacy",
-                        subURL: "/deposit-withdraw"
+                        //subText: "header.withdraw_legacy",
+                        //subURL: "/deposit-withdraw"
                     }
-                     */
+                    */
                 ].map(
                     (
                         {
@@ -375,33 +374,6 @@ export default class DropDownMenu extends React.Component {
                     </div>
                     <div className="table-cell">
                         <Translate content="news.news" />
-                    </div>
-                </li>
-
-                <li
-                    className={cnames(
-                        {
-                            active:
-                                active.indexOf(
-                                    "/help/introduction/bitshares"
-                                ) !== -1
-                        },
-                        "divider"
-                    )}
-                    onClick={this.props.onNavigate.bind(
-                        this,
-                        "/help/introduction/bitshares"
-                    )}
-                >
-                    <div className="table-cell">
-                        <Icon
-                            size="2x"
-                            name="question-circle"
-                            title="icons.question_circle"
-                        />
-                    </div>
-                    <div className="table-cell">
-                        <Translate content="header.help" />
                     </div>
                 </li>
 

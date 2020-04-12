@@ -1,7 +1,7 @@
 import React from "react";
-import utils from "common/utils";
 import {Input} from "bitshares-ui-style-guide";
 import {DecimalChecker} from "../Utility/DecimalChecker";
+import utils from "common/utils";
 
 class ExchangeInput extends DecimalChecker {
     constructor() {
@@ -35,17 +35,10 @@ class ExchangeInput extends DecimalChecker {
             />
         );
     }
-
     /*
     render() {
         // allowNaN is no valid prop for Input, remove
-        let {allowNaN, ...other} = this.props;
-        if (typeof other.value === "undefined") {
-            other.value = "";
-        } else {
-            other.value = (other.value).toPrecision(20);
-        }
-        // other.value = (other.value)
+        var {allowNaN, ...other} = this.props;
         return (
             <Input
                 ref="input"

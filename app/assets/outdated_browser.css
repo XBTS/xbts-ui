@@ -39,7 +39,7 @@
     line-height: 36px;
     position: relative;
     text-decoration: none;
-    color: #00a9e0;
+    color: #ffb100;
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     cursor: pointer;
     position: absolute;
@@ -68,12 +68,12 @@
 
 .outdated-browser__body a {
     display: inline-block;
-    color: #00a9e0;
+    color: #ffb100;
     text-decoration: none;
 }
 
 .outdated-browser__body a:hover {
-    color: #00a9e0;
+    color: #ffb100;
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
@@ -95,9 +95,9 @@
     user-select: none;
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
-    color: #00a9e0;
+    color: #ffb100;
     background-color: transparent;
-    border-color: #00a9e0;
+    border-color: #ffb100;
 }
 
 .outdated-browser__btn:hover {

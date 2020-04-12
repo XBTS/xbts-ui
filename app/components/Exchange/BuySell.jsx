@@ -6,7 +6,6 @@ import utils from "common/utils";
 import Translate from "react-translate-component";
 import TranslateWithLinks from "../Utility/TranslateWithLinks";
 import counterpart from "counterpart";
-import SettingsStore from "stores/SettingsStore";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
 import PriceText from "../Utility/PriceText";
@@ -14,12 +13,13 @@ import AssetName from "../Utility/AssetName";
 import {Asset} from "common/MarketClasses";
 import ExchangeInput from "./ExchangeInput";
 import assetUtils from "common/asset_utils";
-import DatePicker from "react-datepicker2/src/";
+import {DatePicker} from "antd";
 import moment from "moment";
 import Icon from "../Icon/Icon";
 import SettleModal from "../Modal/SettleModal";
-import {Button, Select, Popover} from "bitshares-ui-style-guide";
+import {Button, Select, Popover, Tooltip} from "bitshares-ui-style-guide";
 import ReactTooltip from "react-tooltip";
+import AccountStore from "../../stores/AccountStore";
 
 class BuySell extends React.Component {
     static propTypes = {
@@ -48,13 +48,13 @@ class BuySell extends React.Component {
     }
 
     /*
-    * Force re-rendering component when state changes.
-    * This is required for an updated value of component width
-    *
-    * It will trigger a re-render twice
-    * - Once when state is changed
-    * - Once when forceReRender is set to false
-    */
+     * Force re-rendering component when state changes.
+     * This is required for an updated value of component width
+     *
+     * It will trigger a re-render twice
+     * - Once when state is changed
+     * - Once when forceReRender is set to false
+     */
     _forceRender(np) {
         if (this.state.forceReRender) {
             this.setState({
@@ -101,6 +101,10 @@ class BuySell extends React.Component {
             nextState.isQuickDepositVisible !== this.state.isQuickDepositVisible
         );
     }
+
+    getDatePickerRef = node => {
+        this.datePricker = node;
+    };
 
     showSettleModal() {
         this.setState({
@@ -153,6 +157,35 @@ class BuySell extends React.Component {
         this.props.onBuy();
     }
 
+    onExpirationSelectChange = e => {
+        if (e.target.value === "SPECIFIC") {
+            this.datePricker.picker.handleOpenChange(true);
+        } else {
+            this.datePricker.picker.handleOpenChange(false);
+        }
+
+        this.props.onExpirationTypeChange(e);
+    };
+
+    onExpirationSelectClick = e => {
+        if (e.target.value === "SPECIFIC") {
+            if (this.firstClick) {
+                this.secondClick = true;
+            }
+            this.firstClick = true;
+            if (this.secondClick) {
+                this.datePricker.picker.handleOpenChange(true);
+                this.firstClick = false;
+                this.secondClick = false;
+            }
+        }
+    };
+
+    onExpirationSelectBlur = () => {
+        this.firstClick = false;
+        this.secondClick = false;
+    };
+
     render() {
         let {
             type,
@@ -174,6 +207,7 @@ class BuySell extends React.Component {
             hideHeader,
             verticalOrderForm
         } = this.props;
+        const {expirationCustomTime} = this.props;
 
         let clientWidth = this.refs.order_form
             ? this.refs.order_form.clientWidth
@@ -237,92 +271,95 @@ class BuySell extends React.Component {
         );
         var baseMarketFee = baseFlagBooleans["charge_market_fee"] ? (
             verticalOrderForm ? (
-                <div
-                    data-tip={counterpart.translate("tooltip.market_fee", {
+                <Tooltip
+                    title={counterpart.translate("tooltip.market_fee", {
                         percent: baseMarketFeePercent,
                         asset: (basePrefix || "") + baseName
                     })}
-                    className="grid-block no-overflow wrap shrink"
                 >
-                    <div className="small-12 buy-sell-label">
-                        <Translate content="explorer.asset.summary.market_fee" />
-                        , {baseMarketFeePercent}
+                    <div className="grid-block no-overflow wrap shrink">
+                        <div className="small-12 buy-sell-label">
+                            <Translate content="explorer.asset.summary.market_fee" />
+                            , {baseMarketFeePercent}
+                        </div>
+                        <div className="inputAddon small-12">
+                            <ExchangeInput
+                                placeholder="0.0"
+                                id="baseMarketFee"
+                                defaultValue={baseFee}
+                                value={baseFee}
+                                addonAfter={
+                                    <span>
+                                        <AssetName
+                                            noTip
+                                            name={base.get("symbol")}
+                                        />
+                                    </span>
+                                }
+                            />
+                        </div>
                     </div>
-                    <div className="inputAddon small-12">
-                        <ExchangeInput
-                            placeholder="0.0"
-                            id="baseMarketFee"
-                            defaultValue={baseFee}
-                            value={baseFee}
-                            addonAfter={
-                                <span>
-                                    <AssetName
-                                        noTip
-                                        name={base.get("symbol")}
-                                    />
-                                </span>
-                            }
-                        />
-                    </div>
-                </div>
+                </Tooltip>
             ) : singleColumnForm ? (
-                <div
-                    data-tip={counterpart.translate("tooltip.market_fee", {
+                <Tooltip
+                    title={counterpart.translate("tooltip.market_fee", {
                         percent: baseMarketFeePercent,
                         asset: (basePrefix || "") + baseName
                     })}
-                    className="grid-block no-overflow wrap shrink"
                 >
-                    <div className="small-3 buy-sell-label">
-                        <Translate content="explorer.asset.summary.market_fee" />
-                        , {baseMarketFeePercent}
+                    <div className="grid-block no-overflow wrap shrink">
+                        <div className="small-3 buy-sell-label">
+                            <Translate content="explorer.asset.summary.market_fee" />
+                            , {baseMarketFeePercent}
+                        </div>
+                        <div className="inputAddon small-9">
+                            <ExchangeInput
+                                placeholder="0.0"
+                                id="baseMarketFee"
+                                defaultValue={baseFee}
+                                value={baseFee}
+                                addonAfter={
+                                    <span>
+                                        <AssetName
+                                            noTip
+                                            name={base.get("symbol")}
+                                        />
+                                    </span>
+                                }
+                            />
+                        </div>
                     </div>
-                    <div className="inputAddon small-9">
-                        <ExchangeInput
-                            placeholder="0.0"
-                            id="baseMarketFee"
-                            defaultValue={baseFee}
-                            value={baseFee}
-                            addonAfter={
-                                <span>
-                                    <AssetName
-                                        noTip
-                                        name={base.get("symbol")}
-                                    />
-                                </span>
-                            }
-                        />
-                    </div>
-                </div>
+                </Tooltip>
             ) : (
-                <div
-                    data-tip={counterpart.translate("tooltip.market_fee", {
+                <Tooltip
+                    title={counterpart.translate("tooltip.market_fee", {
                         percent: baseMarketFeePercent,
                         asset: (basePrefix || "") + baseName
                     })}
-                    className="grid-block no-overflow wrap shrink"
                 >
-                    <div className="small-12 buy-sell-label">
-                        <Translate content="explorer.asset.summary.market_fee" />
-                        , {baseMarketFeePercent}
+                    <div className="grid-block no-overflow wrap shrink">
+                        <div className="small-12 buy-sell-label">
+                            <Translate content="explorer.asset.summary.market_fee" />
+                            , {baseMarketFeePercent}
+                        </div>
+                        <div className="inputAddon small-12">
+                            <ExchangeInput
+                                placeholder="0.0"
+                                id="baseMarketFee"
+                                defaultValue={baseFee}
+                                value={baseFee}
+                                addonAfter={
+                                    <span>
+                                        <AssetName
+                                            noTip
+                                            name={base.get("symbol")}
+                                        />
+                                    </span>
+                                }
+                            />
+                        </div>
                     </div>
-                    <div className="inputAddon small-12">
-                        <ExchangeInput
-                            placeholder="0.0"
-                            id="baseMarketFee"
-                            defaultValue={baseFee}
-                            value={baseFee}
-                            addonAfter={
-                                <span>
-                                    <AssetName
-                                        noTip
-                                        name={base.get("symbol")}
-                                    />
-                                </span>
-                            }
-                        />
-                    </div>
-                </div>
+                </Tooltip>
             )
         ) : null;
 
@@ -331,95 +368,98 @@ class BuySell extends React.Component {
         );
         var quoteMarketFee = quoteFlagBooleans["charge_market_fee"] ? (
             verticalOrderForm ? (
-                <div
-                    data-tip={counterpart.translate("tooltip.market_fee", {
+                <Tooltip
+                    title={counterpart.translate("tooltip.market_fee", {
                         percent: quoteMarketFeePercent,
                         asset: (quotePrefix || "") + quoteName
                     })}
-                    className="grid-block no-overflow wrap shrink"
                 >
-                    <div className="small-12 buy-sell-label">
-                        <Translate content="explorer.asset.summary.market_fee" />
-                        , {quoteMarketFeePercent}
+                    <div className="grid-block no-overflow wrap shrink">
+                        <div className="small-12 buy-sell-label">
+                            <Translate content="explorer.asset.summary.market_fee" />
+                            , {quoteMarketFeePercent}
+                        </div>
+                        <div className="inputAddon small-12">
+                            <ExchangeInput
+                                placeholder="0.0"
+                                id="quoteMarketFee"
+                                defaultValue={quoteFee}
+                                value={quoteFee}
+                                addonAfter={
+                                    <span>
+                                        <AssetName
+                                            style={{width: 100}}
+                                            noTip
+                                            name={quote.get("symbol")}
+                                        />
+                                    </span>
+                                }
+                            />
+                        </div>
                     </div>
-                    <div className="inputAddon small-12">
-                        <ExchangeInput
-                            placeholder="0.0"
-                            id="quoteMarketFee"
-                            defaultValue={quoteFee}
-                            value={quoteFee}
-                            addonAfter={
-                                <span>
-                                    <AssetName
-                                        style={{width: 100}}
-                                        noTip
-                                        name={quote.get("symbol")}
-                                    />
-                                </span>
-                            }
-                        />
-                    </div>
-                </div>
+                </Tooltip>
             ) : singleColumnForm ? (
-                <div
-                    data-tip={counterpart.translate("tooltip.market_fee", {
+                <Tooltip
+                    title={counterpart.translate("tooltip.market_fee", {
                         percent: quoteMarketFeePercent,
                         asset: (quotePrefix || "") + quoteName
                     })}
-                    className="grid-block no-overflow wrap shrink"
                 >
-                    <div className="small-3 buy-sell-label">
-                        <Translate content="explorer.asset.summary.market_fee" />
-                        , {quoteMarketFeePercent}
+                    <div className="grid-block no-overflow wrap shrink">
+                        <div className="small-3 buy-sell-label">
+                            <Translate content="explorer.asset.summary.market_fee" />
+                            , {quoteMarketFeePercent}
+                        </div>
+                        <div className="inputAddon small-9">
+                            <ExchangeInput
+                                placeholder="0.0"
+                                id="quoteMarketFee"
+                                defaultValue={quoteFee}
+                                value={quoteFee}
+                                addonAfter={
+                                    <span>
+                                        <AssetName
+                                            style={{width: 100}}
+                                            noTip
+                                            name={quote.get("symbol")}
+                                        />
+                                    </span>
+                                }
+                            />
+                        </div>
                     </div>
-                    <div className="inputAddon small-9">
-                        <ExchangeInput
-                            placeholder="0.0"
-                            id="quoteMarketFee"
-                            defaultValue={quoteFee}
-                            value={quoteFee}
-                            addonAfter={
-                                <span>
-                                    <AssetName
-                                        style={{width: 100}}
-                                        noTip
-                                        name={quote.get("symbol")}
-                                    />
-                                </span>
-                            }
-                        />
-                    </div>
-                </div>
+                </Tooltip>
             ) : (
-                <div
-                    data-tip={counterpart.translate("tooltip.market_fee", {
+                <Tooltip
+                    title={counterpart.translate("tooltip.market_fee", {
                         percent: quoteMarketFeePercent,
                         asset: (quotePrefix || "") + quoteName
                     })}
-                    className="grid-block no-overflow wrap shrink"
                 >
-                    <div className="small-12 buy-sell-label">
-                        <Translate content="explorer.asset.summary.market_fee" />
-                        , {quoteMarketFeePercent}
+                    <div className="grid-block no-overflow wrap shrink">
+                        <div className="small-12 buy-sell-label">
+                            <Translate content="explorer.asset.summary.market_fee" />
+                            , {quoteMarketFeePercent}
+                        </div>
+                        <div className="inputAddon small-12">
+                            <ExchangeInput
+                                placeholder="0.0"
+                                id="quoteMarketFee"
+                                defaultValue={quoteFee}
+                                value={quoteFee}
+                                addonAfter={
+                                    <span>
+                                        <AssetName
+                                            style={{width: 100}}
+                                            noTip
+                                            name={quote.get("symbol")}
+                                        />
+                                    </span>
+                                }
+                            />
+                        </div>
                     </div>
-                    <div className="inputAddon small-12">
-                        <ExchangeInput
-                            placeholder="0.0"
-                            id="quoteMarketFee"
-                            defaultValue={quoteFee}
-                            value={quoteFee}
-                            addonAfter={
-                                <span>
-                                    <AssetName
-                                        style={{width: 100}}
-                                        noTip
-                                        name={quote.get("symbol")}
-                                    />
-                                </span>
-                            }
-                        />
-                    </div>
-                </div>
+                </Tooltip>
             )
         ) : null;
 
@@ -534,18 +574,26 @@ class BuySell extends React.Component {
             ? counterpart.translate("walkthrough.buy_form")
             : counterpart.translate("walkthrough.sell_form");
 
+        let expirationTip;
+
+        if (this.props.expirationType !== "SPECIFIC") {
+            expirationTip = this.props.expirations[
+                this.props.expirationType
+            ].get();
+        }
+
         const expirationsOptionsList = Object.keys(this.props.expirations).map(
-            (key, i) => (
+            key => (
                 <option value={key} key={key}>
-                    {this.props.expirations[key].title}
+                    {key === "SPECIFIC" && expirationCustomTime !== "Specific"
+                        ? moment(expirationCustomTime).format(
+                              "Do MMM YYYY hh:mm A"
+                          )
+                        : this.props.expirations[key].title}
                 </option>
             )
         );
 
-        // datepicker puts on the end of body so it's out of theme scope
-        // so theme is used on wrapperClassName
-        const theme = SettingsStore.getState().settings.get("themes");
-        const minExpirationDate = moment();
         const containerClass = "small-12";
         let formContent;
 
@@ -553,6 +601,30 @@ class BuySell extends React.Component {
         if (verticalOrderForm) {
             formContent = (
                 <div className={containerClass}>
+                    <div className="grid-block no-overflow wrap shrink">
+                        {/*  */}
+                        <Translate
+                            className="small-12 buy-sell-label"
+                            content="transfer.amount"
+                        />
+                        <div className="inputAddon small-12">
+                            <ExchangeInput
+                                id={`${type}Amount`}
+                                value={amount}
+                                onChange={amountChange}
+                                autoComplete="off"
+                                placeholder="0.0"
+                                addonAfter={
+                                    <span>
+                                        <AssetName
+                                            dataPlace="right"
+                                            name={quote.get("symbol")}
+                                        />
+                                    </span>
+                                }
+                            />
+                        </div>
+                    </div>
                     <div className="grid-block no-overflow wrap shrink">
                         <Translate
                             className="small-12 buy-sell-label"
@@ -572,30 +644,6 @@ class BuySell extends React.Component {
                                             name={base.get("symbol")}
                                         />
                                         &nbsp;/&nbsp;
-                                        <AssetName
-                                            dataPlace="right"
-                                            name={quote.get("symbol")}
-                                        />
-                                    </span>
-                                }
-                            />
-                        </div>
-                    </div>
-                    <div className="grid-block no-overflow wrap shrink">
-                        {/*  */}
-                        <Translate
-                            className="small-12 buy-sell-label"
-                            content="transfer.amount"
-                        />
-                        <div className="inputAddon small-12">
-                            <ExchangeInput
-                                id={`${type}Amount`}
-                                value={amount}
-                                onChange={amountChange}
-                                autoComplete="off"
-                                placeholder="0.0"
-                                addonAfter={
-                                    <span>
                                         <AssetName
                                             dataPlace="right"
                                             name={quote.get("symbol")}
@@ -667,6 +715,30 @@ class BuySell extends React.Component {
             formContent = singleColumnForm ? (
                 <div className={containerClass}>
                     <div className="grid-block no-overflow wrap shrink">
+                        {/*  */}
+                        <Translate
+                            className="small-3 buy-sell-label"
+                            content="transfer.amount"
+                        />
+                        <div className="inputAddon small-9">
+                            <ExchangeInput
+                                id={`${type}Amount`}
+                                value={amount}
+                                onChange={amountChange}
+                                autoComplete="off"
+                                placeholder="0.0"
+                                addonAfter={
+                                    <span>
+                                        <AssetName
+                                            dataPlace="right"
+                                            name={quote.get("symbol")}
+                                        />
+                                    </span>
+                                }
+                            />
+                        </div>
+                    </div>
+                    <div className="grid-block no-overflow wrap shrink">
                         <Translate
                             className="small-3 buy-sell-label"
                             content="exchange.price"
@@ -685,30 +757,6 @@ class BuySell extends React.Component {
                                             name={base.get("symbol")}
                                         />
                                         &nbsp;/&nbsp;
-                                        <AssetName
-                                            dataPlace="right"
-                                            name={quote.get("symbol")}
-                                        />
-                                    </span>
-                                }
-                            />
-                        </div>
-                    </div>
-                    <div className="grid-block no-overflow wrap shrink">
-                        {/*  */}
-                        <Translate
-                            className="small-3 buy-sell-label"
-                            content="transfer.amount"
-                        />
-                        <div className="inputAddon small-9">
-                            <ExchangeInput
-                                id={`${type}Amount`}
-                                value={amount}
-                                onChange={amountChange}
-                                autoComplete="off"
-                                placeholder="0.0"
-                                addonAfter={
-                                    <span>
                                         <AssetName
                                             dataPlace="right"
                                             name={quote.get("symbol")}
@@ -954,6 +1002,8 @@ class BuySell extends React.Component {
         const isGloballySettled =
             isBitAsset && otherAsset.get("bitasset").get("settlement_fund") > 0;
 
+        const currentAccount = AccountStore.getState().currentAccount;
+
         return (
             <div
                 className={cnames(this.props.className)}
@@ -962,10 +1012,15 @@ class BuySell extends React.Component {
                 <div
                     className="buy-sell-container"
                     style={{paddingRight: 5}}
-                    data-intro={dataIntro}
+                    //data-intro={dataIntro}
                 >
                     {!hideHeader ? (
-                        <div className={"exchange-content-header " + type}>
+                        <div
+                            className={
+                                "exchange-content-header exchange-content-header--buy-sell-form " +
+                                type
+                            }
+                        >
                             <span>
                                 <TranslateWithLinks
                                     string="exchange.buysell_formatter"
@@ -1034,7 +1089,8 @@ class BuySell extends React.Component {
                         ref="order_form"
                         className={
                             (!this.props.isOpen ? "hide-container " : "") +
-                            "order-form"
+                            "order-form " +
+                            type
                         }
                         style={{fontSize: "14px"}}
                         noValidate
@@ -1067,38 +1123,39 @@ class BuySell extends React.Component {
                                     content="transaction.expiration"
                                 />
                                 <div className="small-8 expiration-datetime-picker">
-                                    <select
-                                        className={
-                                            this.props.expirationType ===
-                                                "SPECIFIC" && singleColumnForm
-                                                ? "expiration-datetime-picker--select--specific"
-                                                : ""
+                                    <DatePicker
+                                        ref={this.getDatePickerRef}
+                                        className="expiration-datetime-picker--hidden"
+                                        showTime
+                                        showToday={false}
+                                        disabledDate={current =>
+                                            current <
+                                            moment().add(59, "minutes")
                                         }
-                                        style={{cursor: "pointer"}}
+                                        value={
+                                            expirationCustomTime !== "Specific"
+                                                ? expirationCustomTime
+                                                : moment().add(1, "hour")
+                                        }
                                         onChange={
-                                            this.props.onExpirationTypeChange
+                                            this.props.onExpirationCustomChange
+                                        }
+                                    />
+                                    <select
+                                        className="cursor-pointer"
+                                        onChange={this.onExpirationSelectChange}
+                                        onClick={this.onExpirationSelectClick}
+                                        onBlur={this.onExpirationSelectBlur}
+                                        data-tip={
+                                            expirationTip &&
+                                            moment(expirationTip).format(
+                                                "Do MMM YYYY hh:mm A"
+                                            )
                                         }
                                         value={this.props.expirationType}
                                     >
                                         {expirationsOptionsList}
                                     </select>
-                                    {this.props.expirationType ===
-                                    "SPECIFIC" ? (
-                                        <DatePicker
-                                            pickerPosition={"bottom center"}
-                                            wrapperClassName={theme}
-                                            timePicker={true}
-                                            min={minExpirationDate}
-                                            inputFormat={"Do MMM YYYY hh:mm A"}
-                                            value={
-                                                this.props.expirationCustomTime
-                                            }
-                                            onChange={
-                                                this.props
-                                                    .onExpirationCustomChange
-                                            }
-                                        />
-                                    ) : null}
                                 </div>
                             </div>
                             {!singleColumnForm ? (
@@ -1115,7 +1172,7 @@ class BuySell extends React.Component {
                                                     : "exchange.highest_bid"
                                             }
                                         />
-                                        <div className="small-8 buy-sell-label">
+                                        <div className="small-8 buy-sell-label buy-sell-max">
                                             <span
                                                 style={{
                                                     borderBottom:
@@ -1155,8 +1212,6 @@ class BuySell extends React.Component {
                                         <div className="small-8 buy-sell-label buy-sell-balance">
                                             <span
                                                 style={{
-                                                    borderBottom:
-                                                        "#A09F9F 1px dotted",
                                                     cursor: "pointer"
                                                 }}
                                                 onClick={this._addBalance.bind(
@@ -1180,21 +1235,29 @@ class BuySell extends React.Component {
                                 ) : null}
                                 <div style={{marginTop: 10}}>
                                     <div>
-                                        <Button
-                                            data-tip={
+                                        <Tooltip
+                                            placement="top"
+                                            title={
                                                 disabledText ? disabledText : ""
                                             }
-                                            data-place="top"
-                                            className={
-                                                disabled ? null : buttonClass
-                                            }
-                                            disabled={disabled}
-                                            onClick={onSubmit.bind(this, true)}
-                                            type="primary"
-                                            style={{margin: 5}}
                                         >
-                                            {isBid ? "Buy" : "Sell"}
-                                        </Button>
+                                            <Button
+                                                className={
+                                                    disabled
+                                                        ? null
+                                                        : buttonClass
+                                                }
+                                                disabled={disabled}
+                                                onClick={onSubmit.bind(
+                                                    this,
+                                                    true
+                                                )}
+                                                type="primary"
+                                                style={{margin: 5}}
+                                            >
+                                                {isBid ? "Buy" : "Sell"}
+                                            </Button>
+                                        </Tooltip>
                                         {/* <Button
                                             style={{margin: 5}}
                                             onClick={this.props.clearForm.bind(this, isBid)}
@@ -1204,19 +1267,8 @@ class BuySell extends React.Component {
 
                                         {this.props.currentBridges &&
                                         !this.props.backedCoin ? (
-                                            <Button
-                                                style={{margin: 5}}
-                                                onClick={this.props.onBuy.bind(
-                                                    this
-                                                )}
-                                                disabled={
-                                                    !this.props
-                                                        .currentAccount ||
-                                                    this.props.currentAccount.get(
-                                                        "id"
-                                                    ) === "1.2.3"
-                                                }
-                                                data-tip={counterpart.translate(
+                                            <Tooltip
+                                                title={counterpart.translate(
                                                     "exchange.quick_deposit_bridge",
                                                     {
                                                         target: isBid
@@ -1225,43 +1277,60 @@ class BuySell extends React.Component {
                                                     }
                                                 )}
                                             >
-                                                <Translate
-                                                    content="exchange.quick_deposit"
-                                                    asset={
-                                                        isBid
-                                                            ? baseName
-                                                            : quoteName
+                                                <Button
+                                                    style={{margin: 5}}
+                                                    onClick={this.props.onBuy.bind(
+                                                        this
+                                                    )}
+                                                    disabled={
+                                                        !this.props
+                                                            .currentAccount ||
+                                                        this.props.currentAccount.get(
+                                                            "id"
+                                                        ) === "1.2.3"
                                                     }
-                                                />
-                                            </Button>
+                                                >
+                                                    <Translate
+                                                        content="exchange.quick_deposit"
+                                                        asset={
+                                                            isBid
+                                                                ? baseName
+                                                                : quoteName
+                                                        }
+                                                    />
+                                                </Button>
+                                            </Tooltip>
                                         ) : null}
                                         {this.props.backedCoin &&
                                         !this.props.currentBridges ? (
-                                            <Button
-                                                style={{margin: 5}}
-                                                onClick={this.props.onDeposit.bind(
-                                                    this
-                                                )}
-                                                disabled={
-                                                    !this.props
-                                                        .currentAccount ||
-                                                    this.props.currentAccount.get(
-                                                        "id"
-                                                    ) === "1.2.3"
-                                                }
-                                                data-tip={counterpart.translate(
+                                            <Tooltip
+                                                title={counterpart.translate(
                                                     "tooltip.gateway"
                                                 )}
                                             >
-                                                <Translate
-                                                    content="exchange.quick_deposit"
-                                                    asset={
-                                                        isBid
-                                                            ? baseName
-                                                            : quoteName
+                                                <Button
+                                                    style={{margin: 5}}
+                                                    onClick={this.props.onDeposit.bind(
+                                                        this
+                                                    )}
+                                                    disabled={
+                                                        !this.props
+                                                            .currentAccount ||
+                                                        this.props.currentAccount.get(
+                                                            "id"
+                                                        ) === "1.2.3"
                                                     }
-                                                />
-                                            </Button>
+                                                >
+                                                    <Translate
+                                                        content="exchange.quick_deposit"
+                                                        asset={
+                                                            isBid
+                                                                ? baseName
+                                                                : quoteName
+                                                        }
+                                                    />
+                                                </Button>
+                                            </Tooltip>
                                         ) : null}
                                         {this.props.currentBridges &&
                                         this.props.backedCoin ? (
@@ -1287,14 +1356,8 @@ class BuySell extends React.Component {
                                                 }
                                                 content={
                                                     <div>
-                                                        <Button
-                                                            style={{
-                                                                marginRight: 5
-                                                            }}
-                                                            onClick={this.onDeposit.bind(
-                                                                this
-                                                            )}
-                                                            data-tip={counterpart.translate(
+                                                        <Tooltip
+                                                            title={counterpart.translate(
                                                                 "exchange.quick_deposit_gateway",
                                                                 {
                                                                     asset: isBid
@@ -1303,14 +1366,20 @@ class BuySell extends React.Component {
                                                                 }
                                                             )}
                                                         >
-                                                            <Translate content="exchange.quick_deposit_gateway_button" />
-                                                        </Button>
+                                                            <Button
+                                                                style={{
+                                                                    marginRight: 5
+                                                                }}
+                                                                onClick={this.onDeposit.bind(
+                                                                    this
+                                                                )}
+                                                            >
+                                                                <Translate content="exchange.quick_deposit_gateway_button" />
+                                                            </Button>
+                                                        </Tooltip>
 
-                                                        <Button
-                                                            onClick={this.onBuy.bind(
-                                                                this
-                                                            )}
-                                                            data-tip={counterpart.translate(
+                                                        <Tooltip
+                                                            title={counterpart.translate(
                                                                 "exchange.quick_deposit_bridge",
                                                                 {
                                                                     target: isBid
@@ -1319,21 +1388,19 @@ class BuySell extends React.Component {
                                                                 }
                                                             )}
                                                         >
-                                                            <Translate content="exchange.quick_deposit_bridge_button" />
-                                                        </Button>
+                                                            <Button
+                                                                onClick={this.onBuy.bind(
+                                                                    this
+                                                                )}
+                                                            >
+                                                                <Translate content="exchange.quick_deposit_bridge_button" />
+                                                            </Button>
+                                                        </Tooltip>
                                                     </div>
                                                 }
                                             >
-                                                <Button
-                                                    style={{margin: 5}}
-                                                    disabled={
-                                                        !this.props
-                                                            .currentAccount ||
-                                                        this.props.currentAccount.get(
-                                                            "id"
-                                                        ) === "1.2.3"
-                                                    }
-                                                    data-tip={counterpart.translate(
+                                                <Tooltip
+                                                    title={counterpart.translate(
                                                         "exchange.quick_deposit_tooltip",
                                                         {
                                                             asset: isBid
@@ -1342,15 +1409,26 @@ class BuySell extends React.Component {
                                                         }
                                                     )}
                                                 >
-                                                    <Translate
-                                                        content="exchange.quick_deposit"
-                                                        asset={
-                                                            isBid
-                                                                ? baseName
-                                                                : quoteName
+                                                    <Button
+                                                        style={{margin: 5}}
+                                                        disabled={
+                                                            !this.props
+                                                                .currentAccount ||
+                                                            this.props.currentAccount.get(
+                                                                "id"
+                                                            ) === "1.2.3"
                                                         }
-                                                    />
-                                                </Button>
+                                                    >
+                                                        <Translate
+                                                            content="exchange.quick_deposit"
+                                                            asset={
+                                                                isBid
+                                                                    ? baseName
+                                                                    : quoteName
+                                                            }
+                                                        />
+                                                    </Button>
+                                                </Tooltip>
                                             </Popover>
                                         ) : null}
                                         {this.props.onBorrow &&
@@ -1395,34 +1473,44 @@ class BuySell extends React.Component {
                             <div className="grid-content clear-fix no-padding">
                                 {/* SHORT button */}
                                 {disabledText && isPredictionMarket ? (
-                                    <div
-                                        style={{paddingRight: 10}}
-                                        className="float-right"
-                                        data-tip={disabledText}
-                                        data-place="right"
+                                    <Tooltip
+                                        title={disabledText}
+                                        placement="right"
                                     >
-                                        <input
-                                            style={{margin: 0}}
-                                            className={buttonClass}
-                                            type="submit"
-                                            onClick={onSubmit.bind(this, false)}
-                                            value={forceSellText}
-                                        />
-                                    </div>
+                                        <div
+                                            style={{paddingRight: 10}}
+                                            className="float-right"
+                                        >
+                                            <input
+                                                style={{margin: 0}}
+                                                className={buttonClass}
+                                                type="submit"
+                                                onClick={onSubmit.bind(
+                                                    this,
+                                                    false
+                                                )}
+                                                value={forceSellText}
+                                            />
+                                        </div>
+                                    </Tooltip>
                                 ) : isPredictionMarket ? (
-                                    <div
-                                        style={{paddingRight: 10}}
-                                        className="float-right"
-                                        data-tip={""}
-                                    >
-                                        <input
-                                            style={{margin: 0}}
-                                            className={buttonClass}
-                                            type="submit"
-                                            onClick={onSubmit.bind(this, false)}
-                                            value={forceSellText}
-                                        />
-                                    </div>
+                                    <Tooltip title={""} placement="right">
+                                        <div
+                                            style={{paddingRight: 10}}
+                                            className="float-right"
+                                        >
+                                            <input
+                                                style={{margin: 0}}
+                                                className={buttonClass}
+                                                type="submit"
+                                                onClick={onSubmit.bind(
+                                                    this,
+                                                    false
+                                                )}
+                                                value={forceSellText}
+                                            />
+                                        </div>
+                                    </Tooltip>
                                 ) : null}
                             </div>
                         </div>
@@ -1436,7 +1524,7 @@ class BuySell extends React.Component {
                             hideModal={this.hideSettleModal}
                             showModal={this.showSettleModal}
                             asset={otherAsset.get("id")}
-                            account={this.props.currentAccount.get("name")}
+                            account={this.props.currentAccount}
                         />
                     )}
             </div>

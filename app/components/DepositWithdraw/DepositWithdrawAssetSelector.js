@@ -128,18 +128,29 @@ class DepositWithdrawAssetSelector extends React.Component {
                 showSearch
                 style={{width: "100%"}}
             >
-                {/*
+                {/* 
                     NOTE
-                    On Deposit, it would be useful to view Min Deposit
+                    On Deposit, it would be useful to view Min Deposit 
                     and Gateway Fee to the right of the selection so the
                     user doesn't have to select a specific gateway to view
                     this information.
                 */}
-                {coinItems.map(coin => (
-                    <Select.Option key={coin.id} value={coin.label}>
-                        {coin.label}
+
+                {coinItems.length > 0 ? (
+                    coinItems.map(coin => (
+                        <Select.Option key={coin.id} value={coin.label}>
+                            {coin.label}
+                        </Select.Option>
+                    ))
+                ) : (
+                    <Select.Option disabled key={0} value={0}>
+                        {counterpart.translate(
+                            usageContext == "withdraw"
+                                ? "modal.withdraw.no_assets"
+                                : "modal.deposit.no_assets"
+                        )}
                     </Select.Option>
-                ))}
+                )}
             </Select>
         );
     }

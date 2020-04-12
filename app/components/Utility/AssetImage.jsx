@@ -57,9 +57,9 @@ class AssetImage extends React.Component {
 
         const imgName = getImageName(asset)
             .replace("XBTSX.", "")
-            .replace("BRIDGE.", "")
-            .replace("OPEN.", "")
-            .replace("RUDEX.", "");
+            .replace("GDEX.", "")
+            .replace("RUDEX.", "")
+            .replace("OPEN.", "");
 
         return (
             <img

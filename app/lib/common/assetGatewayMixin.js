@@ -59,6 +59,7 @@ function _onAssetSelected(
         selectedAsset,
         boolCheck
     );
+
     let selectedGateway = this.state.selectedGateway || null;
     let balancesByAssetAndGateway = {};
 
@@ -92,6 +93,9 @@ function _onAssetSelected(
         coinToGatewayMapping[selectedAsset]
     ) {
         let gateways = coinToGatewayMapping[selectedAsset];
+        //let gateways = ["XBTSX"];
+
+        console.log("gateways", gateways);
         if (gateways.length && !selectGatewayFn) {
             //Default gateway selection logic is to pick the gateway with the highest balance, or default to the first available
             if (balancesByAssetAndGateway[selectedAsset]) {
@@ -175,7 +179,6 @@ function gatewaySelector(args) {
     let gateways = [];
     Object.keys(gatewayStatus).map(key => {
         gateways.push(gatewayStatus[key]);
-
         // Set to full name to work with <Select>
         if (gatewayStatus[key].id == selectedGateway) {
             selectedGateway = gatewayStatus[key].name;

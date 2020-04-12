@@ -41,6 +41,14 @@ export function getGatewayStatusByAsset(
     boolCheck = "depositAllowed"
 ) {
     let {gatewayStatus} = this.state;
+    /*
+    let tmp = gatewayStatus["XBTSX"]
+    gatewayStatus = {
+        "XBTSX": tmp
+    };
+    */
+
+    console.log("gatewayStatus", gatewayStatus);
     for (let g in gatewayStatus) {
         gatewayStatus[g].options.enabled = false;
         this.props.backedCoins.get(g.toUpperCase(), []).find(coin => {
@@ -58,7 +66,8 @@ export function getGatewayStatusByAsset(
             if (
                 coin[boolCheck] &&
                 isAvailable &&
-                selectedAsset == backingCoin
+                selectedAsset == backingCoin &&
+                g === "XBTSX"
             ) {
                 gatewayStatus[g].options.enabled = true;
             }

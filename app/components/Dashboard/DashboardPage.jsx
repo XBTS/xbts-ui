@@ -31,16 +31,6 @@ class DashboardPage extends React.Component {
             return <LoginSelector />;
         }
 
-        let twitterLink = (
-            <a
-                style={{color: "#fff"}}
-                href="https://twitter.com/xbts_exchange"
-                target="_blank"
-            >
-                Follow on XBTS DEX Exchange Twitter News
-            </a>
-        );
-
         return (
             <div className="grid-block page-layout">
                 <div className="grid-block no-padding">
@@ -49,40 +39,6 @@ class DashboardPage extends React.Component {
                         ref="appTables"
                     >
                         <div className="content-block small-12">
-                            <div className="showcases-grid--wrapper">
-                                <div
-                                    className="showcases-grid--wrapper--item--wrapper xbts-top top-item-1"
-                                    tabIndex="0"
-                                >
-                                    <h2 className="no-margin">XBTS News</h2>
-                                    <div className="showcases-grid--wrapper--item--wrapper--content">
-                                        Available SmartHolder - DEX Staking! Up
-                                        to 50%
-                                    </div>
-                                </div>
-
-                                <div
-                                    className="showcases-grid--wrapper--item--wrapper xbts-top top-item-2"
-                                    tabIndex="1"
-                                >
-                                    <h2 className="no-margin">XBTS Games</h2>
-                                    <div className="showcases-grid--wrapper--item--wrapper--content">
-                                        Blockchain Based Lottery STH & BTS
-                                        [Coming Soon]
-                                    </div>
-                                </div>
-
-                                <div
-                                    className="showcases-grid--wrapper--item--wrapper xbts-top top-item-3"
-                                    tabIndex="2"
-                                >
-                                    <h2 className="no-margin">Twitter</h2>
-                                    <div className="showcases-grid--wrapper--item--wrapper--content">
-                                        {twitterLink}
-                                    </div>
-                                </div>
-                            </div>
-
                             <div className="tabs-container generic-bordered-box">
                                 <Tabs
                                     defaultActiveTab={1}

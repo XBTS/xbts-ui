@@ -281,7 +281,7 @@ class AccountAssets extends React.Component {
                             setting="issuedAssetsTab"
                             className="account-tabs"
                             tabsClass="account-overview bordered-header content-block"
-                            contentClass=""
+                            contentClass="padding"
                         >
                             <Tab title="account.user_issued_assets.issued_assets">
                                 <div className="content-block">

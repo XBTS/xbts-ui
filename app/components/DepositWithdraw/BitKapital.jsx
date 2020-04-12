@@ -53,7 +53,8 @@ class BitKapital extends React.Component {
         return (
             <form onSubmit={this._onSubmit.bind(this)}>
                 <div style={{padding: "20px 0"}}>
-                    <Translate content="gateway.balance" />: &nbsp;<span
+                    <Translate content="gateway.balance" />: &nbsp;
+                    <span
                         style={{
                             fontWeight: "bold",
                             color: "#4A90E2",
