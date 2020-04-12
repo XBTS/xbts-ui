@@ -1143,6 +1143,10 @@
         "receive_account": "Аккаунт получателя:",
         "recent_deposit": "Недавние депозиты",
         "recent_withdraw": "Недавние выводы",
+        "waves": {
+            "min_deposit_warning_asset": "ВНИМАНИЕ: Отправляйте на этот адрес депозита только %(coin)s из WAVES Exchange. Отправка менее %(minDeposit)s %(coin)s или любой другой валюты может привести к потере вашего депозита.",
+            "info": "WAVES Gateway предназначен для торговли/пополнения/вывода актива %(coin)s предоставленного XBTS в WAVES Exchange"
+        },
         "rudex": {
             "coming_soon": "Скоро",
             "min_amount": "Минимальная сумма: %(minAmount)s %(symbol)s",
