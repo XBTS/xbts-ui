@@ -15,6 +15,7 @@ require("file-loader?name=asset-symbols/[name].png!./xem.png");
 require("file-loader?name=asset-symbols/[name].png!./aud.png");
 
 // 3rd party assets
+require("file-loader?name=asset-symbols/[name].png!./cloudcoin.png");
 require("file-loader?name=asset-symbols/[name].png!./prux.png");
 require("file-loader?name=asset-symbols/[name].png!./eth.png");
 require("file-loader?name=asset-symbols/[name].png!./steem.png");
