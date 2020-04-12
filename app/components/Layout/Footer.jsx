@@ -564,7 +564,7 @@ class Footer extends React.Component {
                                 </a>
 
                                 <a
-                                    href="https://faucet.smartholdem.io/"
+                                    href="https://smartholdem.io/#/antibounty"
                                     target="_blank"
                                     className="footer-group-social-link"
                                 >
