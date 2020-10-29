@@ -23,7 +23,7 @@ import debounceRender from "react-debounce-render";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import {getPossibleGatewayPrefixes, gatewayPrefixes} from "common/gateways";
 import QuoteSelectionModal from "./QuoteSelectionModal";
-import {Input, Icon} from "bitshares-ui-style-guide";
+import SearchInput from "../Utility/SearchInput";
 
 class MarketGroup extends React.Component {
     static defaultProps = {
@@ -336,8 +336,8 @@ class MyMarkets extends React.Component {
             lookupBase: null,
             inputValue: "",
             minWidth: "100%",
-            findBaseInput: "USD",
-            activeFindBase: "USD"
+            findBaseInput: "BTS",
+            activeFindBase: "BTS"
         };
 
         this._setMinWidth = this._setMinWidth.bind(this);
@@ -348,15 +348,6 @@ class MyMarkets extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        /* Trigger a lookup when switching tabs to find-market */
-        if (
-            this.state.activeTab !== "find-market" &&
-            nextState.activeTab === "find-market" &&
-            !nextProps.searchAssets.size
-        ) {
-            this._lookupAssets("OPEN.", true);
-        }
-
         if (this.state.activeTab !== nextState.activeTab) {
             this._changeTab(nextState.activeTab);
         } else if (
@@ -417,10 +408,6 @@ class MyMarkets extends React.Component {
         Ps.initialize(historyContainer);
 
         this._setMinWidth();
-
-        if (this.state.activeTab === "find-market") {
-            this._lookupAssets("OPEN.", true);
-        }
 
         if (this.state.activeTab !== this.props.activeTab) {
             setTimeout(() => {
@@ -970,24 +957,15 @@ class MyMarkets extends React.Component {
                         <div className="search-wrapper">
                             <form>
                                 <div className="filter inline-block">
-                                    <Input
-                                        autoComplete="off"
+                                    <SearchInput
                                         style={{
                                             fontSize: "0.9rem",
                                             height: "inherit",
                                             position: "relative"
                                         }}
-                                        type="text"
                                         className="no-margin market-filter-input"
-                                        placeholder={counterpart.translate(
-                                            "exchange.filter"
-                                        )}
-                                        maxLength="16"
-                                        name="focus"
-                                        required="required"
                                         value={this.state.myMarketFilter}
                                         onChange={this.handleSearchUpdate}
-                                        addonAfter={<Icon type="search" />}
                                     />
                                 </div>
                             </form>
@@ -1052,7 +1030,7 @@ class MyMarkets extends React.Component {
                                             placeholder={counterpart.translate(
                                                 "exchange.search"
                                             )}
-                                            maxLength="16"
+                                            maxLength={16}
                                             tabIndex={2}
                                             ref="findSearchInput"
                                         />

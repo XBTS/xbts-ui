@@ -21,13 +21,18 @@ import titleUtils from "common/titleUtils";
 import {BodyClassName, Notification} from "bitshares-ui-style-guide";
 import {DEFAULT_NOTIFICATION_DURATION} from "services/Notification";
 import Loadable from "react-loadable";
-import Borrow from "./components/Showcases/Borrow";
-import Barter from "./components/Showcases/Barter";
+import NewsHeadline from "components/Layout/NewsHeadline";
 
 import {Route, Switch, Redirect} from "react-router-dom";
 
 // Nested route components
 import Page404 from "./components/Page404/Page404";
+
+const Invoice = Loadable({
+    loader: () =>
+        import(/* webpackChunkName: "exchange" */ "./components/Transfer/Invoice"),
+    loading: LoadingIndicator
+});
 
 const Exchange = Loadable({
     loader: () =>
@@ -41,15 +46,15 @@ const Explorer = Loadable({
     loading: LoadingIndicator
 });
 
-const AccountPage = Loadable({
+const PredictionMarketsPage = Loadable({
     loader: () =>
-        import(/* webpackChunkName: "account" */ "./components/Account/AccountPage"),
+        import(/* webpackChunkName: "pm" */ "./components/PredictionMarkets/PMAssetsContainer"),
     loading: LoadingIndicator
 });
 
-const Transfer = Loadable({
+const AccountPage = Loadable({
     loader: () =>
-        import(/* webpackChunkName: "transfer" */ "./components/Transfer/Transfer"),
+        import(/* webpackChunkName: "account" */ "./components/Account/AccountPage"),
     loading: LoadingIndicator
 });
 
@@ -117,6 +122,36 @@ const CreateWorker = Loadable({
     loading: LoadingIndicator
 });
 
+const Barter = Loadable({
+    loader: () =>
+        import(/* webpackChunkName: "settings" */ "./components/Showcases/Barter"),
+    loading: LoadingIndicator
+});
+
+const Borrow = Loadable({
+    loader: () =>
+        import(/* webpackChunkName: "settings" */ "./components/Showcases/Borrow"),
+    loading: LoadingIndicator
+});
+
+const Htlc = Loadable({
+    loader: () =>
+        import(/* webpackChunkName: "settings" */ "./components/Showcases/Htlc"),
+    loading: LoadingIndicator
+});
+
+const DirectDebit = Loadable({
+    loader: () =>
+        import(/* webpackChunkName: "settings" */ "./components/Showcases/DirectDebit"),
+    loading: LoadingIndicator
+});
+
+const QuickTrade = Loadable({
+    loader: () =>
+        import(/* webpackChunkName: "QuickTrade" */ "./components/QuickTrade/QuickTradeRouter"),
+    loading: LoadingIndicator
+});
+
 import LoginSelector from "./components/LoginSelector";
 import Login from "./components/Login/Login";
 import RegistrationSelector from "./components/Registration/RegistrationSelector";
@@ -125,6 +160,10 @@ import AccountRegistration from "./components/Registration/AccountRegistration";
 import {CreateWalletFromBrainkey} from "./components/Wallet/WalletCreate";
 import ShowcaseGrid from "./components/Showcases/ShowcaseGrid";
 import PriceAlertNotifications from "./components/PriceAlertNotifications";
+import GatewaySelectorModal from "./components/Gateways/GatewaySelectorModal";
+import SettingsStore from "./stores/SettingsStore";
+import GatewayActions from "./actions/GatewayActions";
+import {allowedGateway} from "./branding";
 
 class App extends React.Component {
     constructor() {
@@ -138,6 +177,7 @@ class App extends React.Component {
                 : false;
         this.state = {
             isBrowserSupportModalVisible: false,
+            isGatewaySelectorModalVisible: false,
             loading: false,
             synced: this._syncStatus(),
             syncFail,
@@ -153,6 +193,9 @@ class App extends React.Component {
 
         this.showBrowserSupportModal = this.showBrowserSupportModal.bind(this);
         this.hideBrowserSupportModal = this.hideBrowserSupportModal.bind(this);
+        this.hideGatewaySelectorModal = this.hideGatewaySelectorModal.bind(
+            this
+        );
 
         Notification.config({
             duration: DEFAULT_NOTIFICATION_DURATION,
@@ -205,6 +248,12 @@ class App extends React.Component {
     hideBrowserSupportModal() {
         this.setState({
             isBrowserSupportModalVisible: false
+        });
+    }
+
+    hideGatewaySelectorModal() {
+        this.setState({
+            isGatewaySelectorModalVisible: false
         });
     }
 
@@ -263,7 +312,39 @@ class App extends React.Component {
                 this.setState({incognito});
             }.bind(this)
         );
-        updateGatewayBackers();
+        GatewayActions.loadOnChainGatewayConfig();
+
+        if (allowedGateway()) {
+            this._ensureExternalServices();
+        }
+    }
+
+    _ensureExternalServices() {
+        setTimeout(() => {
+            let hasLoggedIn =
+                AccountStore.getState().myActiveAccounts.length > 0 ||
+                !!AccountStore.getState().passwordAccount;
+            if (!hasLoggedIn) {
+                this._ensureExternalServices();
+            } else {
+                this._checkExternalServices();
+            }
+        }, 5000);
+    }
+
+    _checkExternalServices() {
+        if (
+            SettingsStore.getState().viewSettings.get(
+                "hasSeenExternalServices",
+                false
+            )
+        ) {
+            updateGatewayBackers();
+        } else {
+            this.setState({
+                isGatewaySelectorModalVisible: true
+            });
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -362,6 +443,7 @@ class App extends React.Component {
                     : "committee-account";
             content = (
                 <div className="grid-frame vertical">
+                    <NewsHeadline />
                     <Header height={this.state.height} {...others} />
                     <div id="mainContainer" className="grid-block">
                         <div className="grid-block vertical">
@@ -388,11 +470,9 @@ class App extends React.Component {
                                     component={Settings}
                                 />
                                 <Route path="/settings" component={Settings} />
-
                                 <Route
-                                    path="/transfer"
-                                    exact
-                                    component={Transfer}
+                                    path="/invoice/:data"
+                                    component={Invoice}
                                 />
                                 <Route
                                     path="/deposit-withdraw"
@@ -449,6 +529,10 @@ class App extends React.Component {
                                 <Route path="/borrow" component={Borrow} />
 
                                 <Route path="/barter" component={Barter} />
+                                <Route
+                                    path="/direct-debit"
+                                    component={DirectDebit}
+                                />
 
                                 <Route
                                     path="/spotlight"
@@ -490,6 +574,21 @@ class App extends React.Component {
                                     exact
                                     path="/help/:path1/:path2/:path3"
                                     component={Help}
+                                />
+                                <Route path="/htlc" component={Htlc} />
+                                <Route
+                                    path="/prediction"
+                                    component={PredictionMarketsPage}
+                                />
+                                <Route
+                                    exact
+                                    path="/instant-trade"
+                                    component={QuickTrade}
+                                />
+                                <Route
+                                    exact
+                                    path="/instant-trade/:marketID"
+                                    component={QuickTrade}
                                 />
                                 <Route path="*" component={Page404} />
                             </Switch>
@@ -543,6 +642,10 @@ class App extends React.Component {
                             visible={this.state.isBrowserSupportModalVisible}
                             hideModal={this.hideBrowserSupportModal}
                             showModal={this.showBrowserSupportModal}
+                        />
+                        <GatewaySelectorModal
+                            visible={this.state.isGatewaySelectorModalVisible}
+                            hideModal={this.hideGatewaySelectorModal}
                         />
                     </div>
                 </BodyClassName>

@@ -8,6 +8,8 @@ import counterpart from "counterpart";
 import AmountSelector from "components/Utility/AmountSelector";
 import AccountActions from "actions/AccountActions";
 import {validateAddress, WithdrawAddresses} from "common/RuDexMethods";
+import {connect} from "alt-react";
+import SettingsStore from "stores/SettingsStore";
 import {ChainStore} from "bitsharesjs";
 import {checkFeeStatusAsync, checkBalance} from "common/trxHelper";
 import {Price, Asset} from "common/MarketClasses";
@@ -26,9 +28,11 @@ class RuDexWithdrawModal extends React.Component {
         url: PropTypes.string,
         output_wallet_type: PropTypes.string,
         output_supports_memos: PropTypes.bool.isRequired,
+        output_supportsPublicKey: PropTypes.bool.isRequired,
         amount_to_withdraw: PropTypes.string,
         balance: ChainTypes.ChainObject,
-        min_amount: PropTypes.number
+        min_amount: PropTypes.number,
+        gateFee: PropTypes.number
     };
 
     constructor(props) {
@@ -47,11 +51,17 @@ class RuDexWithdrawModal extends React.Component {
             withdraw_address_selected: WithdrawAddresses.getLast(
                 props.output_wallet_type
             ),
+            withdraw_publicKey: "",
+            withdraw_publicKey_not_empty: this.props.output_supportsPublicKey
+                ? false
+                : true,
             memo: "",
             withdraw_address_first: true,
             empty_withdraw_value: false,
             from_account: props.account,
-            fee_asset_id: "1.3.0",
+            fee_asset_id:
+                ChainStore.assets_by_symbol.get(props.fee_asset_symbol) ||
+                "1.3.0",
             feeStatus: {}
         };
 
@@ -83,7 +93,6 @@ class RuDexWithdrawModal extends React.Component {
                 {
                     from_account: np.account,
                     feeStatus: {},
-                    fee_asset_id: "1.3.0",
                     feeAmount: new Asset({amount: 0})
                 },
                 () => {
@@ -241,16 +250,37 @@ class RuDexWithdrawModal extends React.Component {
         this._validateAddress(new_withdraw_address);
     }
 
+    onWithdrawPublicKeyChanged(e) {
+        let new_withdraw_publicKey = e.target.value.trim();
+        this.setState({
+            withdraw_publicKey: new_withdraw_publicKey,
+            withdraw_publicKey_not_empty:
+                new_withdraw_publicKey != "" ? true : false
+        });
+    }
+
     _validateAddress(new_withdraw_address, props = this.props) {
         validateAddress({
             url: props.url,
             walletType: props.output_wallet_type,
             newAddress: new_withdraw_address
-        }).then(isValid => {
+        }).then(json => {
+            if (typeof json === "undefined") {
+                json = {isValid: false};
+            }
             if (this.state.withdraw_address === new_withdraw_address) {
                 this.setState({
                     withdraw_address_check_in_progress: false,
-                    withdraw_address_is_valid: isValid
+                    withdraw_address_is_valid: json.isValid,
+                    withdraw_publicKey: json.hasOwnProperty("publicKey")
+                        ? json.publicKey
+                        : "",
+                    withdraw_publicKey_not_empty: this.props
+                        .output_supportsPublicKey
+                        ? json.hasOwnProperty("publicKey")
+                            ? true
+                            : false
+                        : true
                 });
             }
         });
@@ -279,12 +309,12 @@ class RuDexWithdrawModal extends React.Component {
             withdraw_amount <
             this.props.min_amount /
                 utils.get_asset_precision(this.props.asset_precision);
-        console.log(
+        /*        console.log(
             "X",
             withdraw_amount,
             this.props.min_amount /
-                utils.get_asset_precision(this.props.asset_precision)
-        );
+            utils.get_asset_precision(this.props.asset_precision)
+        );*/
         this.setState({minAmountError: lessThanMinimum});
         return lessThanMinimum;
     }
@@ -326,7 +356,7 @@ class RuDexWithdrawModal extends React.Component {
                 });
                 let asset = this.props.asset;
 
-                const {feeAmount} = this.state;
+                const {feeAmount, fee_asset_id} = this.state;
 
                 let amount = parseFloat(
                     String.prototype.replace.call(
@@ -349,11 +379,14 @@ class RuDexWithdrawModal extends React.Component {
                     this.props.output_coin_type +
                         ":" +
                         this.state.withdraw_address +
+                        (this.props.output_supportsPublicKey
+                            ? ":" + this.state.withdraw_publicKey
+                            : "") +
                         (this.state.memo
                             ? ":" + new Buffer(this.state.memo, "utf-8")
                             : ""),
                     null,
-                    feeAmount ? feeAmount.asset_id : "1.3.0"
+                    feeAmount ? feeAmount.asset_id : fee_asset_id
                 );
 
                 this.setState({
@@ -401,7 +434,7 @@ class RuDexWithdrawModal extends React.Component {
             ""
         );
 
-        const {feeAmount} = this.state;
+        const {feeAmount, fee_asset_id} = this.state;
 
         AccountActions.transfer(
             this.props.account.get("id"),
@@ -411,11 +444,14 @@ class RuDexWithdrawModal extends React.Component {
             this.props.output_coin_type +
                 ":" +
                 this.state.withdraw_address +
+                (this.props.output_supportsPublicKey
+                    ? ":" + this.state.withdraw_publicKey
+                    : "") +
                 (this.state.memo
                     ? ":" + new Buffer(this.state.memo, "utf-8")
                     : ""),
             null,
-            feeAmount ? feeAmount.asset_id : "1.3.0"
+            feeAmount ? feeAmount.asset_id : fee_asset_id
         );
     }
 
@@ -479,6 +515,7 @@ class RuDexWithdrawModal extends React.Component {
 
     _getAvailableAssets(state = this.state) {
         const {from_account, feeStatus} = state;
+
         function hasFeePoolBalance(id) {
             if (feeStatus[id] === undefined) return true;
             return feeStatus[id] && feeStatus[id].hasPoolBalance;
@@ -548,7 +585,7 @@ class RuDexWithdrawModal extends React.Component {
     }
 
     render() {
-        let {withdraw_address_selected, memo} = this.state;
+        let {withdraw_address_selected, withdraw_publicKey, memo} = this.state;
         let storedAddress = WithdrawAddresses.get(
             this.props.output_wallet_type
         );
@@ -757,7 +794,6 @@ class RuDexWithdrawModal extends React.Component {
                         <div className="content-block gate_fee">
                             <AmountSelector
                                 refCallback={this.setNestedRef.bind(this)}
-                                label="transfer.fee"
                                 disabled={true}
                                 amount={this.state.feeAmount.getAmount({
                                     real: true
@@ -839,6 +875,34 @@ class RuDexWithdrawModal extends React.Component {
                         {invalid_address_message}
                     </div>
 
+                    {/* for PublicKey input (ex.PRIZM) */}
+                    {this.props.output_supportsPublicKey ? (
+                        <div className="content-block">
+                            <label className="left-label">
+                                <Translate
+                                    component="span"
+                                    content="modal.withdraw.public_key"
+                                />
+                            </label>
+                            <div className="rudex-select-dropdown">
+                                <div className="inline-label">
+                                    <input
+                                        type="text"
+                                        value={withdraw_publicKey}
+                                        tabIndex="5"
+                                        onChange={this.onWithdrawPublicKeyChanged.bind(
+                                            this
+                                        )}
+                                        onInput={this.onWithdrawPublicKeyChanged.bind(
+                                            this
+                                        )}
+                                        autoComplete="off"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    ) : null}
+
                     {/* Memo input */}
                     {withdraw_memo}
 
@@ -848,7 +912,8 @@ class RuDexWithdrawModal extends React.Component {
                             disabled={
                                 this.state.error ||
                                 this.state.balanceError ||
-                                this.state.minAmountError
+                                this.state.minAmountError ||
+                                !this.state.withdraw_publicKey_not_empty
                             }
                             type="primary"
                             onClick={this.onSubmit.bind(this)}
@@ -870,4 +935,20 @@ class RuDexWithdrawModal extends React.Component {
     }
 }
 
-export default BindToChainState(RuDexWithdrawModal);
+RuDexWithdrawModal = BindToChainState(RuDexWithdrawModal);
+
+export default connect(
+    RuDexWithdrawModal,
+    {
+        listenTo() {
+            return [SettingsStore];
+        },
+        getProps(props) {
+            return {
+                fee_asset_symbol: SettingsStore.getState().settings.get(
+                    "fee_asset"
+                )
+            };
+        }
+    }
+);

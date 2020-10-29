@@ -5,19 +5,31 @@ import AccountImage from "../Account/AccountImage";
 import AccountStore from "stores/AccountStore";
 import AccountActions from "actions/AccountActions";
 import Translate from "react-translate-component";
-import {ChainStore, PublicKey, ChainValidation, FetchChain} from "bitsharesjs";
+import {
+    ChainStore,
+    PublicKey,
+    ChainValidation,
+    FetchChain,
+    FetchChainObjects
+} from "bitsharesjs";
 import ChainTypes from "../Utility/ChainTypes";
 import BindToChainState from "../Utility/BindToChainState";
-import classnames from "classnames";
 import counterpart from "counterpart";
 import Icon from "../Icon/Icon";
 import accountUtils from "common/account_utils";
-import FloatingDropdown from "../Utility/FloatingDropdown";
-import TypeAhead from "../Utility/TypeAhead";
 import cnames from "classnames";
 import PropTypes from "prop-types";
+import {
+    Tooltip,
+    Button,
+    Input,
+    Icon as AntIcon,
+    Select,
+    Form
+} from "bitshares-ui-style-guide";
 
-/**
+const MAX_LOOKUP_ATTEMPTS = 5;
+/*
  * @brief Allows the user to enter an account by name or #ID
  *
  * This component is designed to be stateless as possible.  It's primary responsbility is to
@@ -40,26 +52,47 @@ class AccountSelector extends React.Component {
         allowUppercase: PropTypes.bool, // use it if you need to allow uppercase letters
         typeahead: PropTypes.bool,
         excludeAccounts: PropTypes.array, // array of accounts to exclude from the typeahead
-        focus: PropTypes.bool
+        focus: PropTypes.bool,
+        disabled: PropTypes.bool,
+        editable: PropTypes.bool,
+        locked: PropTypes.bool,
+        requireActiveSelect: PropTypes.bool,
+        noForm: PropTypes.bool
     };
 
     static defaultProps = {
         autosubscribe: false,
-        excludeAccounts: []
+        excludeAccounts: [],
+        disabled: null,
+        editable: null,
+        locked: false,
+        requireActiveSelect: true, // Should not be set to false, required for fallback
+        noForm: false
     };
 
     constructor(props) {
         super(props);
         this.state = {
-            inputChanged: false
+            accountIndex: [],
+            locked: null
         };
+        this.timer = null;
     }
 
     componentDidMount() {
         let {account, accountName} = this.props;
 
-        if (typeof account === "undefined")
-            account = ChainStore.getAccount(accountName);
+        // Populate account search array, fetch only once
+        if (accountName) {
+            this._addThisToIndex(accountName);
+        }
+        this.props.myActiveAccounts.map(a => {
+            this._addThisToIndex(a);
+        });
+        this.props.contacts.map(a => {
+            this._addThisToIndex(a);
+        });
+        this._fetchAccounts();
 
         if (this.props.onAccountChanged && account)
             this.props.onAccountChanged(account);
@@ -68,17 +101,170 @@ class AccountSelector extends React.Component {
             this.onInputChanged(accountName);
     }
 
-    componentDidUpdate() {
-        if (this.props.focus) {
+    componentDidUpdate(prevProps) {
+        if (this.props.focus && !!this.props.editable && !this.props.disabled) {
             this.refs.user_input.focus();
+        }
+
+        if (prevProps.account && prevProps.account !== this.props.account) {
+            if (this.props.onAccountChanged) {
+                this.props.onAccountChanged(this.props.account);
+            }
         }
     }
 
-    componentWillReceiveProps(newProps) {
-        if (newProps.account && newProps.account !== this.props.account) {
-            if (this.props.onAccountChanged)
-                this.props.onAccountChanged(newProps.account);
+    _addToIndex(accountName, noDelay = false) {
+        if (noDelay) {
+            this._addThisToIndex(accountName);
+            this._fetchAccounts();
+        } else {
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this._addToIndex(accountName, true);
+            }, 500);
         }
+    }
+
+    _addThisToIndex(accountName) {
+        let {accountIndex} = this.state;
+
+        if (!accountName) return;
+
+        let inAccountList = accountIndex.find(a => a.name === accountName);
+
+        if (accountName && !inAccountList) {
+            accountIndex.push({
+                name: accountName,
+                data: null,
+                attempts: 0
+            });
+        }
+    }
+
+    _getIndex(name, index) {
+        return index.findIndex(a => a.name === name);
+    }
+
+    _getSearchArray() {
+        let {accountIndex} = this.state;
+
+        // For all objects in search_array, query with FetchChainObjects
+        // Update results for each object with returned data and remove from search_array
+        // Update search_array for all remaining objects with increased attempts count
+        // which is when account does not exists, but can also be if node failed to send results
+        // back in time, so we query at least `MAX_LOOKUP_ATTEMPTS` times before we stop
+
+        // Filter out what objects we still require data for
+        let search_array = accountIndex
+            .filter(search => {
+                return !search.data && search.attempts < MAX_LOOKUP_ATTEMPTS
+                    ? search.name
+                    : null;
+            })
+            .map(search => {
+                return search.name;
+            });
+
+        return search_array;
+    }
+
+    _fetchAccounts() {
+        let {accountIndex} = this.state;
+
+        let search_array = this._getSearchArray();
+
+        if (search_array.length > 0) {
+            if (__DEV__)
+                console.log("Looked for " + search_array.length + " accounts");
+            FetchChainObjects(
+                ChainStore.getAccount,
+                search_array,
+                3000,
+                {}
+            ).then(accounts => {
+                accounts.forEach(account => {
+                    if (account) {
+                        let objectIndex = this._getIndex(
+                            account.get("name"),
+                            accountIndex
+                        );
+
+                        let result = this._populateAccountIndex(account);
+
+                        if (result) {
+                            accountIndex[objectIndex] = result;
+                            search_array.splice(account.get("name"));
+                        }
+                    }
+                });
+
+                search_array.forEach(account_to_find => {
+                    let objectIndex = this._getIndex(
+                        account_to_find,
+                        accountIndex
+                    );
+                    accountIndex[objectIndex].attempts++;
+                });
+                this.setState({
+                    accountIndex: accountIndex
+                });
+
+                // Run another fetch of accounts if data is still missing
+                let isDataMissing = this.state.accountIndex.find(
+                    a => !a.data && a.attempts < MAX_LOOKUP_ATTEMPTS
+                );
+
+                if (isDataMissing) {
+                    setTimeout(() => {
+                        this._fetchAccounts();
+                    }, 500);
+                }
+            });
+        }
+    }
+
+    _populateAccountIndex(accountResult) {
+        let {myActiveAccounts, contacts} = this.props;
+
+        // Should not happen, just failsafe
+        if (!accountResult) return null;
+
+        let accountName = accountResult.get("name");
+        let accountStatus = ChainStore.getAccountMemberStatus(accountResult);
+        let accountType = this.getInputType(accountName);
+
+        let statusLabel = !accountUtils.isKnownScammer(accountName)
+            ? counterpart.translate("account.member." + accountStatus)
+            : counterpart.translate("account.member.suspected_scammer");
+
+        let rightLabel =
+            accountType === "name"
+                ? "#" + accountResult.get("id").substring(4)
+                : accountType === "id"
+                    ? accountResult.get("name")
+                    : accountType == "pubkey" && this.props.allowPubKey
+                        ? "Public Key"
+                        : null;
+
+        return {
+            name: accountName,
+            attempts: 0,
+            data: {
+                id: accountResult.get("id"),
+                name: accountName,
+                type: accountType,
+                status: accountStatus,
+                isOwnAccount: myActiveAccounts.has(accountName),
+                isContact: contacts.has(accountName),
+                isKnownScammer: accountUtils.isKnownScammer(accountName),
+                statusLabel: statusLabel,
+                rightLabel: rightLabel,
+                className:
+                    accountUtils.isKnownScammer(accountName) || !accountResult
+                        ? "negative"
+                        : null
+            }
+        };
     }
 
     // can be used in parent component: this.refs.account_selector.getAccount()
@@ -87,9 +273,26 @@ class AccountSelector extends React.Component {
     }
 
     getError() {
-        let {account, error} = this.props;
+        let {account, accountName, error, typeahead} = this.props;
 
-        if (!error && account && !this.getInputType(account.get("name")))
+        let inputType = accountName ? this.getInputType(accountName) : null;
+
+        if (!typeahead) {
+            if (!account && accountName && inputType !== "pubkey") {
+                error = counterpart.translate("account.errors.unknown");
+            }
+        } else {
+            // Typeahead can't select an unknown account!
+            // if (
+            //     !(allowPubKey && inputType === "pubkey") &&
+            //     !error &&
+            //     accountName &&
+            //     !account
+            // )
+            //     error = counterpart.translate("account.errors.unknown");
+        }
+
+        if (!error && account && !inputType)
             error = counterpart.translate("account.errors.invalid");
 
         return error;
@@ -104,47 +307,6 @@ class AccountSelector extends React.Component {
         if (this.props.allowPubKey && PublicKey.fromPublicKeyString(value))
             return "pubkey";
         return null;
-    }
-
-    onSelected(e) {
-        this.setState({inputChanged: false});
-        this._notifyOnChange(e);
-    }
-
-    _notifyOnChange(e) {
-        let {onChange, onAccountChanged, accountName} = this.props;
-
-        let _accountName = this.getVerifiedAccountName(e);
-
-        if (_accountName === accountName) {
-            // nothing has changed, don't notify
-            return;
-        }
-
-        // Synchronous onChange for input change
-        if (!!onChange && (!!_accountName || _accountName === ""))
-            onChange(_accountName);
-
-        // asynchronous onAccountChanged for checking on chain
-        if (!!onAccountChanged) {
-            FetchChain("getAccount", _accountName, undefined, {
-                [_accountName]: false
-            })
-                .then(_account => {
-                    if (!!_account) {
-                        onAccountChanged(_account);
-                    }
-                })
-                .catch(err => {
-                    // error fetching
-                    console.log(err);
-                });
-        }
-    }
-
-    onInputChanged(e) {
-        this.setState({inputChanged: true});
-        this._notifyOnChange(e);
     }
 
     getVerifiedAccountName(e) {
@@ -168,8 +330,64 @@ class AccountSelector extends React.Component {
         return value;
     }
 
+    _notifyOnChange(selectedAccountName, inputType) {
+        let {props} = this;
+
+        // Clear selected account when we have new input data if we require an active select
+        if (
+            inputType == "input" &&
+            this.props.typeahead &&
+            this.props.requireActiveSelect
+        ) {
+            if (!!props.onAccountChanged) {
+                props.onAccountChanged(null);
+            }
+            if (!!props.onChange) {
+                props.onChange(null);
+            }
+        }
+
+        let accountName = this.getVerifiedAccountName(selectedAccountName);
+
+        // Synchronous onChange for input change
+        if (!!props.onChange && (!!accountName || accountName === "")) {
+            props.onChange(accountName);
+        }
+
+        // asynchronous onAccountChanged for checking on chain
+        if (!!props.onAccountChanged) {
+            FetchChain("getAccount", accountName, undefined, {
+                [accountName]: false
+            })
+                .then(account => {
+                    if (
+                        !!account &&
+                        ((this.props.requireActiveSelect &&
+                            inputType == "select") ||
+                            !this.props.requireActiveSelect)
+                    ) {
+                        props.onAccountChanged(account);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    }
+
+    onSelect(selectedAccountName) {
+        this._notifyOnChange(selectedAccountName, "select");
+    }
+
+    onInputChanged(e) {
+        this._addToIndex(this.getVerifiedAccountName(e));
+        this._notifyOnChange(e, "input");
+    }
+
     onKeyDown(e) {
-        if (e.keyCode === 13) this.onAction(e);
+        if (e.keyCode === 13 || e.keyCode === 9) {
+            this.onAction(e);
+        }
     }
 
     _onAddContact() {
@@ -191,334 +409,343 @@ class AccountSelector extends React.Component {
     }
 
     render() {
-        let {
-            accountName,
-            account,
-            allowPubKey,
-            typeahead,
-            disableActionButton,
-            contacts,
-            myActiveAccounts,
-            noPlaceHolder,
-            useHR,
-            labelClass,
-            reserveErrorSpace
-        } = this.props;
+        let {accountIndex} = this.state;
 
-        const inputType = this.getInputType(accountName);
+        let {account, accountName, disableActionButton} = this.props;
 
-        let typeAheadAccounts = [];
-        let error = this.getError();
-        let linkedAccounts = myActiveAccounts;
-        linkedAccounts = linkedAccounts.concat(contacts);
-
-        // Selected Account
-        let displayText;
-        if (account) {
-            account.isKnownScammer = accountUtils.isKnownScammer(
-                account.get("name")
-            );
-            account.accountType = this.getInputType(account.get("name"));
-            account.accountStatus = ChainStore.getAccountMemberStatus(account);
-            account.statusText = !account.isKnownScammer
-                ? counterpart.translate(
-                      "account.member." + account.accountStatus
-                  )
-                : counterpart.translate("account.member.suspected_scammer");
-            displayText =
-                account.accountType === "name"
-                    ? "#" + account.get("id").substring(4)
-                    : account.accountType === "id"
-                        ? account.get("name")
-                        : null;
-        }
-
-        // Without Typeahead Error Handling
-        if (!typeahead) {
-            if (!account && accountName && inputType !== "pubkey") {
-                error = counterpart.translate("account.errors.unknown");
-            }
-        } else {
-            if (
-                !(allowPubKey && inputType === "pubkey") &&
-                !error &&
-                accountName &&
-                !account
-            )
-                error = counterpart.translate("account.errors.unknown");
-        }
-        if (allowPubKey && inputType === "pubkey") displayText = "Public Key";
-
-        if (account && linkedAccounts)
-            account.isFavorite =
-                myActiveAccounts.has(account.get("name")) ||
-                contacts.has(account.get("name"));
-
-        if (typeahead && linkedAccounts) {
-            linkedAccounts
-                .map(accountName => {
-                    if (this.props.excludeAccounts.indexOf(accountName) !== -1)
-                        return null;
-                    let account = ChainStore.getAccount(accountName);
-                    let account_status = ChainStore.getAccountMemberStatus(
-                        account
-                    );
-                    let account_status_text = !accountUtils.isKnownScammer(
-                        accountName
-                    )
-                        ? "account.member." + account_status
-                        : "account.member.suspected_scammer";
-
-                    typeAheadAccounts.push({
-                        id: accountName,
-                        label: accountName,
-                        status: counterpart.translate(account_status_text),
-                        className: accountUtils.isKnownScammer(accountName)
-                            ? "negative"
-                            : "positive"
-                    });
-                })
-                .filter(a => !!a);
-        }
-
-        let typeaheadHasAccount = !!accountName
-            ? typeAheadAccounts.reduce((boolean, a) => {
-                  return boolean || a.label === accountName;
-              }, false)
-            : false;
-
-        if (!!accountName && !typeaheadHasAccount && this.state.inputChanged) {
-            let _account = ChainStore.getAccount(accountName);
-            let _account_status = _account
-                ? ChainStore.getAccountMemberStatus(_account)
-                : null;
-            let _account_status_text = _account
-                ? !accountUtils.isKnownScammer(_account.get("name"))
-                    ? counterpart.translate("account.member." + _account_status)
-                    : counterpart.translate("account.member.suspected_scammer")
-                : counterpart.translate("account.errors.unknown");
-
-            typeAheadAccounts.push({
-                id: this.props.accountName,
-                label: this.props.accountName,
-                status: _account_status_text,
-                className:
-                    accountUtils.isKnownScammer(accountName) || !_account
-                        ? "negative"
-                        : null,
-                disabled: !_account ? true : false
-            });
-        }
-
-        typeAheadAccounts.sort((a, b) => {
-            if (a.label > b.label) return 1;
-            else return -1;
-        });
-
-        let linked_status = !this.props.account ? null : myActiveAccounts.has(
-            account.get("name")
-        ) || contacts.has(account.get("name")) ? (
-            <span
-                className="tooltip green"
-                data-place="top"
-                data-tip={counterpart.translate("tooltip.follow_user")}
-                onClick={this._onRemoveContact.bind(this)}
-            >
-                <Icon
-                    style={{
-                        position: "absolute",
-                        top: "-0.15em",
-                        right: ".2em"
-                    }}
-                    name="user"
-                    title="icons.user.following"
-                />
-            </span>
-        ) : (
-            <span
-                className="tooltip"
-                data-place="top"
-                data-tip={counterpart.translate("tooltip.follow_user_add")}
-                onClick={this._onAddContact.bind(this)}
-            >
-                <Icon
-                    style={{
-                        position: "absolute",
-                        top: "-0.05em",
-                        right: ".2em"
-                    }}
-                    name="plus-circle"
-                    title="icons.plus_circle.add_contact"
-                />
-            </span>
+        let searchInProgress = this.state.accountIndex.find(
+            a => !a.data && a.attempts < MAX_LOOKUP_ATTEMPTS
         );
 
-        let action_class = classnames("button", {
-            disabled:
-                !(account || inputType === "pubkey") ||
-                error ||
-                disableActionButton
-        });
+        const lockedState =
+            this.state.locked !== null ? this.state.locked : this.props.locked;
+
+        let error = this.getError(),
+            formContainer,
+            selectedAccount,
+            disabledAction,
+            disabledInput,
+            editableInput,
+            linked_status;
+
+        editableInput = !!lockedState
+            ? false
+            : this.props.editable != null
+                ? this.props.editable
+                : undefined;
+
+        disabledInput = !!lockedState
+            ? true
+            : this.props.disabled != null
+                ? this.props.disabled
+                : undefined;
+
+        // Selected Account
+        if (account) {
+            let objectIndex = this._getIndex(account.get("name"), accountIndex);
+
+            selectedAccount =
+                accountIndex && accountIndex[objectIndex]
+                    ? accountIndex[objectIndex].data
+                    : null;
+        }
+
+        disabledAction =
+            !(
+                account ||
+                (selectedAccount && selectedAccount.type === "pubkey")
+            ) ||
+            error ||
+            disableActionButton;
+
+        if (selectedAccount && selectedAccount.isOwnAccount) {
+            linked_status = (
+                <Tooltip
+                    placement="top"
+                    title={counterpart.translate("tooltip.own_account")}
+                >
+                    <span className="tooltip green">
+                        <AntIcon type="user" />
+                    </span>
+                </Tooltip>
+            );
+        } else if (selectedAccount && selectedAccount.isKnownScammer) {
+            linked_status = (
+                <Tooltip
+                    placement="top"
+                    title={counterpart.translate("tooltip.scam_account")}
+                >
+                    <span className="tooltip red">
+                        <AntIcon type="warning" theme="filled" />
+                    </span>
+                </Tooltip>
+            );
+        } else if (selectedAccount && selectedAccount.isContact) {
+            linked_status = (
+                <Tooltip
+                    placement="top"
+                    title={counterpart.translate("tooltip.follow_user")}
+                    onClick={this._onRemoveContact.bind(this)}
+                >
+                    <span className="tooltip green">
+                        <AntIcon type="star" theme="filled" />
+                    </span>
+                </Tooltip>
+            );
+        } else if (selectedAccount) {
+            linked_status = (
+                <Tooltip
+                    placement="top"
+                    title={counterpart.translate("tooltip.follow_user_add")}
+                    onClick={this._onAddContact.bind(this)}
+                >
+                    <span className="tooltip">
+                        <AntIcon type="star" />
+                    </span>
+                </Tooltip>
+            );
+        }
+
+        if (this.props.typeahead) {
+            let optionsContainer = accountIndex
+                .filter(account => {
+                    // Filter accounts based on
+                    // - Exclude without results (missing chain data at the moment)
+                    // - Excluded accounts (by props)
+                    // - Include users own accounts (isOwnAccount)
+                    // - Include users contacts (isContact) unless it's a previously locked input
+                    // - Include current input
+
+                    if (!account.data) {
+                        return null;
+                    }
+                    if (this.props.excludeAccounts.indexOf(account.id) !== -1) {
+                        return null;
+                    }
+                    if (
+                        account.data.isOwnAccount ||
+                        (!this.props.locked && account.data.isContact) ||
+                        (accountName && account.data.name === accountName)
+                    ) {
+                        return account;
+                    }
+                })
+                .sort((a, b) => {
+                    if (a.data.isOwnAccount < b.data.isOwnAccount) {
+                        if (a.data.name > b.data.name) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    } else {
+                        return -1;
+                    }
+                })
+                .map(account => {
+                    return (
+                        <Select.Option
+                            key={account.data.id}
+                            value={account.data.name}
+                            disabled={account.data.disabled ? true : undefined}
+                        >
+                            {account.data.isOwnAccount ? (
+                                <AntIcon type="user" />
+                            ) : null}
+                            {account.data.isContact ? (
+                                <AntIcon type="star" />
+                            ) : null}
+                            {account.data.isKnownScammer ? (
+                                <AntIcon type="warning" />
+                            ) : null}
+                            &nbsp;
+                            {account.data.name}
+                            <span style={{float: "right"}}>
+                                {account.data.statusLabel}
+                            </span>
+                        </Select.Option>
+                    );
+                });
+
+            formContainer = (
+                <Select
+                    showSearch
+                    optionLabelProp={"value"}
+                    onSelect={this.onSelect.bind(this)}
+                    onSearch={this.onInputChanged.bind(this)}
+                    placeholder={counterpart.translate("account.search")}
+                    notFoundContent={counterpart.translate("global.not_found")}
+                    value={selectedAccount ? selectedAccount.name : null}
+                    disabled={disabledInput ? true : undefined}
+                >
+                    {optionsContainer}
+                </Select>
+            );
+        } else {
+            formContainer = (
+                <Input
+                    style={{
+                        textTransform:
+                            selectedAccount && selectedAccount.type === "pubkey"
+                                ? null
+                                : "lowercase",
+                        fontVariant: "initial"
+                    }}
+                    name="username"
+                    id="username"
+                    autoComplete={
+                        !!this.props.editable ? "username" : undefined
+                    }
+                    type="text"
+                    value={this.props.accountName || ""}
+                    placeholder={
+                        this.props.placeholder ||
+                        counterpart.translate("account.name")
+                    }
+                    disabled={this.props.disabled ? true : undefined}
+                    ref="user_input"
+                    onChange={this.onInputChanged.bind(this)}
+                    onKeyDown={this.onKeyDown.bind(this)}
+                    tabIndex={
+                        !this.props.editable || !!this.props.disabled
+                            ? -1
+                            : this.props.tabIndex
+                    }
+                    editable={
+                        !!editableInput ? editableInput.toString() : undefined
+                    }
+                    readOnly={
+                        !!editableInput
+                            ? (!editableInput).toString()
+                            : undefined
+                    }
+                />
+            );
+        }
+
+        let accountImageContainer = this.props
+            .hideImage ? null : selectedAccount &&
+        selectedAccount.accountType === "pubkey" ? (
+            <div className="account-image">
+                <Icon name="key" title="icons.key" size="4x" />
+            </div>
+        ) : (
+            <AccountImage
+                size={{
+                    height: this.props.size || 33,
+                    width: this.props.size || 33
+                }}
+                account={selectedAccount ? selectedAccount.name : null}
+                custom_image={null}
+            />
+        );
+
+        let lockedStateContainer = !lockedState ? null : (
+            <Tooltip
+                title={counterpart.translate("tooltip.unlock_account_name")}
+            >
+                <div
+                    style={{
+                        lineHeight: "2rem",
+                        marginLeft: "10px",
+                        cursor: "pointer"
+                    }}
+                    onClick={() => this.setState({locked: false})}
+                >
+                    <AntIcon style={{fontSize: "1rem"}} type={"edit"} />
+                </div>
+            </Tooltip>
+        );
+
+        let rightLabelContainer =
+            !this.props.label || !selectedAccount ? null : (
+                <div
+                    className={
+                        "header-area" +
+                        (this.props.hideImage ? " no-margin" : "")
+                    }
+                >
+                    <label
+                        className={cnames(
+                            "right-label",
+                            selectedAccount.isContact ||
+                            selectedAccount.isOwnAccount
+                                ? "positive"
+                                : null,
+                            selectedAccount.isKnownScammer ? "negative" : null
+                        )}
+                        style={{marginTop: -30}}
+                    >
+                        <span style={{paddingRight: "0.5rem"}}>
+                            {selectedAccount.rightLabel}
+                            &nbsp;
+                            {selectedAccount.displayText}
+                        </span>
+                        {linked_status}
+                    </label>
+                </div>
+            );
+
+        const FormWrapper = this.props.noForm ? React.Fragment : Form;
+        const formWrapperProps = this.props.noForm
+            ? {}
+            : {
+                  className: "full-width",
+                  layout: "vertical",
+                  style: this.props.style
+              };
 
         return (
-            <div className="account-selector" style={this.props.style}>
-                <div className="content-area">
-                    {this.props.label ? (
-                        <div
-                            className={
-                                "header-area" +
-                                (this.props.hideImage ? " no-margin" : "")
-                            }
-                        >
-                            <label
-                                className={cnames(
-                                    "right-label",
-                                    account && account.isFavorite
-                                        ? "positive"
-                                        : null,
-                                    account && account.isKnownScammer
-                                        ? "negative"
-                                        : null
-                                )}
-                            >
-                                <span style={{paddingRight: "1.5rem"}}>
-                                    {account && account.statusText}
-                                    &nbsp;
-                                    {!!displayText && displayText}
-                                </span>
-                                {linked_status}
-                            </label>
-
-                            <Translate
-                                className={"left-label " + (labelClass || "")}
-                                component="label"
-                                content={this.props.label}
-                            />
-                            {useHR && <hr />}
-                        </div>
-                    ) : null}
-                    <div className="input-area" data-tip={this.props.tooltip}>
+            <Tooltip
+                className="input-area"
+                title={this.props.tooltip}
+                mouseEnterDelay={0.5}
+            >
+                <FormWrapper {...formWrapperProps}>
+                    <Form.Item
+                        label={
+                            this.props.label
+                                ? counterpart.translate(this.props.label)
+                                : ""
+                        }
+                        validateStatus={error ? "error" : null}
+                        help={error ? error : null}
+                    >
+                        {rightLabelContainer}
+                        {this.props.useHR && <hr />}
                         <div className="inline-label input-wrapper">
-                            {account && account.accountType === "pubkey" ? (
-                                <div className="account-image">
-                                    <Icon
-                                        name="key"
-                                        title="icons.key"
-                                        size="4x"
-                                    />
-                                </div>
-                            ) : this.props.hideImage ? null : (
-                                <AccountImage
-                                    size={{
-                                        height: this.props.size || 80,
-                                        width: this.props.size || 80
-                                    }}
-                                    account={
-                                        account ? account.get("name") : null
-                                    }
-                                    custom_image={null}
-                                />
-                            )}
-                            {typeof this.props.typeahead !== "undefined" ? (
-                                <TypeAhead
-                                    items={typeAheadAccounts}
-                                    style={{
-                                        textTransform:
-                                            this.getInputType(accountName) ===
-                                            "pubkey"
-                                                ? null
-                                                : "lowercase",
-                                        fontVariant: "initial"
-                                    }}
-                                    name="username"
-                                    id="username"
-                                    defaultValue={this.props.accountName || ""}
-                                    placeholder={
-                                        this.props.placeholder ||
-                                        counterpart.translate("account.name")
-                                    }
-                                    ref="user_input"
-                                    onSelect={this.onSelected.bind(this)}
-                                    onChange={this.onInputChanged.bind(this)}
-                                    onKeyDown={this.onKeyDown.bind(this)}
-                                    tabIndex={this.props.tabIndex}
-                                    inputProps={{
-                                        placeholder: "Search for an account"
-                                    }}
-                                    {...this.props.typeaheadOptions || {}}
-                                />
-                            ) : (
-                                <input
-                                    style={{
-                                        textTransform:
-                                            this.getInputType(accountName) ===
-                                            "pubkey"
-                                                ? null
-                                                : "lowercase",
-                                        fontVariant: "initial"
-                                    }}
-                                    name="username"
-                                    id="username"
-                                    autoComplete="username"
-                                    type="text"
-                                    value={this.props.accountName || ""}
-                                    placeholder={
-                                        this.props.placeholder ||
-                                        counterpart.translate("account.name")
-                                    }
-                                    ref="user_input"
-                                    onChange={this.onInputChanged.bind(this)}
-                                    onKeyDown={this.onKeyDown.bind(this)}
-                                    tabIndex={this.props.tabIndex}
-                                />
-                            )}
-                            {this.props.dropDownContent ? (
-                                <div className="form-label select floating-dropdown">
-                                    <FloatingDropdown
-                                        entries={this.props.dropDownContent}
-                                        values={this.props.dropDownContent.reduce(
-                                            (map, a) => {
-                                                if (a) map[a] = a;
-                                                return map;
-                                            },
-                                            {}
-                                        )}
-                                        singleEntry={
-                                            this.props.dropDownContent[0]
-                                        }
-                                        value={this.props.dropDownValue || ""}
-                                        onChange={this.props.onDropdownSelect}
-                                    />
-                                </div>
+                            {accountImageContainer}
+                            {formContainer}
+                            {searchInProgress ? (
+                                <AntIcon type="loading" style={{padding: 10}} />
                             ) : null}
+                            {lockedStateContainer}
                             {this.props.children}
                             {this.props.onAction ? (
-                                <button
-                                    className={action_class}
-                                    onClick={this.onAction.bind(this)}
+                                <Tooltip
+                                    title={counterpart.translate(
+                                        "tooltip.required_input",
+                                        {
+                                            type: counterpart.translate(
+                                                "global.field_type.account"
+                                            )
+                                        }
+                                    )}
                                 >
-                                    <Translate
-                                        content={this.props.action_label}
-                                    />
-                                </button>
+                                    <Button
+                                        type="primary"
+                                        disabled={disabledAction}
+                                        onClick={this.onAction.bind(this)}
+                                    >
+                                        <Translate
+                                            content={this.props.action_label}
+                                        />
+                                    </Button>
+                                </Tooltip>
                             ) : null}
                         </div>
-                    </div>
-
-                    {error || reserveErrorSpace ? (
-                        <div
-                            className={
-                                this.props.hideImage
-                                    ? "has-error"
-                                    : "error-area"
-                            }
-                            style={{marginTop: "1rem"}}
-                        >
-                            <span>{error}</span>
-                        </div>
-                    ) : null}
-                </div>
-            </div>
+                    </Form.Item>
+                </FormWrapper>
+            </Tooltip>
         );
     }
 }

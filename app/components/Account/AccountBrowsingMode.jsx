@@ -1,10 +1,12 @@
 import React from "react";
 import {connect} from "alt-react";
 import AccountStore from "stores/AccountStore";
+import SettingsStore from "stores/SettingsStore";
 import AccountActions from "actions/AccountActions";
+import SettingsActions from "actions/SettingsActions";
 import counterpart from "counterpart";
 import Translate from "react-translate-component";
-import {Button, Modal, Icon, Popover} from "bitshares-ui-style-guide";
+import {Button, Modal, Icon, Popover, Tooltip} from "bitshares-ui-style-guide";
 
 class AccountBrowsingMode extends React.Component {
     constructor(props) {
@@ -30,7 +32,7 @@ class AccountBrowsingMode extends React.Component {
             this.isMyAccount(prevProps.currentAccount)
         ) {
             this.setState({
-                isModalVisible: !this.props.neverShowBrowsingModeNotice,
+                isModalVisible: this.props.viewOnlyMode !== false,
                 previousAccountName: prevProps.currentAccount
             });
         }
@@ -74,7 +76,10 @@ class AccountBrowsingMode extends React.Component {
     handleNeverShowAgain() {
         this.handleClose();
 
-        AccountActions.setNeverShowBrowsingModeNotice(true);
+        SettingsActions.changeSetting({
+            setting: "viewOnlyMode",
+            value: false
+        });
     }
 
     render() {
@@ -121,18 +126,21 @@ class AccountBrowsingMode extends React.Component {
                         )}
                     </Modal>
                     {!this.isMyAccount() ? (
-                        <Button
-                            data-place="bottom"
-                            data-tip={counterpart.translate(
+                        <Tooltip
+                            placement="bottom"
+                            title={counterpart.translate(
                                 "account_browsing_mode.you_are_in_browsing_mode"
                             )}
-                            onClick={this.handleSwitchBack}
-                            className="hide-for-small-only account-browsing-mode--button"
                         >
-                            {counterpart.translate(
-                                "account_browsing_mode.view_mode"
-                            )}
-                        </Button>
+                            <Button
+                                onClick={this.handleSwitchBack}
+                                className="hide-for-small-only account-browsing-mode--button"
+                            >
+                                {counterpart.translate(
+                                    "account_browsing_mode.view_mode"
+                                )}
+                            </Button>
+                        </Tooltip>
                     ) : null}
                 </div>
             );
@@ -144,12 +152,13 @@ export default connect(
     AccountBrowsingMode,
     {
         listenTo() {
-            return [AccountStore];
+            return [AccountStore, SettingsStore];
         },
         getProps() {
             return {
-                neverShowBrowsingModeNotice: AccountStore.getState()
-                    .neverShowBrowsingModeNotice,
+                viewOnlyMode: SettingsStore.getState().settings.get(
+                    "viewOnlyMode"
+                ),
                 currentAccount: AccountStore.getState().currentAccount
             };
         }

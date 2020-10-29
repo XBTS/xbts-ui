@@ -3,6 +3,7 @@ let icons = [
     "adjust",
     "alarm",
     "assets",
+    "autolock",
     "barter",
     "borrow",
     "checkmark-circle",
@@ -30,6 +31,7 @@ let icons = [
     "grouping",
     "hamburger-x",
     "hamburger",
+    "htlc",
     "hourglass",
     "key",
     "list",
@@ -65,7 +67,14 @@ let icons = [
     "attention",
     "checkmark",
     "paperclip",
-    "wallet"
+    "wallet",
+    "prediction",
+    "prediction-large",
+    "merchant",
+    "insight",
+    "create_account",
+    "swap",
+    "instant-trade"
 ];
 
 let iconsMap = {};

@@ -129,6 +129,18 @@ class MarketsActions {
         return true;
     }
 
+    async getTicker(base, quote) {
+        if (base instanceof Object) {
+            base = base.get("id");
+        }
+        if (quote instanceof Object) {
+            quote = quote.get("id");
+        }
+        return await Apis.instance()
+            .db_api()
+            .exec("get_ticker", [base, quote]);
+    }
+
     subscribeMarket(base, quote, bucketSize, groupedOrderLimit) {
         /*
         * DataFeed will call subscribeMarket with undefined groupedOrderLimit,
@@ -613,17 +625,25 @@ class MarketsActions {
         };
     }
 
-    createLimitOrder2(order) {
+    createLimitOrder2(orderOrOrders) {
         var tr = WalletApi.new_transaction();
+
+        let orders = [];
 
         // let feeAsset = ChainStore.getAsset(fee_asset_id);
         // if( feeAsset.getIn(["options", "core_exchange_rate", "base", "asset_id"]) === "1.3.0" && feeAsset.getIn(["options", "core_exchange_rate", "quote", "asset_id"]) === "1.3.0" ) {
         //     fee_asset_id = "1.3.0";
         // }
 
-        order = order.toObject();
+        if (Array.isArray(orderOrOrders)) {
+            orders = orderOrOrders.map(order => order.toObject());
+        } else {
+            orders.push(orderOrOrders.toObject());
+        }
 
-        tr.add_type_operation("limit_order_create", order);
+        orders.forEach(order => {
+            tr.add_type_operation("limit_order_create", order);
+        });
 
         return WalletDb.process_transaction(tr, null, true)
             .then(result => {

@@ -1,9 +1,8 @@
 import React from "react";
 import QrReader from "react-qr-reader";
-import Icon from "./Icon/Icon";
 import counterpart from "counterpart";
 import PropTypes from "prop-types";
-import {Modal, Button} from "bitshares-ui-style-guide";
+import {Modal, Button, Icon} from "bitshares-ui-style-guide";
 
 class QRScanner extends React.Component {
     modalId = "qr_scanner_modal";
@@ -15,7 +14,9 @@ class QRScanner extends React.Component {
     static propTypes = {
         onSuccess: PropTypes.func,
         onError: PropTypes.func,
-        label: PropTypes.string
+        label: PropTypes.string,
+        submitBtnText: PropTypes.string.isRequired,
+        dataFoundText: PropTypes.string.isRequired
     };
 
     constructor(props) {
@@ -101,12 +102,11 @@ class QRScanner extends React.Component {
 
         return (
             <div className="qr-address-scanner">
-                <button
-                    className="qr-address-scanner-btn"
+                <Icon
+                    type="camera"
                     onClick={this.handleClick}
-                >
-                    <Icon name="photo-camera" />
-                </button>
+                    style={{fontSize: "24px", padding: 5}}
+                />
                 <Modal
                     visible={this.state.visible}
                     className="qr-address-scanner-modal"
@@ -124,18 +124,20 @@ class QRScanner extends React.Component {
                         ) : (
                             <div style={{justifyContent: "center"}}>
                                 {[
-                                    <Button onClick={this.retry}>
+                                    <Button
+                                        onClick={this.retry}
+                                        key="qr-retry-button"
+                                    >
                                         {counterpart.translate(
                                             "qr_address_scanner.retry"
                                         )}
                                     </Button>,
                                     <Button
+                                        key="qr-submit-button"
                                         type="primary"
                                         onClick={this.submit}
                                     >
-                                        {counterpart.translate(
-                                            "qr_address_scanner.use_address"
-                                        )}
+                                        {this.props.submitBtnText}
                                     </Button>
                                 ]}
                             </div>
@@ -157,10 +159,7 @@ class QRScanner extends React.Component {
                         <div>
                             <div className="qr-address-scanner-status">
                                 <div className="qr-address-scanner-status-title">
-                                    {counterpart.translate(
-                                        "qr_address_scanner.address_found"
-                                    )}
-                                    :
+                                    {this.props.dataFoundText}
                                 </div>
                                 <div className="qr-address-scanner-status-address">
                                     {this.state.address}

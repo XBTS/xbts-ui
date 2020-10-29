@@ -1,16 +1,22 @@
 import React from "react";
 import debounceRender from "react-debounce-render";
 import BalanceComponent from "../Utility/BalanceComponent";
-import {BalanceValueComponent} from "../Utility/EquivalentValueComponent";
+import {
+    BalanceValueComponent,
+    balanceToAsset,
+    getEquivalentValue
+} from "../Utility/EquivalentValueComponent";
 import {Market24HourChangeComponent} from "../Utility/MarketChangeComponent";
+import FormattedAsset from "../Utility/FormattedAsset";
 import assetUtils from "common/asset_utils";
 import counterpart from "counterpart";
 import {Link} from "react-router-dom";
 import EquivalentPrice from "../Utility/EquivalentPrice";
+import {getFinalPrice} from "../Utility/EquivalentPrice";
 import LinkToAssetById from "../Utility/LinkToAssetById";
 import BorrowModal from "../Modal/BorrowModal";
 import ReactTooltip from "react-tooltip";
-import {getBackedCoin} from "common/gatewayUtils";
+import {getBackedCoin, getAssetAndGateway} from "common/gatewayUtils";
 import {ChainStore} from "bitsharesjs";
 import {connect} from "alt-react";
 import SettingsStore from "stores/SettingsStore";
@@ -27,13 +33,16 @@ import SimpleDepositBlocktradesBridge from "../Dashboard/SimpleDepositBlocktrade
 import WithdrawModal from "../Modal/WithdrawModalNew";
 import ZfApi from "react-foundation-apps/src/utils/foundation-api";
 import ReserveAssetModal from "../Modal/ReserveAssetModal";
-import PaginatedList from "../Utility/PaginatedList";
-import MarketUtils from "common/market_utils";
+import CustomTable from "../Utility/CustomTable";
 import {Tooltip, Icon as AntIcon} from "bitshares-ui-style-guide";
+import Translate from "react-translate-component";
+import AssetName from "../Utility/AssetName";
+import TranslateWithLinks from "../Utility/TranslateWithLinks";
+import MarketsActions from "actions/MarketsActions";
 
 class AccountPortfolioList extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             isBridgeModalVisible: false,
@@ -53,12 +62,14 @@ class AccountPortfolioList extends React.Component {
             depositAsset: null,
             withdrawAsset: null,
             bridgeAsset: null,
-            allRefsAssigned: false
+            allRefsAssigned: false,
+            portfolioSort: props.viewSettings.get("portfolioSort", "value"),
+            portfolioSortDirection: props.viewSettings.get(
+                "portfolioSortDirection",
+                "descend"
+            )
         };
 
-        this.qtyRefs = {};
-        this.priceRefs = {};
-        this.valueRefs = {};
         this.changeRefs = {};
         for (let key in this.sortFunctions) {
             this.sortFunctions[key] = this.sortFunctions[key].bind(this);
@@ -82,6 +93,8 @@ class AccountPortfolioList extends React.Component {
 
         this.showBridgeModal = this.showBridgeModal.bind(this);
         this.hideBridgeModal = this.hideBridgeModal.bind(this);
+
+        this.toggleSortOrder = this.toggleSortOrder.bind(this);
     }
 
     componentWillMount() {
@@ -94,11 +107,11 @@ class AccountPortfolioList extends React.Component {
 
     _checkRefAssignments() {
         /*
-        * In order for sorting to work all refs must be assigned, so we check
-        * this here and update the state to trigger a rerender
-        */
+         * In order for sorting to work all refs must be assigned, so we check
+         * this here and update the state to trigger a rerender
+         */
         if (!this.state.allRefsAssigned) {
-            let refKeys = ["qtyRefs", "priceRefs", "valueRefs", "changeRefs"];
+            let refKeys = ["changeRefs"];
             const allRefsAssigned = refKeys.reduce((a, b) => {
                 if (a === undefined) return !!Object.keys(this[b]).length;
                 return !!Object.keys(this[b]).length && a;
@@ -124,8 +137,6 @@ class AccountPortfolioList extends React.Component {
             np.visible !== this.props.visible ||
             np.settings !== this.props.settings ||
             np.hiddenAssets !== this.props.hiddenAssets ||
-            np.sortDirection !== this.props.sortDirection ||
-            np.sortKey !== this.props.sortKey ||
             np.allMarketStats.reduce((a, value, key) => {
                 return (
                     utils.check_market_stats(
@@ -222,48 +233,100 @@ class AccountPortfolioList extends React.Component {
     }
 
     sortFunctions = {
-        qty: function(a, b, force) {
-            if (Number(this.qtyRefs[a.key]) < Number(this.qtyRefs[b.key]))
-                return this.props.sortDirection || force ? -1 : 1;
-
-            if (Number(this.qtyRefs[a.key]) > Number(this.qtyRefs[b.key]))
-                return this.props.sortDirection || force ? 1 : -1;
+        byKey: function(a, b) {
+            return a.key > b.key;
         },
-        alphabetic: function(a, b, force) {
-            if (a.key > b.key)
-                return this.props.sortDirection || force ? 1 : -1;
-            if (a.key < b.key)
-                return this.props.sortDirection || force ? -1 : 1;
-            return 0;
+        byInCollateral: function(a, b) {
+            return this.sortFunctions.byTypedValue(
+                a,
+                b,
+                this._sumCollateralBalances(a.inCollateral),
+                this._sumCollateralBalances(b.inCollateral)
+            );
         },
-        priceValue: function(a, b) {
-            let aPrice = this.priceRefs[a.key];
-            let bPrice = this.priceRefs[b.key];
-            if (aPrice && bPrice) {
-                return this.props.sortDirection
-                    ? aPrice - bPrice
-                    : bPrice - aPrice;
-            } else if (aPrice === null && bPrice !== null) {
-                return 1;
-            } else if (aPrice !== null && bPrice === null) {
+        byBalance: function(a, b) {
+            return this.sortFunctions.byTypedValue(
+                a,
+                b,
+                balanceToAsset(a.balance).amount,
+                balanceToAsset(b.balance).amount
+            );
+        },
+        byVestingBalance: function(a, b) {
+            return this.sortFunctions.byTypedValue(
+                a,
+                b,
+                this._sumVestingBalances(a.inVesting),
+                this._sumVestingBalances(b.inVesting)
+            );
+        },
+        byInOrders: function(a, b) {
+            return this.sortFunctions.byTypedValue(
+                a,
+                b,
+                a.inOrders,
+                b.inOrders
+            );
+        },
+        byTypedValue(a, b, aValue, bValue) {
+            aValue = utils.convert_satoshi_to_typed(aValue, a.asset);
+            bValue = utils.convert_satoshi_to_typed(bValue, b.asset);
+            if (aValue && bValue) {
+                return aValue - bValue;
+            } else if (!aValue && bValue) {
                 return -1;
+            } else if (aValue && !bValue) {
+                return 1;
             } else {
-                return this.sortFunctions.alphabetic(a, b, true);
+                return this.sortFunctions.byKey(a, b);
+            }
+        },
+        byEquivalentPrice: function(a, b) {
+            let aPrice = getFinalPrice(
+                a.asset,
+                a.adds.preferredAsset,
+                this.props.coreAsset,
+                null,
+                true
+            );
+            let bPrice = getFinalPrice(
+                b.asset,
+                b.adds.preferredAsset,
+                this.props.coreAsset,
+                null,
+                true
+            );
+            if (aPrice && bPrice) {
+                return aPrice - bPrice;
+            } else if (!aPrice && bPrice) {
+                return -1;
+            } else if (aPrice && !bPrice) {
+                return 1;
+            } else {
+                return this.sortFunctions.byKey(a, b);
             }
         },
         totalValue: function(a, b) {
-            let aValue = this.valueRefs[a.key];
-            let bValue = this.valueRefs[b.key];
+            let aValue = getEquivalentValue(
+                a.value,
+                a.adds.preferredAsset,
+                a.adds.asset,
+                false
+            );
+            let bValue = getEquivalentValue(
+                b.value,
+                b.adds.preferredAsset,
+                b.adds.asset,
+                false
+            );
             if (aValue && bValue) {
-                return this.props.sortDirection
-                    ? aValue - bValue
-                    : bValue - aValue;
+                return aValue - bValue;
             } else if (!aValue && bValue) {
-                return 1;
-            } else if (aValue && !bValue) {
                 return -1;
+            } else if (aValue && !bValue) {
+                return 1;
             } else {
-                return this.sortFunctions.alphabetic(a, b, true);
+                return this.sortFunctions.byKey(a, b);
             }
         },
         changeValue: function(a, b) {
@@ -275,12 +338,13 @@ class AccountPortfolioList extends React.Component {
                     parseFloat(aValue) != "NaN" ? parseFloat(aValue) : aValue;
                 let bChange =
                     parseFloat(bValue) != "NaN" ? parseFloat(bValue) : bValue;
-                let direction =
-                    typeof this.props.sortDirection !== "undefined"
-                        ? this.props.sortDirection
-                        : true;
-
-                return direction ? aChange - bChange : bChange - aChange;
+                return aChange - bChange;
+            } else if (!aValue && bValue) {
+                return -1;
+            } else if (aValue && !bValue) {
+                return 1;
+            } else {
+                return this.sortFunctions.byKey(a, b);
             }
         }
     };
@@ -349,7 +413,7 @@ class AccountPortfolioList extends React.Component {
     }
 
     _renderBuy = (symbol, canBuy, assetName, emptyCell, balance) => {
-        if (symbol === "BTS" && balance <= 100000) {
+        if (symbol === "BTS" && balance <= 1000000) {
             // Precision of 5, 1 = 10^5
             return (
                 <span>
@@ -372,28 +436,418 @@ class AccountPortfolioList extends React.Component {
                 </span>
             );
         } else {
-            return canBuy && this.props.isMyAccount ? (
-                <span>
-                    <a
-                        onClick={this._showDepositWithdraw.bind(
-                            this,
-                            "bridge_modal",
-                            assetName,
-                            false
-                        )}
-                    >
-                        <Icon
-                            name="dollar"
-                            title="icons.dollar.buy"
-                            className="icon-14px"
-                        />
-                    </a>
-                </span>
-            ) : (
-                emptyCell
+            let modalAction = this._showDepositWithdraw.bind(
+                this,
+                "bridge_modal",
+                assetName,
+                false
             );
+
+            let linkElement = (
+                <span>
+                    <Icon
+                        style={{
+                            cursor: this.props.isMyAccount ? "pointer" : "help"
+                        }}
+                        name="dollar"
+                        title="icons.dollar.buy"
+                        className="icon-14px"
+                        onClick={this.props.isMyAccount ? modalAction : null}
+                    />
+                </span>
+            );
+
+            if (canBuy && this.props.isMyAccount) {
+                return linkElement;
+            } else if (canBuy && !this.props.isMyAccount) {
+                return (
+                    <Tooltip
+                        title={counterpart.translate("tooltip.login_required")}
+                    >
+                        {linkElement}
+                    </Tooltip>
+                );
+            } else {
+                return emptyCell;
+            }
         }
     };
+
+    _renderGatewayAction = (type, allowed, assetName, emptyCell) => {
+        let modalAction =
+            type == "deposit"
+                ? this._showDepositModal.bind(this, assetName)
+                : this._showDepositWithdraw.bind(
+                      this,
+                      "withdraw_modal_new",
+                      assetName,
+                      false
+                  );
+
+        let actionTitle =
+            type == "deposit" ? `icons.${type}.${type}` : `icons.${type}`;
+
+        let linkElement = (
+            <span>
+                <Icon
+                    style={{
+                        cursor: this.props.isMyAccount ? "pointer" : "help"
+                    }}
+                    name={type}
+                    title={actionTitle}
+                    className="icon-14x"
+                    onClick={this.props.isMyAccount ? modalAction : null}
+                />
+            </span>
+        );
+        if (allowed && this.props.isMyAccount) {
+            return linkElement;
+        } else if (allowed && !this.props.isMyAccount) {
+            return (
+                <Tooltip
+                    title={counterpart.translate("tooltip.login_required")}
+                >
+                    {linkElement}
+                </Tooltip>
+            );
+        } else {
+            return emptyCell;
+        }
+    };
+
+    toggleSortOrder(pagination, filters, sorter) {
+        SettingsActions.changeViewSetting({
+            portfolioSortDirection: sorter.order,
+            portfolioSort: sorter.columnKey
+        });
+    }
+
+    getHeader(atLeastOneHas) {
+        let {settings} = this.props;
+        let {shownAssets} = this.state;
+
+        const preferredUnit =
+            settings.get("unit") || this.props.core_asset.get("symbol");
+        const showAssetPercent = settings.get("showAssetPercent", false);
+
+        let headerItems = [
+            {
+                title: <Translate content="account.asset" />,
+                dataIndex: "asset",
+                align: "left",
+                customizable: false,
+                sorter: this.sortFunctions.byKey,
+                render: item => {
+                    return (
+                        <span style={{whiteSpace: "nowrap"}}>
+                            <LinkToAssetById asset={item.get("id")} />
+                        </span>
+                    );
+                }
+            },
+            {
+                title: <Translate content="account.qty" />,
+                dataIndex: "balance",
+                align: "right",
+                customizable: false,
+                sorter: this.sortFunctions.byBalance,
+                render: item => {
+                    return (
+                        <span style={{whiteSpace: "nowrap"}}>
+                            <BalanceComponent
+                                balance={item.get("id")}
+                                hide_asset
+                            />
+                        </span>
+                    );
+                }
+            },
+            {
+                className: "column-hide-small",
+                title: <Translate content="account.inOrders" />,
+                dataIndex: "inOrders",
+                align: "right",
+                sorter: this.sortFunctions.byInOrders,
+                render: (item, row) => {
+                    if (!item) {
+                        return "--";
+                    }
+                    return (
+                        <span style={{whiteSpace: "nowrap"}}>
+                            <FormattedAsset
+                                amount={item}
+                                asset={row.asset.get("id")}
+                                hide_asset
+                            />
+                        </span>
+                    );
+                }
+            },
+            {
+                className: "column-hide-small",
+                title: <Translate content="account.inVestingBalances" />,
+                dataIndex: "inVesting",
+                align: "right",
+                sorter: this.sortFunctions.byVestingBalance,
+                render: (item, row) => {
+                    if (!item || item.length == 0) {
+                        return "--";
+                    }
+                    return (
+                        <span style={{whiteSpace: "noWrap"}}>
+                            <FormattedAsset
+                                amount={this._sumVestingBalances(item)}
+                                asset={row.asset.get("id")}
+                                hide_asset
+                            />
+                        </span>
+                    );
+                }
+            },
+            {
+                className: "column-hide-small",
+                title: <Translate content="account.inCollateral" />,
+                dataIndex: "inCollateral",
+                align: "right",
+                sorter: this.sortFunctions.byInCollateral,
+                render: (item, row) => {
+                    if (!item || item.length == 0) {
+                        return "--";
+                    }
+                    return (
+                        <span style={{whiteSpace: "noWrap"}}>
+                            <FormattedAsset
+                                amount={this._sumCollateralBalances(item)}
+                                asset={row.asset.get("id")}
+                                hide_asset
+                            />
+                        </span>
+                    );
+                }
+            },
+            {
+                className: "column-hide-small",
+                title: (
+                    <span style={{whiteSpace: "nowrap"}}>
+                        <Translate content="exchange.price" /> (
+                        <AssetName name={preferredUnit} noTip />)
+                    </span>
+                ),
+                dataIndex: "price",
+                align: "right",
+                sorter: this.sortFunctions.byEquivalentPrice,
+                render: (item, row) => {
+                    return (
+                        <span style={{whiteSpace: "nowrap"}}>
+                            <EquivalentPrice
+                                fromAsset={row.asset.get("id")}
+                                pulsate={{reverse: true, fill: "forwards"}}
+                                hide_symbols
+                            />
+                        </span>
+                    );
+                }
+            },
+            {
+                className: "column-hide-small",
+                title: <Translate content="account.hour_24_short" />,
+                dataIndex: "hour24",
+                align: "right",
+                sorter: this.sortFunctions.changeValue,
+                render: item => {
+                    return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
+                }
+            },
+            {
+                className: "column-hide-small",
+                title: (
+                    <span style={{whiteSpace: "nowrap"}}>
+                        <TranslateWithLinks
+                            noLink
+                            string="account.eq_value_header"
+                            keys={[
+                                {
+                                    type: "asset",
+                                    value: preferredUnit,
+                                    arg: "asset"
+                                }
+                            ]}
+                            noTip
+                        />
+                    </span>
+                ),
+                dataIndex: "value",
+                align: "right",
+                customizable: false,
+                sorter: this.sortFunctions.totalValue,
+                defaultSortOrder: "descend",
+                render: (item, row) => {
+                    return (
+                        <span style={{whiteSpace: "nowrap"}}>
+                            <BalanceValueComponent
+                                balance={row.adds.balanceObject.get("id")}
+                                satoshis={item}
+                                toAsset={preferredUnit}
+                                hide_asset
+                            />
+                        </span>
+                    );
+                }
+            },
+            {
+                title: <Translate content="account.percent" />,
+                dataIndex: "percent",
+                align: "right",
+                customizable: {
+                    default: showAssetPercent
+                },
+                render: item => {
+                    return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
+                }
+            },
+            {
+                title: <Translate content="header.payments" />,
+                dataIndex: "payments",
+                align: "center",
+                render: item => {
+                    return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
+                }
+            },
+            {
+                className: "column-hide-medium",
+                title: <Translate content="exchange.buy" />,
+                customizable: atLeastOneHas.buy
+                    ? undefined
+                    : {
+                          default: false
+                      },
+                dataIndex: "buy",
+                align: "center",
+                render: item => {
+                    return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
+                }
+            },
+            {
+                className: "column-hide-medium",
+                title: atLeastOneHas.depositOnlyBTS ? (
+                    <React.Fragment>
+                        <Tooltip
+                            title={counterpart.translate(
+                                "external_service_provider.expect_more"
+                            )}
+                        >
+                            <Translate content="modal.deposit.submit" />
+                            &nbsp;
+                            <AntIcon type="question-circle" />
+                        </Tooltip>
+                    </React.Fragment>
+                ) : (
+                    <Translate content="modal.deposit.submit" />
+                ),
+                customizable: atLeastOneHas.deposit
+                    ? undefined
+                    : {
+                          default: false
+                      },
+                dataIndex: "deposit",
+                align: "center",
+                render: item => {
+                    return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
+                }
+            },
+            {
+                className: "column-hide-medium",
+                title: <Translate content="modal.withdraw.submit" />,
+                customizable: atLeastOneHas.withdraw
+                    ? undefined
+                    : {
+                          default: false
+                      },
+                dataIndex: "withdraw",
+                align: "center",
+                render: item => {
+                    return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
+                }
+            },
+            {
+                className: "column-hide-medium",
+                title: <Translate content="account.trade" />,
+                dataIndex: "trade",
+                align: "center",
+                render: item => {
+                    return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
+                }
+            },
+            {
+                className: "column-hide-medium",
+                title: <Translate content="exchange.borrow_short" />,
+                dataIndex: "borrow",
+                align: "center",
+                render: item => {
+                    return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
+                }
+            },
+            {
+                className: "column-hide-medium",
+                title: <Translate content="account.settle" />,
+                dataIndex: "settle",
+                align: "center",
+                render: item => {
+                    return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
+                }
+            },
+            {
+                className: "column-hide-medium",
+                title: <Translate content="modal.reserve.submit" />,
+                dataIndex: "burn",
+                align: "center",
+                render: item => {
+                    return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
+                }
+            },
+            {
+                className: "column-hide-medium",
+                title: (
+                    <Translate
+                        content={
+                            shownAssets == "active"
+                                ? "exchange.hide"
+                                : "account.perm.show"
+                        }
+                    />
+                ),
+                dataIndex: "hide",
+                align: "center",
+                render: item => {
+                    return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
+                }
+            }
+        ];
+        headerItems.forEach(item => {
+            if (item.dataIndex == this.state.portfolioSort) {
+                item.defaultSortOrder = this.state.portfolioSortDirection;
+            }
+        });
+        return headerItems;
+    }
+
+    _sumCollateralBalances(balances) {
+        if (!balances || balances.length == 0) return 0;
+        let sum = 0;
+        balances.forEach(item => {
+            sum = sum + +item.get("collateral");
+        });
+        return sum;
+    }
+
+    _sumVestingBalances(balances) {
+        if (!balances || balances.length == 0) return 0;
+        let sum = 0;
+        balances.forEach(item => {
+            sum = sum + balanceToAsset(item).amount;
+        });
+        return sum;
+    }
 
     _renderBalances(balanceList, optionalAssets, visible) {
         const {
@@ -403,7 +857,6 @@ class AccountPortfolioList extends React.Component {
             hiddenAssets,
             orders
         } = this.props;
-        let showAssetPercent = settings.get("showAssetPercent", false);
 
         const renderBorrow = (asset, account) => {
             let isBitAsset = asset && asset.has("bitasset_data_id");
@@ -442,7 +895,7 @@ class AccountPortfolioList extends React.Component {
 
         let balances = [];
         const emptyCell = "-";
-        balanceList.forEach(balance => {
+        (balanceList || []).forEach(balance => {
             let balanceObject = ChainStore.getObject(balance);
             if (!balanceObject) return;
             let asset_type = balanceObject.get("asset_type");
@@ -468,7 +921,10 @@ class AccountPortfolioList extends React.Component {
 
             /* Table content */
             directMarketLink = notCore ? (
-                <Link to={`/market/${asset.get("symbol")}_${preferredMarket}`}>
+                <Link
+                    to={`/market/${asset.get("symbol")}_${preferredMarket}`}
+                    onClick={() => MarketsActions.switchMarket()}
+                >
                     <Icon
                         name="trade"
                         title="icons.trade.trade"
@@ -476,7 +932,10 @@ class AccountPortfolioList extends React.Component {
                     />
                 </Link>
             ) : notCorePrefUnit ? (
-                <Link to={`/market/${asset.get("symbol")}_${preferredUnit}`}>
+                <Link
+                    to={`/market/${asset.get("symbol")}_${preferredUnit}`}
+                    onClick={() => MarketsActions.switchMarket()}
+                >
                     <Icon
                         name="trade"
                         title="icons.trade.trade"
@@ -501,20 +960,42 @@ class AccountPortfolioList extends React.Component {
                 this.props.account
             );
 
-            /* Popover content */
-            settleLink = (
-                <a onClick={this._onSettleAsset.bind(this, asset.get("id"))}>
-                    <Icon
-                        name="settle"
-                        title="icons.settle"
-                        className="icon-14px"
-                    />
-                </a>
-            );
-
             const includeAsset = !hiddenAssets.includes(asset_type);
             const hasBalance = !!balanceObject.get("balance");
-            const hasOnOrder = !!orders[asset_type];
+
+            // Vesting balances
+            let vestingBalances = [];
+
+            const vbs = this.props.account.get("vesting_balances");
+            vbs.forEach(vb => {
+                let vestingObject = ChainStore.getObject(vb);
+                if (
+                    vestingObject.getIn(["balance", "asset_id"]) ===
+                    asset.get("id")
+                ) {
+                    if (+vestingObject.getIn(["balance", "amount"]) > 0) {
+                        vestingBalances.push(vestingObject);
+                    }
+                }
+            });
+
+            // Collateral
+            let collateralBalances = [];
+
+            (this.props.callOrders || []).forEach(order => {
+                let collateralObject = ChainStore.getObject(order);
+                if (
+                    collateralObject.getIn([
+                        "call_price",
+                        "base",
+                        "asset_id"
+                    ]) === asset.get("id")
+                ) {
+                    if (+collateralObject.get("collateral") > 0) {
+                        collateralBalances.push(collateralObject);
+                    }
+                }
+            });
 
             const backedCoin = getBackedCoin(
                 asset.get("symbol"),
@@ -530,17 +1011,8 @@ class AccountPortfolioList extends React.Component {
                 (hasBalance && balanceObject.get("balance") != 0);
 
             const canBuy = !!this.props.bridgeCoins.get(symbol);
-            const assetAmount = balanceObject.get("balance");
 
-            /* Sorting refs */
-            this.qtyRefs[asset.get("symbol")] = utils.get_asset_amount(
-                assetAmount,
-                asset
-            );
-
-            {
-                /* Asset and Backing Asset Prefixes */
-            }
+            /* Asset and Backing Asset Prefixes */
             let options =
                 asset && asset.getIn(["bitasset", "options"])
                     ? asset.getIn(["bitasset", "options"]).toJS()
@@ -554,37 +1026,41 @@ class AccountPortfolioList extends React.Component {
                 backingAsset
             );
             let settlePriceTitle;
-            if (
-                isBitAsset &&
-                asset.get("bitasset").get("settlement_fund") > 0
-            ) {
-                settlePriceTitle = "tooltip.global_settle";
-            } else {
-                settlePriceTitle = "tooltip.settle";
+
+            if (isBitAsset) {
+                const globally_settled =
+                    asset.get("bitasset").get("settlement_fund") > 0;
+                const isPrediction = asset.getIn([
+                    "bitasset",
+                    "is_prediction_market"
+                ]);
+                if (globally_settled) {
+                    settlePriceTitle = "tooltip.global_settle";
+                } else if (isPrediction) {
+                    settlePriceTitle = "tooltip.settle_market_prediction";
+                } else {
+                    settlePriceTitle = "tooltip.settle";
+                }
+                settleLink =
+                    isPrediction && !globally_settled ? (
+                        <AntIcon type={"question-circle"} />
+                    ) : (
+                        <a
+                            onClick={this._onSettleAsset.bind(
+                                this,
+                                asset.get("id")
+                            )}
+                        >
+                            <Icon
+                                name="settle"
+                                title="icons.settle"
+                                className="icon-14px"
+                            />
+                        </a>
+                    );
             }
 
             let preferredAsset = ChainStore.getAsset(preferredUnit);
-            this.valueRefs[asset.get("symbol")] =
-                hasBalance && !!preferredAsset
-                    ? MarketUtils.convertValue(
-                          assetAmount,
-                          preferredAsset,
-                          asset,
-                          this.props.allMarketStats,
-                          this.props.coreAsset,
-                          true
-                      )
-                    : null;
-
-            this.priceRefs[asset.get("symbol")] = !preferredAsset
-                ? null
-                : MarketUtils.getFinalPrice(
-                      this.props.coreAsset,
-                      asset,
-                      preferredAsset,
-                      this.props.allMarketStats,
-                      true
-                  );
 
             let marketId = asset.get("symbol") + "_" + preferredUnit;
             let currentMarketStats = this.props.allMarketStats.get(marketId);
@@ -592,192 +1068,114 @@ class AccountPortfolioList extends React.Component {
                 currentMarketStats && currentMarketStats.change
                     ? currentMarketStats.change
                     : 0;
+            const totalValue =
+                balanceToAsset(balanceObject).amount +
+                (orders[asset.get("id")] ? orders[asset.get("id")] : 0) +
+                this._sumVestingBalances(vestingBalances);
 
-            balances.push(
-                <tr key={asset.get("symbol")} style={{maxWidth: "100rem"}}>
-                    <td style={{textAlign: "left"}}>
-                        <LinkToAssetById asset={asset.get("id")} />
-                    </td>
-                    <td style={{textAlign: "right"}}>
-                        {hasBalance || hasOnOrder ? (
-                            <BalanceComponent balance={balance} hide_asset />
-                        ) : null}
-                    </td>
-                    <td
-                        style={{textAlign: "right"}}
-                        className="column-hide-small"
-                    >
-                        <EquivalentPrice
-                            fromAsset={asset.get("id")}
-                            pulsate={{reverse: true, fill: "forwards"}}
-                            hide_symbols
-                        />
-                    </td>
-                    <td
-                        style={{textAlign: "right"}}
-                        className="column-hide-small"
-                    >
-                        <Market24HourChangeComponent
-                            base={asset.get("id")}
-                            quote={preferredUnit}
-                            marketId={marketId}
-                            hide_symbols
-                        />
-                    </td>
-                    <td
-                        style={{textAlign: "right"}}
-                        className="column-hide-small"
-                    >
-                        {hasBalance || hasOnOrder ? (
-                            <BalanceValueComponent
-                                balance={balance}
-                                toAsset={preferredUnit}
-                                hide_asset
-                            />
-                        ) : null}
-                    </td>
-                    {showAssetPercent ? (
-                        <td style={{textAlign: "right"}}>
-                            {hasBalance ? (
-                                <BalanceComponent
-                                    balance={balance}
-                                    asPercentage={true}
-                                />
-                            ) : null}
-                        </td>
-                    ) : null}
-                    <td>{transferLink}</td>
-                    <td>
-                        {this._renderBuy(
-                            asset.get("symbol"),
-                            canBuy,
-                            assetName,
-                            emptyCell,
-                            balanceObject.get("balance")
-                        )}
-                    </td>
-                    <td>
-                        {canDeposit && this.props.isMyAccount ? (
-                            <span>
-                                <Icon
-                                    style={{cursor: "pointer"}}
-                                    name="deposit"
-                                    title="icons.deposit.deposit"
-                                    className="icon-14x"
-                                    onClick={this._showDepositModal.bind(
-                                        this,
-                                        assetName
-                                    )}
-                                />
-                            </span>
-                        ) : (
-                            emptyCell
-                        )}
-                    </td>
-                    <td>
-                        {canWithdraw && this.props.isMyAccount ? (
-                            <span>
-                                <a
-                                    className={!canWithdraw ? "disabled" : ""}
-                                    onClick={
-                                        canWithdraw
-                                            ? this._showDepositWithdraw.bind(
-                                                  this,
-                                                  "withdraw_modal_new",
-                                                  assetName,
-                                                  false
-                                              )
-                                            : () => {}
-                                    }
-                                >
-                                    <Icon
-                                        name="withdraw"
-                                        title="icons.withdraw"
-                                        className="icon-14px"
-                                    />
-                                </a>
-                            </span>
-                        ) : (
-                            emptyCell
-                        )}
-                    </td>
-                    <td>{directMarketLink}</td>
-                    <td>
-                        {isBitAsset && borrowLink ? (
-                            <Tooltip
-                                title={counterpart.translate("tooltip.borrow", {
+            balances.push({
+                key: asset.get("symbol"),
+                adds: {
+                    balanceObject: balanceObject,
+                    preferredAsset: preferredAsset,
+                    asset: asset
+                },
+                asset: asset,
+                balance: balanceObject,
+                price: "dummy",
+                inOrders: orders[asset.get("id")],
+                inVesting: vestingBalances,
+                inCollateral: collateralBalances,
+                hour24: (
+                    <Market24HourChangeComponent
+                        base={asset.get("id")}
+                        quote={preferredUnit}
+                        marketId={marketId}
+                        hide_symbols
+                    />
+                ),
+                value: totalValue,
+                percent: hasBalance ? (
+                    <BalanceComponent balance={balance} asPercentage={true} />
+                ) : null,
+                payments: transferLink,
+                buy: this._renderBuy(
+                    asset.get("symbol"),
+                    canBuy,
+                    assetName,
+                    emptyCell,
+                    balanceObject.get("balance")
+                ),
+                deposit: this._renderGatewayAction(
+                    "deposit",
+                    canDeposit,
+                    assetName,
+                    emptyCell
+                ),
+                withdraw: this._renderGatewayAction(
+                    "withdraw",
+                    canWithdraw,
+                    assetName,
+                    emptyCell
+                ),
+                trade: directMarketLink,
+                borrow:
+                    isBitAsset && borrowLink ? (
+                        <Tooltip
+                            title={counterpart.translate("tooltip.borrow", {
+                                asset: isAssetBitAsset ? "bit" + symbol : symbol
+                            })}
+                        >
+                            {borrowLink}
+                        </Tooltip>
+                    ) : isBitAsset && !borrowLink ? (
+                        <Tooltip
+                            title={counterpart.translate(
+                                "tooltip.borrow_disabled",
+                                {
                                     asset: isAssetBitAsset
                                         ? "bit" + symbol
                                         : symbol
-                                })}
-                            >
-                                {borrowLink}
-                            </Tooltip>
-                        ) : isBitAsset && !borrowLink ? (
-                            <Tooltip
-                                title={counterpart.translate(
-                                    "tooltip.borrow_disabled",
-                                    {
-                                        asset: isAssetBitAsset
-                                            ? "bit" + symbol
-                                            : symbol
-                                    }
-                                )}
-                            >
-                                <AntIcon type={"question-circle"} />
-                            </Tooltip>
-                        ) : (
-                            emptyCell
-                        )}
-                    </td>
-                    <td>
-                        {isBitAsset && backingAsset ? (
-                            <div
-                                className="inline-block"
-                                data-place="bottom"
-                                data-tip={counterpart.translate(
-                                    settlePriceTitle,
-                                    {
-                                        asset: isAssetBitAsset
-                                            ? "bit" + symbol
-                                            : symbol,
-                                        backingAsset: isBackingBitAsset
-                                            ? "bit" + backingAsset.get("symbol")
-                                            : backingAsset.get("symbol"),
-                                        settleDelay:
-                                            options.force_settlement_delay_sec /
-                                            3600
-                                    }
-                                )}
-                            >
-                                {settleLink}
-                            </div>
-                        ) : (
-                            emptyCell
-                        )}
-                    </td>
-                    <td
-                        style={{textAlign: "center"}}
-                        className="column-hide-small"
+                                }
+                            )}
+                        >
+                            <AntIcon type={"question-circle"} />
+                        </Tooltip>
+                    ) : (
+                        emptyCell
+                    ),
+                settle:
+                    isBitAsset && backingAsset ? (
+                        <Tooltip
+                            placement="bottom"
+                            title={counterpart.translate(settlePriceTitle, {
+                                asset: isAssetBitAsset
+                                    ? "bit" + symbol
+                                    : symbol,
+                                backingAsset: isBackingBitAsset
+                                    ? "bit" + backingAsset.get("symbol")
+                                    : backingAsset.get("symbol"),
+                                settleDelay:
+                                    options.force_settlement_delay_sec / 3600
+                            })}
+                        >
+                            <div className="inline-block">{settleLink}</div>
+                        </Tooltip>
+                    ) : (
+                        emptyCell
+                    ),
+                burn: !isBitAsset ? (
+                    <a
+                        style={{marginRight: 0}}
+                        onClick={this._burnAsset.bind(this, asset.get("id"))}
                     >
-                        {!isBitAsset ? (
-                            <a
-                                style={{marginRight: 0}}
-                                onClick={this._burnAsset.bind(
-                                    this,
-                                    asset.get("id")
-                                )}
-                            >
-                                <Icon name="fire" className="icon-14px" />
-                            </a>
-                        ) : null}
-                    </td>
-
-                    <td
-                        style={{textAlign: "center"}}
-                        className="column-hide-small"
-                        data-place="bottom"
-                        data-tip={counterpart.translate(
+                        <Icon name="fire" className="icon-14px" />
+                    </a>
+                ) : null,
+                hide: (
+                    <Tooltip
+                        placement="bottom"
+                        title={counterpart.translate(
                             "tooltip." +
                                 (includeAsset ? "hide_asset" : "show_asset")
                         )}
@@ -807,11 +1205,10 @@ class AccountPortfolioList extends React.Component {
                                 className="icon-14px"
                             />
                         </a>
-                    </td>
-                </tr>
-            );
+                    </Tooltip>
+                )
+            });
         });
-
         if (optionalAssets) {
             optionalAssets
                 .filter(asset => {
@@ -871,6 +1268,7 @@ class AccountPortfolioList extends React.Component {
                                 to={`/market/${asset.get(
                                     "symbol"
                                 )}_${preferredMarket}`}
+                                onClick={() => MarketsActions.switchMarket()}
                             >
                                 <Icon
                                     name="trade"
@@ -889,94 +1287,76 @@ class AccountPortfolioList extends React.Component {
                             (includeAsset && visible) ||
                             (!includeAsset && !visible)
                         )
-                            balances.push(
-                                <tr
-                                    key={asset.get("symbol")}
-                                    style={{maxWidth: "100rem"}}
-                                >
-                                    <td style={{textAlign: "left"}}>
-                                        <LinkToAssetById
-                                            asset={asset.get("id")}
-                                        />
-                                    </td>
-                                    <td>{emptyCell}</td>
-                                    <td className="column-hide-small">
-                                        {emptyCell}
-                                    </td>
-                                    <td className="column-hide-small">
-                                        {emptyCell}
-                                    </td>
-                                    <td className="column-hide-small">
-                                        {emptyCell}
-                                    </td>
-                                    <td>{emptyCell}</td>
-                                    <td style={{textAlign: "center"}}>
-                                        {canBuy && this.props.isMyAccount ? (
-                                            <span>
-                                                <a
-                                                    onClick={this._showDepositWithdraw.bind(
-                                                        this,
-                                                        "bridge_modal",
-                                                        a,
-                                                        false
-                                                    )}
-                                                >
-                                                    <Icon
-                                                        name="dollar"
-                                                        title="icons.dollar.buy"
-                                                        className="icon-14px"
-                                                    />
-                                                </a>
-                                            </span>
-                                        ) : (
-                                            emptyCell
-                                        )}
-                                    </td>
-                                    <td>
-                                        {canDeposit &&
-                                        this.props.isMyAccount ? (
-                                            <span>
-                                                <Icon
-                                                    style={{cursor: "pointer"}}
-                                                    name="deposit"
-                                                    title="icons.deposit.deposit"
-                                                    className="icon-14x"
-                                                    onClick={this._showDepositModal.bind(
-                                                        this,
-                                                        asset.get("symbol")
-                                                    )}
-                                                />
-                                            </span>
-                                        ) : (
-                                            emptyCell
-                                        )}
-                                    </td>
-                                    <td>{emptyCell}</td>
-                                    <td style={{textAlign: "center"}}>
-                                        {directMarketLink}
-                                    </td>
-                                    <td>
-                                        {isBitAsset ? (
-                                            <div
-                                                className="inline-block"
-                                                data-place="bottom"
-                                                data-tip={counterpart.translate(
-                                                    "tooltip.borrow",
-                                                    {asset: asset.get("symbol")}
+                            balances.push({
+                                key: asset.get("symbol"),
+                                asset: asset,
+                                balance: emptyCell,
+                                price: emptyCell,
+                                hour24: emptyCell,
+                                value: emptyCell,
+                                percent: emptyCell,
+                                payments: emptyCell,
+                                buy:
+                                    canBuy && this.props.isMyAccount ? (
+                                        <span>
+                                            <a
+                                                onClick={this._showDepositWithdraw.bind(
+                                                    this,
+                                                    "bridge_modal",
+                                                    a,
+                                                    false
                                                 )}
                                             >
-                                                {borrowLink}
-                                            </div>
-                                        ) : (
-                                            emptyCell
+                                                <Icon
+                                                    name="dollar"
+                                                    title="icons.dollar.buy"
+                                                    className="icon-14px"
+                                                />
+                                            </a>
+                                        </span>
+                                    ) : (
+                                        emptyCell
+                                    ),
+                                deposit:
+                                    canDeposit && this.props.isMyAccount ? (
+                                        <span>
+                                            <Icon
+                                                style={{cursor: "pointer"}}
+                                                name="deposit"
+                                                title="icons.deposit.deposit"
+                                                className="icon-14x"
+                                                onClick={this._showDepositModal.bind(
+                                                    this,
+                                                    asset.get("symbol")
+                                                )}
+                                            />
+                                        </span>
+                                    ) : (
+                                        emptyCell
+                                    ),
+                                withdraw: emptyCell,
+                                trade: directMarketLink,
+                                borrow: isBitAsset ? (
+                                    <Tooltip
+                                        placement="bottom"
+                                        title={counterpart.translate(
+                                            "tooltip.borrow",
+                                            {asset: asset.get("symbol")}
                                         )}
-                                    </td>
-                                    <td>{emptyCell}</td>
-                                    <td
-                                        style={{textAlign: "center"}}
-                                        className="column-hide-small"
-                                        data-place="bottom"
-                                        data-tip={counterpart.translate(
+                                    >
+                                        <div className="inline-block">
+                                            {borrowLink}
+                                        </div>
+                                    </Tooltip>
+                                ) : (
+                                    emptyCell
+                                ),
+                                settle: emptyCell,
+                                burn: emptyCell,
+                                hide: (
+                                    <Tooltip
+                                        placement="bottom"
+                                        title={counterpart.translate(
                                             "tooltip." +
                                                 (includeAsset
                                                     ? "hide_asset"
@@ -1010,14 +1390,12 @@ class AccountPortfolioList extends React.Component {
                                                 className="icon-14px"
                                             />
                                         </a>
-                                    </td>
-                                </tr>
-                            );
+                                    </Tooltip>
+                                )
+                            });
                     }
                 });
         }
-
-        balances.sort(this.sortFunctions[this.props.sortKey]);
         return balances;
     }
 
@@ -1050,9 +1428,11 @@ class AccountPortfolioList extends React.Component {
                 visible={this.state.isBorrowModalVisible}
                 showModal={this.showBorrowModal}
                 hideModal={this.hideBorrowModal}
-                account={this.state.borrow && this.state.borrow.account}
-                quote_asset={this.state.borrow && this.state.borrow.quoteAsset}
-                backing_asset={
+                accountObj={this.state.borrow && this.state.borrow.account}
+                quoteAssetObj={
+                    this.state.borrow && this.state.borrow.quoteAsset
+                }
+                backingAssetObj={
                     this.state.borrow && this.state.borrow.backingAsset
                 }
             />
@@ -1066,7 +1446,7 @@ class AccountPortfolioList extends React.Component {
                 hideModal={this.hideSettleModal}
                 showModal={this.showSettleModal}
                 asset={this.state.settleAsset}
-                account={this.props.account.get("name")}
+                account={this.props.account}
             />
         );
     }
@@ -1075,21 +1455,39 @@ class AccountPortfolioList extends React.Component {
         const currentBridges =
             this.props.bridgeCoins.get(this.state.bridgeAsset) || null;
 
+        const balanceRows = this._renderBalances(
+            this.props.balanceList,
+            this.props.optionalAssets,
+            this.props.visible
+        );
+        const atLeastOneHas = {};
+        balanceRows.forEach(_item => {
+            if (!!_item.buy && _item.buy !== "-") {
+                atLeastOneHas.buy = true;
+            }
+            if (!!_item.deposit && _item.deposit !== "-") {
+                if (_item.key == "BTS" && GatewayStore.anyAllowed()) {
+                    atLeastOneHas.depositOnlyBTS =
+                        _item.key == "BTS" && !atLeastOneHas.deposit;
+                    atLeastOneHas.deposit = true;
+                }
+            }
+            if (!!_item.withdraw && _item.withdraw !== "-") {
+                atLeastOneHas.withdraw = true;
+            }
+        });
+
         return (
             <div>
-                <PaginatedList
-                    style={{padding: 0}}
+                <CustomTable
                     className="table dashboard-table table-hover"
-                    rows={this._renderBalances(
-                        this.props.balanceList,
-                        this.props.optionalAssets,
-                        this.props.visible
-                    )}
-                    header={this.props.header}
-                    pageSize={20}
+                    rows={balanceRows}
+                    header={this.getHeader(atLeastOneHas)}
                     label="utility.total_x_assets"
                     extraRow={this.props.extraRow}
-                    leftPadding="1.5rem"
+                    viewSettingsKey="portfolioColumns"
+                    allowCustomization={true}
+                    toggleSortOrder={this.toggleSortOrder}
                 >
                     {this._renderSendModal()}
                     {(this.state.isSettleModalVisible ||
@@ -1150,7 +1548,7 @@ class AccountPortfolioList extends React.Component {
                             }}
                         />
                     )}
-                </PaginatedList>
+                </CustomTable>
             </div>
         );
     }

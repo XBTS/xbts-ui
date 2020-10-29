@@ -1,4 +1,5 @@
 import WalletUnlockActions from "actions/WalletUnlockActions";
+
 import WalletDb from "stores/WalletDb";
 import {
     Aes,
@@ -6,7 +7,8 @@ import {
     TransactionBuilder,
     TransactionHelper,
     FetchChain,
-    ChainStore
+    ChainStore,
+    ChainTypes
 } from "bitsharesjs";
 import counterpart from "counterpart";
 import {Notification} from "bitshares-ui-style-guide";
@@ -103,6 +105,7 @@ const ApplicationApi = {
                 );
             }
         }
+        return memo;
     },
 
     _create_transfer_op({
@@ -112,7 +115,7 @@ const ApplicationApi = {
         amount,
         asset,
         memo,
-        propose_account = null, // should be called memo_sender, but is not for compatibility reasons with transfer
+        propose_account = null, // should be called memo_sender, but is not for compatibility reasons with transfer. Is set to "from_account" for non proposals
         encrypt_memo = true,
         optional_nonce = null,
         fee_asset_id = "1.3.0",
@@ -120,10 +123,11 @@ const ApplicationApi = {
     }) {
         let unlock_promise = WalletUnlockActions.unlock();
 
+        let memo_sender_account = propose_account || from_account;
         return Promise.all([
             FetchChain("getAccount", from_account),
             FetchChain("getAccount", to_account),
-            FetchChain("getAccount", propose_account),
+            FetchChain("getAccount", memo_sender_account),
             FetchChain("getAsset", asset),
             FetchChain("getAsset", fee_asset_id),
             unlock_promise
@@ -132,10 +136,15 @@ const ApplicationApi = {
                 let [
                     chain_from,
                     chain_to,
-                    chain_propose_account,
+                    chain_memo_sender,
                     chain_asset,
                     chain_fee_asset
                 ] = res;
+
+                let chain_propose_account = null;
+                if (propose_account) {
+                    chain_propose_account = chain_memo_sender;
+                }
 
                 let memo_object;
                 if (memo) {
@@ -143,7 +152,7 @@ const ApplicationApi = {
                         chain_memo_sender,
                         encrypt_memo
                     );
-                    let memo_to = this._get_memo_keys(chain_to, encrypt_memo);
+                    let memo_to = this._get_memo_keys(chain_to, false);
                     if (!!memo_sender.public_key && !!memo_to.public_key) {
                         let nonce =
                             optional_nonce == null
@@ -186,6 +195,7 @@ const ApplicationApi = {
                 } else {
                     tr = transactionBuilder;
                 }
+
                 let transfer_op = tr.get_type_operation("transfer", {
                     fee: {
                         amount: 0,
@@ -197,13 +207,14 @@ const ApplicationApi = {
                     memo: memo_object
                 });
                 if (__DEV__) {
-                    console.log("built transfer", transfer_op);
+                    console.log("built transfer", transfer_op, tr);
                 }
                 return {
                     transfer_op,
                     chain_from,
                     chain_to,
                     chain_propose_account,
+                    chain_memo_sender,
                     chain_asset,
                     chain_fee_asset
                 };
@@ -214,8 +225,8 @@ const ApplicationApi = {
     },
 
     /**
-        @param propose_account (or null) pays the fee to create the proposal, also used as memo from
-    */
+     @param propose_account (or null) pays the fee to create the proposal, also used as memo from
+     */
     transfer({
         // OBJECT: { ... }
         from_account,
@@ -230,7 +241,6 @@ const ApplicationApi = {
         fee_asset_id = "1.3.0",
         transactionBuilder = null
     }) {
-        let memo_sender = propose_account || from_account;
         if (transactionBuilder == null) {
             transactionBuilder = new TransactionBuilder();
         }
@@ -240,7 +250,7 @@ const ApplicationApi = {
             amount,
             asset,
             memo,
-            memo_sender,
+            propose_account,
             encrypt_memo,
             optional_nonce,
             fee_asset_id,
@@ -260,7 +270,9 @@ const ApplicationApi = {
                             }
                         );
                     } else {
-                        transactionBuilder.add_operation(transfer_obj);
+                        transactionBuilder.add_operation(
+                            transfer_obj.transfer_op
+                        );
                     }
                     return WalletDb.process_transaction(
                         transactionBuilder,
@@ -274,7 +286,13 @@ const ApplicationApi = {
         });
     },
 
-    transfer_list(list_of_transfers) {
+    transfer_list(list_of_transfers, proposal_fee = null) {
+        if (!proposal_fee) {
+            proposal_fee = "1.3.0";
+        }
+        if (typeof proposal_fee !== "string") {
+            proposal_fee = proposal_fee.get("id");
+        }
         return WalletUnlockActions.unlock().then(() => {
             let proposer = null;
             let transfers = [];
@@ -283,8 +301,6 @@ const ApplicationApi = {
                 transferData.transactionBuilder = tr;
                 transfers.push(this._create_transfer_op(transferData));
             });
-            console.log(transfers);
-
             return Promise.all(transfers)
                 .then(result => {
                     return tr.update_head_block().then(() => {
@@ -300,6 +316,10 @@ const ApplicationApi = {
                             }
                         });
                         tr.add_type_operation("proposal_create", {
+                            fee: {
+                                amount: 0,
+                                asset_id: proposal_fee
+                            },
                             proposed_ops: propose,
                             fee_paying_account: proposer.get("id")
                         });
@@ -447,6 +467,399 @@ const ApplicationApi = {
         let tr = new TransactionBuilder();
         tr.add_type_operation("account_update", updateObject);
         return WalletDb.process_transaction(tr, null, true);
+    },
+
+    /**
+     * Fetches the account, no subscription
+     *
+     * @param account
+     * @returns {Promise<{id}|Object>}
+     * @private
+     */
+    async _ensureAccount(account) {
+        if (typeof account == "object" && !!account.get("id")) {
+            return account;
+        }
+        return await FetchChain("getAccount", account, false);
+    },
+
+    async _ensureAsset(asset) {
+        if (typeof asset == "object" && !!asset.get("id")) {
+            return asset;
+        }
+        return await FetchChain("getAsset", asset);
+    },
+
+    /**
+     * Create a withdrawal permission
+     *
+     * @async
+     *
+     * @param from - account granting the permission, can be id, name or account object
+     * @param to - account claiming from the permission, can be id, name or account object
+     * @param limitAsset - id of asset to claim, id or symbol
+     * @param limitAssetAmount - int in satoshis, max amount to claim per period
+     * @param periodInSeconds - how many seconds does one period last?
+     * @param periodsUntilExpiration - how many periods will be done before expiration?
+     * @param periodStartTime - dateobject or timestamp, when does the first period start? defaults to now
+     * @param feeAsset - what asset to use for paying the fee, id or symbol
+     * @returns {Promise<any>}
+     */
+    async createWithdrawPermission(
+        from,
+        to,
+        limitAsset,
+        limitAssetAmount,
+        periodInSeconds,
+        periodsUntilExpiration,
+        periodStartTime = null,
+        feeAsset = "1.3.0",
+        broadcast = true
+    ) {
+        // default is now
+        if (periodStartTime == null) {
+            periodStartTime = new Date();
+        }
+        if (typeof periodStartTime == "number") {
+            periodStartTime = new Date(periodStartTime);
+        }
+
+        // account must be unlocked
+        await WalletUnlockActions.unlock();
+
+        // ensure all arguments are chain objects
+        let objects = {
+            from: await this._ensureAccount(from),
+            to: await this._ensureAccount(to),
+            limitAsset: await this._ensureAsset(limitAsset),
+            feeAsset: await this._ensureAsset(feeAsset)
+        };
+
+        let transactionBuilder = new TransactionBuilder();
+        let op = transactionBuilder.get_type_operation(
+            "withdraw_permission_create",
+            {
+                fee: {
+                    amount: 0,
+                    asset_id: objects.feeAsset.get("id")
+                },
+                withdraw_from_account: objects.from.get("id"),
+                authorized_account: objects.to.get("id"),
+                withdrawal_limit: {
+                    amount: limitAssetAmount,
+                    asset_id: objects.limitAsset.get("id")
+                },
+                withdrawal_period_sec: periodInSeconds,
+                periods_until_expiration: periodsUntilExpiration,
+                period_start_time: periodStartTime
+            }
+        );
+
+        transactionBuilder.add_operation(op);
+        await WalletDb.process_transaction(
+            transactionBuilder,
+            null, //signer_private_keys,
+            broadcast
+        );
+        if (!transactionBuilder.tr_buffer) {
+            throw "Something went finalization the transaction, this should not happen";
+        }
+    },
+
+    /**
+     * Update a withdrawal permission
+     *
+     * @async
+     *
+     * @param withdrawPermissionId - permission to update
+     * @param from - account granting the permission, can be id, name or account object
+     * @param to - account claiming from the permission, can be id, name or account object
+     * @param limitAsset - id of asset to claim, id or symbol
+     * @param limitAssetAmount - int in satoshis, max amount to claim per period
+     * @param periodInSeconds - how many seconds does one period last?
+     * @param periodsUntilExpiration - how many periods will be done before expiration?
+     * @param periodStartTime - dateobject or timestamp, when does the first period start? defaults to now
+     * @param feeAsset - what asset to use for paying the fee, id or symbol
+     * @returns {Promise<any>}
+     */
+    async updateWithdrawPermission(
+        withdrawPermissionId,
+        from,
+        to,
+        limitAsset,
+        limitAssetAmount,
+        periodInSeconds,
+        periodsUntilExpiration,
+        periodStartTime = null,
+        feeAsset = "1.3.0",
+        broadcast = true
+    ) {
+        // default is now
+        if (periodStartTime == null) {
+            periodStartTime = new Date();
+        }
+        if (typeof periodStartTime == "number") {
+            periodStartTime = new Date(periodStartTime);
+        }
+
+        // account must be unlocked
+        await WalletUnlockActions.unlock();
+
+        // ensure all arguments are chain objects
+        let objects = {
+            from: await this._ensureAccount(from),
+            to: await this._ensureAccount(to),
+            limitAsset: await this._ensureAsset(limitAsset),
+            feeAsset: await this._ensureAsset(feeAsset)
+        };
+
+        let transactionBuilder = new TransactionBuilder();
+        let op = transactionBuilder.get_type_operation(
+            "withdraw_permission_update",
+            {
+                permission_to_update: withdrawPermissionId,
+                fee: {
+                    amount: 0,
+                    asset_id: objects.feeAsset.get("id")
+                },
+                withdraw_from_account: objects.from.get("id"),
+                authorized_account: objects.to.get("id"),
+                withdrawal_limit: {
+                    amount: limitAssetAmount,
+                    asset_id: objects.limitAsset.get("id")
+                },
+                withdrawal_period_sec: periodInSeconds,
+                periods_until_expiration: periodsUntilExpiration,
+                period_start_time: periodStartTime
+            }
+        );
+
+        transactionBuilder.add_operation(op);
+        await WalletDb.process_transaction(transactionBuilder, null, broadcast);
+        if (!transactionBuilder.tr_buffer) {
+            throw "Something went finalization the transaction, this should not happen";
+        }
+    },
+
+    /**
+     * Claim from a withdrawal permission
+     *
+     * @async
+     *
+     * @param withdrawPermissionId - id of the permission
+     * @param from - account granting the permission, can be id, name or account object
+     * @param to - account claiming from the permission, can be id, name or account object
+     * @param claimAsset - id of asset to claim, id or symbol
+     * @param claimAssetAmount - int in satoshis, max amount to claim per period
+     * @param memo - optional memo
+     * @param feeAsset - what asset to use for paying the fee, id or symbol
+     * @returns {Promise<any>}
+     */
+    async claimWithdrawPermission(
+        withdrawPermissionId,
+        from,
+        to,
+        claimAsset,
+        claimAssetAmount,
+        memo = null,
+        feeAsset = "1.3.0",
+        broadcast = true
+    ) {
+        // account must be unlocked
+        await WalletUnlockActions.unlock();
+
+        // ensure all arguments are chain objects
+        let objects = {
+            from: await this._ensureAccount(from),
+            to: await this._ensureAccount(to),
+            claimAsset: await this._ensureAsset(claimAsset),
+            feeAsset: await this._ensureAsset(feeAsset)
+        };
+        let memo_object;
+        let optional_nonce = null;
+        let encrypt_memo = true;
+
+        if (memo) {
+            let memo_sender = this._get_memo_keys(objects.to, true);
+            let memo_to = this._get_memo_keys(objects.from, false);
+            if (!!memo_sender.public_key && !!memo_to.public_key) {
+                let nonce =
+                    optional_nonce == null
+                        ? TransactionHelper.unique_nonce_uint64()
+                        : optional_nonce;
+                memo_object = {
+                    from: memo_sender.public_key,
+                    to: memo_to.public_key,
+                    nonce,
+                    message: encrypt_memo
+                        ? Aes.encrypt_with_checksum(
+                              memo_sender.private_key,
+                              memo_to.public_key,
+                              nonce,
+                              memo
+                          )
+                        : Buffer.isBuffer(memo)
+                            ? memo.toString("utf-8")
+                            : memo
+                };
+            }
+        }
+
+        let transactionBuilder = new TransactionBuilder();
+        let op = transactionBuilder.get_type_operation(
+            "withdraw_permission_claim",
+            {
+                fee: {
+                    amount: 0,
+                    asset_id: objects.feeAsset.get("id")
+                },
+                withdraw_permission: withdrawPermissionId,
+                withdraw_from_account: objects.from.get("id"),
+                withdraw_to_account: objects.to.get("id"),
+                amount_to_withdraw: {
+                    amount: claimAssetAmount,
+                    asset_id: objects.claimAsset.get("id")
+                },
+                memo: memo_object ? memo_object : undefined
+            }
+        );
+
+        transactionBuilder.add_operation(op);
+        await WalletDb.process_transaction(transactionBuilder, null, broadcast);
+        if (!transactionBuilder.tr_buffer) {
+            throw "Something went finalization the transaction, this should not happen";
+        }
+    },
+
+    async deleteWithdrawPermission(
+        withdrawPermissionId,
+        from,
+        to,
+        feeAsset = "1.3.0",
+        broadcast = true
+    ) {
+        // account must be unlocked
+        await WalletUnlockActions.unlock();
+
+        // ensure all arguments are chain objects
+        let objects = {
+            from: await this._ensureAccount(from),
+            to: await this._ensureAccount(to),
+            feeAsset: await this._ensureAsset(feeAsset)
+        };
+
+        let transactionBuilder = new TransactionBuilder();
+        let op = transactionBuilder.get_type_operation(
+            "withdraw_permission_delete",
+            {
+                fee: {
+                    amount: 0,
+                    asset_id: objects.feeAsset.get("id")
+                },
+                withdrawal_permission: withdrawPermissionId,
+                withdraw_from_account: objects.from.get("id"),
+                authorized_account: objects.to.get("id")
+            }
+        );
+
+        transactionBuilder.add_operation(op);
+        await WalletDb.process_transaction(transactionBuilder, null, broadcast);
+        if (!transactionBuilder.tr_buffer) {
+            throw "Something went finalization the transaction, this should not happen";
+        }
+    },
+
+    async createVestingBalance(
+        creator,
+        owner,
+        asset,
+        amount,
+        policy,
+        feeAsset = "1.3.0",
+        broadcast = true
+    ) {
+        // account must be unlocked
+        await WalletUnlockActions.unlock();
+
+        // ensure all arguments are chain objects
+        let objects = {
+            creator: await this._ensureAccount(creator),
+            owner: await this._ensureAccount(owner),
+            asset: await this._ensureAsset(asset),
+            feeAsset: await this._ensureAsset(feeAsset)
+        };
+
+        let transactionBuilder = new TransactionBuilder();
+        let op = transactionBuilder.get_type_operation(
+            "vesting_balance_create",
+            {
+                fee: {
+                    amount: 0,
+                    asset_id: objects.feeAsset.get("id")
+                },
+                creator: objects.creator.get("id"),
+                owner: objects.owner.get("id"),
+                amount: {
+                    amount: amount,
+                    asset_id: objects.asset.get("id")
+                },
+                // fixme should be given
+                policy: [
+                    0,
+                    {
+                        begin_timestamp: parseInt(new Date().getTime() / 1000),
+                        vesting_cliff_seconds: 100,
+                        vesting_duration_seconds: 100
+                    }
+                ]
+            }
+        );
+
+        transactionBuilder.add_operation(op);
+        await WalletDb.process_transaction(transactionBuilder, null, broadcast);
+        if (!transactionBuilder.tr_buffer) {
+            throw "Something went finalization the transaction, this should not happen";
+        }
+    },
+
+    async createTicket(
+        account,
+        asset,
+        amount,
+        targetType = ChainTypes.ticket_type.lock_forever,
+        feeAsset = "1.3.0",
+        broadcast = true
+    ) {
+        // account must be unlocked
+        await WalletUnlockActions.unlock();
+
+        // ensure all arguments are chain objects
+        let objects = {
+            account: await this._ensureAccount(account),
+            asset: await this._ensureAsset(asset),
+            feeAsset: await this._ensureAsset(feeAsset)
+        };
+
+        let transactionBuilder = new TransactionBuilder();
+        let op = transactionBuilder.get_type_operation("ticket_create", {
+            fee: {
+                amount: 0,
+                asset_id: objects.feeAsset.get("id")
+            },
+            account: objects.account.get("id"),
+            target_type: targetType,
+            amount: {
+                amount: amount,
+                asset_id: objects.asset.get("id")
+            },
+            extensions: {}
+        });
+
+        transactionBuilder.add_operation(op);
+        await WalletDb.process_transaction(transactionBuilder, null, broadcast);
+        if (!transactionBuilder.tr_buffer) {
+            throw "Something went finalization the transaction, this should not happen";
+        }
     }
 };
 

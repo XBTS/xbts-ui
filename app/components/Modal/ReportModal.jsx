@@ -4,7 +4,7 @@ import LoadingIndicator from "../LoadingIndicator";
 import LogsActions from "actions/LogsActions";
 import CopyButton from "../Utility/CopyButton";
 import html2canvas from "html2canvas";
-import {Modal, Button} from "bitshares-ui-style-guide";
+import {Modal, Button, Tooltip} from "bitshares-ui-style-guide";
 import counterpart from "counterpart";
 import Icon from "../Icon/Icon";
 
@@ -104,7 +104,9 @@ class ReportModal extends React.Component {
                         <a
                             href="https://github.com/bitshares/bitshares-ui/issues"
                             target="_blank"
+                            rel="noopener noreferrer"
                             style={{textAlign: "center", width: "100%"}}
+                            className="external-link"
                         >
                             https://github.com/bitshares/bitshares-ui/issues
                         </a>
@@ -118,7 +120,9 @@ class ReportModal extends React.Component {
                         <a
                             href="https://hackthedex.io"
                             target="_blank"
+                            rel="noopener noreferrer"
                             style={{textAlign: "center", width: "100%"}}
+                            className="external-link"
                         >
                             https://hackthedex.io
                         </a>
@@ -182,10 +186,8 @@ class ReportModal extends React.Component {
                             <CopyButton text={this.state.logEntries} />
                         </div>
 
-                        <div
-                            onClick={this.showLog}
-                            style={{cursor: "pointer"}}
-                            data-tip={
+                        <Tooltip
+                            title={
                                 this.state.showLog
                                     ? counterpart.translate(
                                           "modal.report.hideLog"
@@ -195,19 +197,24 @@ class ReportModal extends React.Component {
                                       )
                             }
                         >
-                            <label
-                                className="left-label"
-                                style={{
-                                    paddingTop: "1em",
-                                    paddingLeft: "0.5em",
-                                    cursor: "pointer"
-                                }}
+                            <div
+                                onClick={this.showLog}
+                                style={{cursor: "pointer"}}
                             >
-                                {this.state.showLog ? "-" : "+"}
-                                &nbsp;
-                                <Translate content="modal.report.lastLogEntries" />
-                            </label>
-                        </div>
+                                <label
+                                    className="left-label"
+                                    style={{
+                                        paddingTop: "1em",
+                                        paddingLeft: "0.5em",
+                                        cursor: "pointer"
+                                    }}
+                                >
+                                    {this.state.showLog ? "-" : "+"}
+                                    &nbsp;
+                                    <Translate content="modal.report.lastLogEntries" />
+                                </label>
+                            </div>
+                        </Tooltip>
 
                         {logsArea()}
                     </span>
@@ -246,10 +253,8 @@ class ReportModal extends React.Component {
                             <Translate content="modal.report.copyScreenshot" />
                         </div>
 
-                        <div
-                            onClick={this.showScreenshot}
-                            style={{cursor: "pointer"}}
-                            data-tip={
+                        <Tooltip
+                            title={
                                 this.state.showScreen
                                     ? counterpart.translate(
                                           "modal.report.hideScreenshot"
@@ -259,19 +264,24 @@ class ReportModal extends React.Component {
                                       )
                             }
                         >
-                            <label
-                                className="left-label"
-                                style={{
-                                    paddingTop: "1em",
-                                    paddingLeft: "0.5em",
-                                    cursor: "pointer"
-                                }}
+                            <div
+                                onClick={this.showScreenshot}
+                                style={{cursor: "pointer"}}
                             >
-                                {this.state.showScreen ? "-" : "+"}
-                                &nbsp;
-                                <Translate content="modal.report.screenshot" />
-                            </label>
-                        </div>
+                                <label
+                                    className="left-label"
+                                    style={{
+                                        paddingTop: "1em",
+                                        paddingLeft: "0.5em",
+                                        cursor: "pointer"
+                                    }}
+                                >
+                                    {this.state.showScreen ? "-" : "+"}
+                                    &nbsp;
+                                    <Translate content="modal.report.screenshot" />
+                                </label>
+                            </div>
+                        </Tooltip>
 
                         {screenshotArea()}
                     </span>

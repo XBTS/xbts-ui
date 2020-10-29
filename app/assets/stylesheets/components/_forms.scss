@@ -51,6 +51,12 @@ div.account-image {
     }
 }
 
+.chain-select {
+    .ant-select {
+        width: 100%;
+    }
+}
+
 .asset-select {
     .ant-select {
         width: 100%;
@@ -408,4 +414,38 @@ a.button span {
 input[type="text"].input-button {
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
+}
+
+body {
+    .add-memo-btn.add-memo-btn {
+        padding: 0 !important;
+        border: none;
+        position: absolute;
+        z-index: 1;
+        bottom: 8px;
+        left: -25px;
+    }
+}
+
+.input-addon-before {
+    position: absolute;
+    height: 100%;
+    border: 1px solid #adadad;
+    padding: 0 15px;
+    border-radius: 6px;
+    left: 0;
+    display: flex !important;
+    align-items: center;
+}
+
+.date-picker-width100 input.ant-input {
+    height: 2.4rem;
+    background-color: #2d2d2d;
+    border: 0;
+    color: #e0e0e0;
+    border-radius: 6px;
+    &:focus {
+        border: none !important;
+        box-shadow: none;
+    }
 }

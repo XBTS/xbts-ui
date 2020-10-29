@@ -19,10 +19,13 @@ import Page404 from "../Page404/Page404";
 import FeePoolOperation from "../Account/FeePoolOperation";
 import AccountStore from "stores/AccountStore";
 import {connect} from "alt-react";
+import counterpart from "counterpart";
 import AssetOwnerUpdate from "./AssetOwnerUpdate";
 import AssetPublishFeed from "./AssetPublishFeed";
+import AssetResolvePrediction from "./AssetResolvePrediction";
 import BidCollateralOperation from "./BidCollateralOperation";
-import {Tab, Tabs} from "../Utility/Tabs";
+import {Tooltip, Icon, Table, Tabs, Collapse} from "bitshares-ui-style-guide";
+const {Panel} = Collapse;
 
 class AssetFlag extends React.Component {
     render() {
@@ -69,7 +72,10 @@ class Asset extends React.Component {
             marginTableSort: "ratio",
             collateralTableSort: "price",
             sortDirection: true,
-            showCollateralBidInInfo: false
+            showCollateralBidInInfo: false,
+            cumulativeGrouping: false,
+            activeFeedTab: "margin",
+            activeAssetTab: "info"
         };
     }
 
@@ -97,8 +103,14 @@ class Asset extends React.Component {
 
             let feedPrice = this._getFeedPrice();
 
-            if (feedPrice) {
+            if (!!feedPrice) {
                 try {
+                    let mcr = this.props.asset.getIn([
+                        "bitasset",
+                        "current_feed",
+                        "maintenance_collateral_ratio"
+                    ]);
+
                     Apis.instance()
                         .db_api()
                         .exec("get_call_orders", [
@@ -112,6 +124,7 @@ class Asset extends React.Component {
                                     assets,
                                     this.props.asset.get("id"),
                                     feedPrice,
+                                    mcr,
                                     isPredictionMarket
                                 );
                             });
@@ -120,7 +133,6 @@ class Asset extends React.Component {
                 } catch (e) {
                     // console.log(err);
                 }
-
                 try {
                     Apis.instance()
                         .db_api()
@@ -162,31 +174,37 @@ class Asset extends React.Component {
             "current_feed",
             "maximum_short_squeeze_ratio"
         ]);
-        let settlePrice = this.props.asset.getIn([
-            "bitasset",
-            "current_feed",
-            "settlement_price"
-        ]);
+
+        let feedPriceRaw = assetUtils.extractRawFeedPrice(this.props.asset);
+
+        // if there has been no feed price, settlePrice has 0 amount
+        if (
+            feedPriceRaw.getIn(["base", "amount"]) == 0 &&
+            feedPriceRaw.getIn(["quote", "amount"]) == 0
+        ) {
+            return null;
+        }
 
         let feedPrice;
 
         /* Prediction markets don't need feeds for shorting, so the settlement price can be set to 1:1 */
         if (
             isPredictionMarket &&
-            settlePrice.getIn(["base", "asset_id"]) ===
-                settlePrice.getIn(["quote", "asset_id"])
+            feedPriceRaw.getIn(["base", "asset_id"]) ===
+                feedPriceRaw.getIn(["quote", "asset_id"])
         ) {
-            if (!assets[this.props.backingAsset.get("id")])
+            if (!assets[this.props.backingAsset.get("id")]) {
                 assets[this.props.backingAsset.get("id")] = {
                     precision: this.props.asset.get("precision")
                 };
-            settlePrice = settlePrice.setIn(["base", "amount"], 1);
-            settlePrice = settlePrice.setIn(
+            }
+            feedPriceRaw = feedPriceRaw.setIn(["base", "amount"], 1);
+            feedPriceRaw = feedPriceRaw.setIn(
                 ["base", "asset_id"],
                 this.props.backingAsset.get("id")
             );
-            settlePrice = settlePrice.setIn(["quote", "amount"], 1);
-            settlePrice = settlePrice.setIn(
+            feedPriceRaw = feedPriceRaw.setIn(["quote", "amount"], 1);
+            feedPriceRaw = feedPriceRaw.setIn(
                 ["quote", "asset_id"],
                 this.props.asset.get("id")
             );
@@ -194,13 +212,13 @@ class Asset extends React.Component {
         }
 
         // Catch Invalid SettlePrice object
-        if (settlePrice.toJS) {
-            let settleObject = settlePrice.toJS();
+        if (feedPriceRaw.toJS) {
+            let settleObject = feedPriceRaw.toJS();
             if (!assets[settleObject.base.asset_id]) return;
         }
 
         feedPrice = new FeedPrice({
-            priceObject: settlePrice,
+            priceObject: feedPriceRaw,
             market_base: this.props.asset.get("id"),
             sqr,
             assets
@@ -209,26 +227,10 @@ class Asset extends React.Component {
         return feedPrice;
     }
 
-    _toggleSortOrder(type) {
-        if (type !== this.state.marginTableSort) {
-            this.setState({
-                marginTableSort: type
-            });
-        } else {
-            this.setState({
-                sortDirection: !this.state.sortDirection
-            });
-        }
-
-        if (type !== this.state.collateralTableSort) {
-            this.setState({
-                collateralTableSort: type
-            });
-        } else {
-            this.setState({
-                sortDirection: !this.state.sortDirection
-            });
-        }
+    _toggleCumulativeGrouping() {
+        this.setState({
+            cumulativeGrouping: !this.state.cumulativeGrouping
+        });
     }
 
     _assetType(asset) {
@@ -237,6 +239,32 @@ class Asset extends React.Component {
                 ? "Prediction"
                 : "Smart"
             : "Simple";
+    }
+
+    formattedPrice(
+        price,
+        hide_symbols = false,
+        hide_value = false,
+        factor = 0,
+        negative_invert = false
+    ) {
+        if (typeof price == "number" && isNaN(price)) {
+            return "-";
+        }
+        var base = price.base;
+        var quote = price.quote;
+        return (
+            <FormattedPrice
+                base_amount={base.amount}
+                base_asset={base.asset_id}
+                quote_amount={quote.amount}
+                quote_asset={quote.asset_id}
+                hide_value={hide_value}
+                hide_symbols={hide_symbols}
+                factor={factor}
+                negative_invert={negative_invert}
+            />
+        );
     }
 
     renderFlagIndicators(flags, names) {
@@ -268,29 +296,6 @@ class Asset extends React.Component {
                     );
                 })}
             </div>
-        );
-    }
-
-    formattedPrice(
-        price,
-        hide_symbols = false,
-        hide_value = false,
-        factor = 0,
-        negative_invert = false
-    ) {
-        var base = price.base;
-        var quote = price.quote;
-        return (
-            <FormattedPrice
-                base_amount={base.amount}
-                base_asset={base.asset_id}
-                quote_amount={quote.amount}
-                quote_asset={quote.asset_id}
-                hide_value={hide_value}
-                hide_symbols={hide_symbols}
-                factor={factor}
-                negative_invert={negative_invert}
-            />
         );
     }
 
@@ -340,26 +345,25 @@ class Asset extends React.Component {
         let urls = desc.match(urlTest);
 
         // Add market link
-        const core_asset = ChainStore.getAsset("1.3.0");
+        const core_asset = this.props.coreAsset;
+        const core_asset_symbol = core_asset.get("symbol");
         let preferredMarket = description.market
             ? description.market
-            : core_asset
-                ? core_asset.get("symbol")
-                : "BTS";
-        if ("bitasset" in asset && asset.bitasset.is_prediction_market) {
+            : core_asset_symbol;
+        if (asset.bitasset) {
             preferredMarket = ChainStore.getAsset(
                 asset.bitasset.options.short_backing_asset
             );
-            if (preferredMarket) {
+            if (!!preferredMarket && preferredMarket.get) {
                 preferredMarket = preferredMarket.get("symbol");
             } else {
-                preferredMarket = core_asset.get("symbol");
+                preferredMarket = core_asset_symbol;
             }
         }
-        if (asset.symbol === core_asset.get("symbol")) preferredMarket = "USD";
+        if (asset.symbol === core_asset_symbol) preferredMarket = "USD";
         if (urls && urls.length) {
             urls.forEach(url => {
-                let markdownUrl = `<a target="_blank" rel="noopener noreferrer" href="${url}">${url}</a>`;
+                let markdownUrl = `<a target="_blank" class="external-link" rel="noopener noreferrer" href="${url}">${url}</a>`;
                 desc = desc.replace(url, markdownUrl);
             });
         }
@@ -377,6 +381,7 @@ class Asset extends React.Component {
                     hide_issuer="true"
                 />
                 {short_name ? <p>{short_name}</p> : null}
+
                 <Link
                     className="button market-button"
                     to={`/market/${asset.symbol}_${preferredMarket}`}
@@ -399,6 +404,59 @@ class Asset extends React.Component {
         );
 
         let bitNames = Object.keys(flagBooleans);
+
+        let isPrediction =
+            "bitasset" in asset && asset.bitasset.is_prediction_market;
+        let predictionRows = null;
+        if (isPrediction) {
+            let description = assetUtils.parseDescription(
+                asset.options.description
+            );
+            predictionRows = (
+                <React.Fragment>
+                    <tr>
+                        <td>
+                            <Tooltip
+                                title={counterpart.translate(
+                                    "explorer.asset.prediction_market_asset.tooltip_prediction"
+                                )}
+                            >
+                                <Translate content="explorer.asset.prediction_market_asset.prediction" />
+                            </Tooltip>
+                        </td>
+                        <td>
+                            <Tooltip
+                                title={counterpart.translate(
+                                    "explorer.asset.prediction_market_asset.tooltip_prediction"
+                                )}
+                            >
+                                {description.condition}
+                            </Tooltip>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <Tooltip
+                                title={counterpart.translate(
+                                    "explorer.asset.prediction_market_asset.tooltip_resolution_date"
+                                )}
+                            >
+                                <Translate content="explorer.asset.prediction_market_asset.resolution_date" />
+                            </Tooltip>
+                        </td>
+                        <td>
+                            <Tooltip
+                                title={counterpart.translate(
+                                    "explorer.asset.prediction_market_asset.tooltip_resolution_date"
+                                )}
+                            >
+                                {description.expiry}
+                            </Tooltip>
+                        </td>
+                    </tr>
+                </React.Fragment>
+            );
+        }
 
         var currentSupply = dynamic ? (
             <tr>
@@ -438,19 +496,24 @@ class Asset extends React.Component {
         ) : null;
 
         // options.max_market_fee initially a string
-        var maxMarketFee = flagBooleans["charge_market_fee"] ? (
-            <tr>
-                <td>
-                    <Translate content="explorer.asset.summary.max_market_fee" />
-                </td>
-                <td>
-                    <FormattedAsset
-                        amount={+options.max_market_fee}
-                        asset={asset.id}
-                    />
-                </td>
-            </tr>
-        ) : null;
+        var marketFeeReferralReward =
+            flagBooleans["charge_market_fee"] &&
+            options.extensions &&
+            options.extensions.reward_percent >= 0 ? (
+                <tr>
+                    <td>
+                        <Tooltip
+                            title={counterpart.translate(
+                                "account.user_issued_assets.reward_percent_tooltip"
+                            )}
+                        >
+                            <Translate content="explorer.asset.summary.market_fee_referral_reward_percent" />{" "}
+                            <Icon type="question-circle" theme="filled" />
+                        </Tooltip>
+                    </td>
+                    <td> {options.extensions.reward_percent / 100.0} % </td>
+                </tr>
+            ) : null;
 
         return (
             <div className="asset-card no-padding">
@@ -465,6 +528,7 @@ class Asset extends React.Component {
                             </td>
                             <td> {this._assetType(asset)} </td>
                         </tr>
+                        {isPrediction && predictionRows}
                         <tr>
                             <td>
                                 <Translate content="explorer.asset.summary.issuer" />
@@ -497,7 +561,7 @@ class Asset extends React.Component {
                         {currentSupply}
                         {stealthSupply}
                         {marketFee}
-                        {maxMarketFee}
+                        {marketFeeReferralReward}
                     </tbody>
                 </table>
                 <br />
@@ -507,16 +571,23 @@ class Asset extends React.Component {
     }
 
     renderPriceFeed(asset) {
-        var title = <Translate content="explorer.asset.price_feed.title" />;
         var bitAsset = asset.bitasset;
         if (!("current_feed" in bitAsset)) return <div header={title} />;
         var currentFeed = bitAsset.current_feed;
-        var feedPrice = this.formattedPrice(currentFeed.settlement_price);
+
+        var feedPrice = this.formattedPrice(
+            assetUtils.extractRawFeedPrice(asset)
+        );
+
+        var title = (
+            <div>
+                <Translate content="explorer.asset.price_feed.title" />
+                <span className="float-right">{feedPrice}</span>
+            </div>
+        );
 
         return (
-            <div className="asset-card no-padding">
-                <div className="card-divider">{title}</div>
-
+            <Panel header={title}>
                 <table
                     className="table key-value-table table-hover"
                     style={{padding: "1.2rem"}}
@@ -562,7 +633,7 @@ class Asset extends React.Component {
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </Panel>
         );
     }
 
@@ -602,7 +673,6 @@ class Asset extends React.Component {
     }
 
     renderSettlement(asset) {
-        var title = <Translate content="explorer.asset.settlement.title" />;
         var bitAsset = asset.bitasset;
         if (!("current_feed" in bitAsset)) return <div header={title} />;
 
@@ -622,6 +692,11 @@ class Asset extends React.Component {
              * Global Settled Assets
              */
             var settlementFund = bitAsset.settlement_fund;
+
+            /**
+             * In globally settled assets the force settlement offset is 0
+             *
+             */
             var settlementPrice = this.formattedPrice(
                 bitAsset.settlement_price
             );
@@ -639,7 +714,6 @@ class Asset extends React.Component {
                     "id"
                 )]: this.props.backingAsset.toJS()
             };
-            let feedPrice = this._getFeedPrice();
 
             // Convert supply to calculable values
             let current_supply_value = currentSupply;
@@ -668,10 +742,6 @@ class Asset extends React.Component {
                     10,
                     assets[bitAsset.options.short_backing_asset].precision
                 );
-            settlement_fund_collateral_ratio =
-                current_collateral_value /
-                feedPrice.toReal() /
-                current_supply_value;
 
             let bids_collateral =
                 bids.collateral /
@@ -679,15 +749,27 @@ class Asset extends React.Component {
                     10,
                     assets[bitAsset.options.short_backing_asset].precision
                 );
-            total_collateral_ratio =
-                (current_collateral_value + bids_collateral) /
-                feedPrice.toReal() /
-                current_supply_value;
+
+            let feedPrice = this._getFeedPrice();
+            if (feedPrice) {
+                settlement_fund_collateral_ratio =
+                    current_collateral_value /
+                    feedPrice.toReal() /
+                    current_supply_value;
+
+                total_collateral_ratio =
+                    (current_collateral_value + bids_collateral) /
+                    feedPrice.toReal() /
+                    current_supply_value;
+            }
         } else {
             /***
              * Non Global Settlement Assets
              */
             var globalSettlementPrice = this.getGlobalSettlementPrice();
+            var globalSettlementTriggerPrice = this.getGlobalSettlementPrice(
+                currentFeed.maximum_short_squeeze_ratio / 1000
+            );
             var currentSettled = bitAsset.force_settled_volume;
             var settlementOffset =
                 bitAsset.options.force_settlement_offset_percent;
@@ -696,22 +778,30 @@ class Asset extends React.Component {
                 bitAsset.options.maximum_force_settlement_volume;
 
             var msspPrice = this.formattedPrice(
-                currentFeed.settlement_price,
+                assetUtils.extractRawFeedPrice(asset),
                 false,
                 false,
                 currentFeed.maximum_short_squeeze_ratio / 1000
             );
             var settlePrice = this.formattedPrice(
-                currentFeed.settlement_price,
+                assetUtils.extractRawFeedPrice(asset),
                 false,
                 false,
                 1 - settlementOffset / 10000
             );
         }
 
+        var title = (
+            <div>
+                <Translate content="explorer.asset.settlement.title" />
+                <span className="float-right">
+                    {isGlobalSettle ? settlementPrice : settlePrice}
+                </span>
+            </div>
+        );
+
         return (
-            <div className="asset-card no-padding">
-                <div className="card-divider">{title}</div>
+            <Panel header={title}>
                 {isGlobalSettle && (
                     <Translate
                         component="p"
@@ -770,9 +860,11 @@ class Asset extends React.Component {
                                     <Translate content="explorer.asset.settlement.settlement_funds_collateral_ratio" />
                                 </td>
                                 <td>
-                                    {settlement_fund_collateral_ratio.toFixed(
-                                        6
-                                    )}
+                                    {settlement_fund_collateral_ratio
+                                        ? settlement_fund_collateral_ratio.toFixed(
+                                              6
+                                          )
+                                        : "-"}
                                 </td>
                             </tr>
                             <tr>
@@ -808,7 +900,11 @@ class Asset extends React.Component {
                                         }
                                     />
                                 </td>
-                                <td>{total_collateral_ratio.toFixed(6)}</td>
+                                <td>
+                                    {total_collateral_ratio
+                                        ? total_collateral_ratio.toFixed(6)
+                                        : "-"}
+                                </td>
                             </tr>
                         </tbody>
                     ) : (
@@ -818,6 +914,16 @@ class Asset extends React.Component {
                                     <Translate content="explorer.asset.price_feed.maximum_short_squeeze_price" />
                                 </td>
                                 <td>{msspPrice}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Translate content="explorer.asset.price_feed.global_settlement_trigger" />
+                                </td>
+                                <td>
+                                    {globalSettlementTriggerPrice
+                                        ? globalSettlementTriggerPrice
+                                        : "-"}
+                                </td>
                             </tr>
                             <tr>
                                 <td>
@@ -911,7 +1017,7 @@ class Asset extends React.Component {
                         </tbody>
                     )}
                 </table>
-            </div>
+            </Panel>
         );
     }
 
@@ -919,169 +1025,169 @@ class Asset extends React.Component {
         let dynamic = this.props.getDynamicObject(asset.dynamic_asset_data_id);
         if (dynamic) dynamic = dynamic.toJS();
         var options = asset.options;
-        const core = ChainStore.getAsset("1.3.0");
+        const core = this.props.coreAsset;
 
         return (
-            <div className="asset-card no-padding">
-                <div className="card-divider">
-                    {<Translate content="explorer.asset.fee_pool.title" />}
+            <Panel
+                header={
+                    <div>
+                        <Translate content="explorer.asset.fee_pool.title" />
+                        {dynamic ? (
+                            <span className="float-right">
+                                <FormattedAsset
+                                    asset="1.3.0"
+                                    amount={dynamic.fee_pool}
+                                />
+                            </span>
+                        ) : null}
+                    </div>
+                }
+            >
+                <div>
+                    <Translate
+                        component="p"
+                        content="explorer.asset.fee_pool.pool_text"
+                        unsafe
+                        asset={asset.symbol}
+                        core={core.get("symbol")}
+                    />
+                    <table
+                        className="table key-value-table"
+                        style={{padding: "1.2rem"}}
+                    >
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <Translate content="explorer.asset.fee_pool.core_exchange_rate" />
+                                </td>
+                                <td>
+                                    {this.formattedPrice(
+                                        options.core_exchange_rate
+                                    )}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Translate content="explorer.asset.fee_pool.pool_balance" />
+                                </td>
+                                <td>
+                                    {dynamic ? (
+                                        <FormattedAsset
+                                            asset="1.3.0"
+                                            amount={dynamic.fee_pool}
+                                        />
+                                    ) : null}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Translate content="explorer.asset.fee_pool.unclaimed_issuer_income" />
+                                </td>
+                                <td>
+                                    {dynamic ? (
+                                        <FormattedAsset
+                                            asset={asset.id}
+                                            amount={dynamic.accumulated_fees}
+                                        />
+                                    ) : null}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <Translate
-                    component="p"
-                    content="explorer.asset.fee_pool.pool_text"
-                    unsafe
-                    asset={asset.symbol}
-                    core={core.get("symbol")}
-                />
-                <table
-                    className="table key-value-table"
-                    style={{padding: "1.2rem"}}
-                >
-                    <tbody>
-                        <tr>
-                            <td>
-                                <Translate content="explorer.asset.fee_pool.core_exchange_rate" />
-                            </td>
-                            <td>
-                                {this.formattedPrice(
-                                    options.core_exchange_rate
-                                )}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <Translate content="explorer.asset.fee_pool.pool_balance" />
-                            </td>
-                            <td>
-                                {dynamic ? (
-                                    <FormattedAsset
-                                        asset="1.3.0"
-                                        amount={dynamic.fee_pool}
-                                    />
-                                ) : null}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <Translate content="explorer.asset.fee_pool.unclaimed_issuer_income" />
-                            </td>
-                            <td>
-                                {dynamic ? (
-                                    <FormattedAsset
-                                        asset={asset.id}
-                                        amount={dynamic.accumulated_fees}
-                                    />
-                                ) : null}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            </Panel>
         );
     }
 
     renderAssetOwnerUpdate(asset) {
         return (
-            <div
-                className="grid-content small-no-padding"
-                style={{overflowY: "visible"}}
+            <Panel
+                header={
+                    <Translate content="account.user_issued_assets.update_owner" />
+                }
             >
-                <div className="asset-card no-padding">
-                    <div className="card-divider">
-                        <Translate content="account.user_issued_assets.update_owner" />
-                    </div>
-                    <Translate
-                        component="p"
-                        content="account.user_issued_assets.update_owner_text"
-                        asset={asset.symbol}
-                    />
-                    <AssetOwnerUpdate
-                        asset={asset}
-                        account={this.props.currentAccount}
-                        currentOwner={asset.issuer}
-                    />
-                </div>
-            </div>
+                <Translate
+                    component="p"
+                    content="account.user_issued_assets.update_owner_text"
+                    asset={asset.symbol}
+                />
+                <AssetOwnerUpdate
+                    asset={asset}
+                    account={this.props.currentAccount}
+                    currentOwner={asset.issuer}
+                />
+            </Panel>
         );
     }
 
     renderFeedPublish(asset) {
         return (
-            <div
-                className="grid-content small-no-padding"
-                style={{overflowY: "visible"}}
+            <Panel
+                header={
+                    <Translate content="transaction.trxTypes.asset_publish_feed" />
+                }
             >
-                <div className="asset-card no-padding">
-                    <div className="card-divider">
-                        <Translate content="transaction.trxTypes.asset_publish_feed" />
-                    </div>
-                    <Translate
-                        component="p"
-                        content="explorer.asset.feed_producer_text"
-                    />
-                    <AssetPublishFeed
-                        asset={asset.id}
-                        account={this.props.currentAccount}
-                        currentOwner={asset.issuer}
-                    />
-                </div>
-            </div>
+                <Translate
+                    component="p"
+                    content="explorer.asset.feed_producer_text"
+                />
+                <AssetPublishFeed
+                    asset={asset.id}
+                    account={this.props.currentAccount}
+                    currentOwner={asset.issuer}
+                />
+            </Panel>
         );
     }
 
     renderCollateralBid(asset) {
         return (
-            <div className="grid-content small-no-padding">
-                <div className="asset-card no-padding">
-                    <div className="card-divider">
-                        <Translate content="explorer.asset.collateral.bid" />
-                    </div>
-                    <Translate
-                        component="p"
-                        content="explorer.asset.collateral.bid_text"
-                        asset={asset.symbol}
-                    />
+            <Panel
+                header={<Translate content="explorer.asset.collateral.bid" />}
+            >
+                <Translate
+                    component="p"
+                    content="explorer.asset.collateral.bid_text"
+                    asset={asset.symbol}
+                />
 
-                    <Translate
-                        component="p"
-                        content="explorer.asset.settlement.gs_included_on_revival"
-                    />
+                <Translate
+                    component="p"
+                    content="explorer.asset.settlement.gs_included_on_revival"
+                />
 
-                    <Translate
-                        component="p"
-                        content="explorer.asset.collateral.remove_bid"
-                    />
+                <Translate
+                    component="p"
+                    content="explorer.asset.collateral.remove_bid"
+                />
 
-                    <BidCollateralOperation
-                        asset={asset.symbol}
-                        funderAccountName={this.props.currentAccount}
-                        onUpdate={this.updateOnCollateralBid.bind(this)}
-                        hideBalance
-                    />
-                </div>
-            </div>
+                <BidCollateralOperation
+                    asset={asset.symbol}
+                    core={asset.bitasset.options.short_backing_asset}
+                    funderAccountName={this.props.currentAccount}
+                    onUpdate={this.updateOnCollateralBid.bind(this)}
+                    hideBalance
+                />
+            </Panel>
         );
     }
 
     renderFeePoolFunding(asset) {
         return (
-            <div className="grid-content small-no-padding">
-                <div className="asset-card no-padding">
-                    <div className="card-divider">
-                        <Translate content="explorer.asset.fee_pool.fund" />
-                    </div>
-                    <Translate
-                        component="p"
-                        content="explorer.asset.fee_pool.fund_text"
-                        asset={asset.symbol}
-                    />
-                    <FeePoolOperation
-                        asset={asset.symbol}
-                        funderAccountName={this.props.currentAccount}
-                        hideBalance
-                    />
-                </div>
-            </div>
+            <Panel
+                header={<Translate content="explorer.asset.fee_pool.fund" />}
+            >
+                <Translate
+                    component="p"
+                    content="explorer.asset.fee_pool.fund_text"
+                    asset={asset.symbol}
+                />
+                <FeePoolOperation
+                    asset={asset.symbol}
+                    funderAccountName={this.props.currentAccount}
+                    hideBalance
+                />
+            </Panel>
         );
     }
 
@@ -1089,20 +1195,19 @@ class Asset extends React.Component {
         let dynamic = this.props.getDynamicObject(asset.dynamic_asset_data_id);
         if (dynamic) dynamic = dynamic.toJS();
         return (
-            <div className="grid-content small-no-padding">
-                <div className="asset-card no-padding">
-                    <div className="card-divider">
-                        <Translate content="explorer.asset.fee_pool.claim_balance" />
-                    </div>
-                    <FeePoolOperation
-                        asset={asset.symbol}
-                        funderAccountName={this.props.currentAccount}
-                        dynamic={dynamic}
-                        hideBalance
-                        type="claim"
-                    />
-                </div>
-            </div>
+            <Panel
+                header={
+                    <Translate content="explorer.asset.fee_pool.claim_balance" />
+                }
+            >
+                <FeePoolOperation
+                    asset={asset.symbol}
+                    funderAccountName={this.props.currentAccount}
+                    dynamic={dynamic}
+                    hideBalance
+                    type="claim"
+                />
+            </Panel>
         );
     }
 
@@ -1110,20 +1215,19 @@ class Asset extends React.Component {
         let dynamic = this.props.getDynamicObject(asset.dynamic_asset_data_id);
         if (dynamic) dynamic = dynamic.toJS();
         return (
-            <div className="grid-content small-no-padding">
-                <div className="asset-card no-padding">
-                    <div className="card-divider">
-                        <Translate content="transaction.trxTypes.asset_claim_fees" />
-                    </div>
-                    <FeePoolOperation
-                        asset={asset.symbol}
-                        dynamic={dynamic}
-                        funderAccountName={this.props.currentAccount}
-                        hideBalance
-                        type="claim_fees"
-                    />
-                </div>
-            </div>
+            <Panel
+                header={
+                    <Translate content="transaction.trxTypes.asset_claim_fees" />
+                }
+            >
+                <FeePoolOperation
+                    asset={asset.symbol}
+                    dynamic={dynamic}
+                    funderAccountName={this.props.currentAccount}
+                    hideBalance
+                    type="claim_fees"
+                />
+            </Panel>
         );
     }
 
@@ -1227,99 +1331,46 @@ class Asset extends React.Component {
             </div>
         ) : null;
 
+        let whitelist_market_fee_sharing = asset.options.extensions
+            .whitelist_market_fee_sharing && (
+            <React.Fragment>
+                <br />
+                <Translate content="explorer.asset.permissions.accounts_in_whitelist_market_fee_sharing" />
+                : &nbsp;
+                {this.renderAuthorityList(
+                    asset.options.extensions.whitelist_market_fee_sharing
+                )}
+            </React.Fragment>
+        );
+
         return (
-            <div className="asset-card no-padding">
-                <div className="card-divider">
-                    {<Translate content="explorer.asset.permissions.title" />}
+            <Panel
+                header={
+                    <Translate content="explorer.asset.permissions.title" />
+                }
+            >
+                <div>
+                    <table
+                        className="table key-value-table table-hover"
+                        style={{padding: "1.2rem"}}
+                    >
+                        <tbody>
+                            {maxMarketFee}
+                            {maxSupply}
+                        </tbody>
+                    </table>
+
+                    <br />
+                    {this.renderPermissionIndicators(
+                        permissionBooleans,
+                        bitNames
+                    )}
+                    <br />
+
+                    {whiteLists}
+                    {whitelist_market_fee_sharing}
                 </div>
-                <table
-                    className="table key-value-table table-hover"
-                    style={{padding: "1.2rem"}}
-                >
-                    <tbody>
-                        {maxMarketFee}
-                        {maxSupply}
-                    </tbody>
-                </table>
-
-                <br />
-                {this.renderPermissionIndicators(permissionBooleans, bitNames)}
-                <br />
-
-                {whiteLists}
-            </div>
-        );
-    }
-
-    // return a sorted list of call orders
-    getMarginPositions() {
-        const {sortDirection} = this.state;
-
-        let sortFunctions = {
-            name: function(a, b) {
-                let nameA = ChainStore.getAccount(a.borrower, false);
-                if (nameA) nameA = nameA.get("name");
-                let nameB = ChainStore.getAccount(b.borrower, false);
-                if (nameB) nameB = nameB.get("name");
-                if (nameA > nameB) return sortDirection ? 1 : -1;
-                if (nameA < nameB) return sortDirection ? -1 : 1;
-                return 0;
-            },
-            price: function(a, b) {
-                return (
-                    (sortDirection ? 1 : -1) *
-                    (a.call_price.toReal() - b.call_price.toReal())
-                );
-            },
-            collateral: function(a, b) {
-                return (sortDirection ? 1 : -1) * (b.collateral - a.collateral);
-            },
-            debt: function(a, b) {
-                return (sortDirection ? 1 : -1) * (b.debt - a.debt);
-            },
-            ratio: function(a, b) {
-                return (sortDirection ? 1 : -1) * (a.getRatio() - b.getRatio());
-            }
-        };
-
-        return this.state.callOrders.sort(
-            sortFunctions[this.state.marginTableSort]
-        );
-    }
-
-    getCollateralBids(totalSupply) {
-        const {sortDirection} = this.state;
-
-        let sortFunctions = {
-            name: function(a, b) {
-                let nameA = ChainStore.getAccount(a.bidder, false);
-                if (nameA) nameA = nameA.get("name");
-                let nameB = ChainStore.getAccount(b.bidder, false);
-                if (nameB) nameB = nameB.get("name");
-                if (nameA > nameB) return sortDirection ? 1 : -1;
-                if (nameA < nameB) return sortDirection ? -1 : 1;
-                return 0;
-            },
-            price: function(a, b) {
-                return (
-                    (sortDirection ? 1 : -1) * (a.bid.toReal() - b.bid.toReal())
-                );
-            },
-            collateral: function(a, b) {
-                return (sortDirection ? 1 : -1) * (b.collateral - a.collateral);
-            },
-            debt: function(a, b) {
-                return (sortDirection ? 1 : -1) * (b.debt - a.debt);
-            },
-            ratio: function(a, b) {
-                return (
-                    (!sortDirection ? 1 : -1) * (a.getRatio() - b.getRatio())
-                );
-            }
-        };
-
-        return this.state.collateralBids.sort(
-            sortFunctions[this.state.collateralTableSort]
+            </Panel>
         );
     }
 
@@ -1327,7 +1378,7 @@ class Asset extends React.Component {
     // the price at which the least collateralize short's
     // collateral no longer enough to back the debt
     // he/she owes.
-    getGlobalSettlementPrice() {
+    getGlobalSettlementPrice(mssr = 1) {
         if (!this.state.callOrders) {
             return null;
         }
@@ -1357,7 +1408,12 @@ class Asset extends React.Component {
         // The CR is 1 if collateral / (debt x feed_ price) == 1
         // Rearranging, this means that the CR is 1 if
         // feed_price == collateral / debt
-        let debt = leastColShort.debt;
+        //
+        // Default is to return the global settlement price
+        // Use mssr to calculate in when an event happens
+        // based on an assets MSSR
+
+        let debt = leastColShort.debt * mssr;
         let collateral = leastColShort.collateral;
 
         return (
@@ -1370,29 +1426,26 @@ class Asset extends React.Component {
         );
     }
 
-    // return two tabs
-    // one tab is for the price feed data from the
-    // witness for the given asset
-    // the other tab is a list of the margin positions
-    // for this asset (if it's a bitasset)
-    renderMarginPositions(asset, sortedCallOrders, sortedCollateralBids) {
-        // first we compute the price feed tab
+    _renderFeedTable(asset) {
         var bitAsset = asset.bitasset;
         if (
             !("feeds" in bitAsset) ||
             bitAsset.feeds.length == 0 ||
-            bitAsset.is_prediction_market
+            bitAsset.is_prediction_market ||
+            !bitAsset.feeds.length
         ) {
             return null;
         }
 
+        var feeds = bitAsset.feeds;
+        var feed_price_header = assetUtils.extractRawFeedPrice(feeds[0][1][1]);
+        var core_exchange_rate_header = feeds[0][1][1].core_exchange_rate;
+
+        // Filter by valid feed lifetime, Sort by published date
         let now = new Date().getTime();
         let oldestValidDate = new Date(
             now - asset.bitasset.options.feed_lifetime_sec * 1000
         );
-
-        // Filter by valid feed lifetime, Sort by published date
-        var feeds = bitAsset.feeds;
         feeds = feeds
             .filter(a => {
                 return new Date(a[1][0]) > oldestValidDate;
@@ -1401,476 +1454,650 @@ class Asset extends React.Component {
                 return new Date(feed2[1][0]) - new Date(feed1[1][0]);
             });
 
-        if (!feeds.length) {
-            return null;
-        }
+        let currentFeed = assetUtils.extractRawFeedPrice(asset);
+        let currentFeedPrice =
+            currentFeed.base.amount / currentFeed.quote.amount;
 
-        var rows = [];
-        var settlement_price_header = feeds[0][1][1].settlement_price;
-        var core_exchange_rate_header = feeds[0][1][1].core_exchange_rate;
-        let header = (
-            <thead>
-                <tr>
-                    <th style={{textAlign: "left"}}>
-                        <Translate content="explorer.asset.price_feed_data.publisher" />
-                    </th>
-                    <th style={{textAlign: "right"}}>
-                        <Translate content="explorer.asset.price_feed_data.settlement_price" />
-                        <br />(
-                        {this.formattedPrice(
-                            settlement_price_header,
-                            false,
-                            true
-                        )}
-                        )
-                    </th>
-                    <th
-                        style={{textAlign: "right"}}
-                        className="column-hide-small"
-                    >
-                        <Translate content="explorer.asset.price_feed_data.core_exchange_rate" />
-                        <br />(
+        let dataSource = [];
+        let columns = [];
+
+        columns = [
+            {
+                key: "publisher",
+                fixed: "left",
+                width: 150,
+                title: (
+                    <Translate content="explorer.asset.price_feed_data.publisher" />
+                ),
+                dataIndex: "publisher",
+                sorter: (a, b) => {
+                    let nameA = ChainStore.getAccount(a.publisher, false);
+                    if (nameA) nameA = nameA.get("name");
+                    let nameB = ChainStore.getAccount(b.publisher, false);
+                    if (nameB) nameB = nameB.get("name");
+                    if (nameA > nameB) return 1;
+                    if (nameA < nameB) return -1;
+                    return 0;
+                },
+                render: item => {
+                    return <LinkToAccountById account={item} />;
+                }
+            },
+            {
+                key: "feed_price",
+                title: (
+                    <React.Fragment>
+                        <Translate content="explorer.asset.price_feed_data.feed_price" />{" "}
+                        ({this.formattedPrice(feed_price_header, false, true)})
+                    </React.Fragment>
+                ),
+                dataIndex: "feed_price",
+                sorter: (a, b) => {
+                    let a_price = parseFloat(
+                        a.feed_price.base.amount / a.feed_price.quote.amount
+                    );
+                    let b_price = parseFloat(
+                        b.feed_price.base.amount / b.feed_price.quote.amount
+                    );
+
+                    if (a_price > b_price) return 1;
+                    if (a_price < b_price) return -1;
+                    return 0;
+                },
+                render: item => {
+                    let price = parseFloat(
+                        item.base.amount / item.quote.amount
+                    );
+                    let median_offset = (
+                        (price / currentFeedPrice) * 100 -
+                        100
+                    ).toFixed(2);
+                    return (
+                        <React.Fragment>
+                            {this.formattedPrice(item, true)}(
+                            <span
+                                className={
+                                    median_offset > 0
+                                        ? "txtlabel success"
+                                        : median_offset < 0
+                                            ? "txtlabel warning"
+                                            : "txtlabel"
+                                }
+                            >
+                                {median_offset}%
+                            </span>
+                            )
+                        </React.Fragment>
+                    );
+                }
+            },
+            {
+                key: "core_exchange_rate",
+                title: (
+                    <React.Fragment>
+                        <Translate content="explorer.asset.price_feed_data.core_exchange_rate" />{" "}
+                        (
                         {this.formattedPrice(
                             core_exchange_rate_header,
                             false,
                             true
                         )}
                         )
-                    </th>
-                    <th style={{textAlign: "right"}}>
-                        <Translate content="explorer.asset.price_feed_data.maintenance_collateral_ratio" />
-                    </th>
-                    <th style={{textAlign: "right"}}>
-                        <Translate content="explorer.asset.price_feed_data.maximum_short_squeeze_ratio" />
-                    </th>
-                    <th
-                        style={{textAlign: "right"}}
-                        className="column-hide-small"
-                    >
-                        <Translate content="explorer.asset.price_feed_data.published" />
-                    </th>
-                </tr>
-            </thead>
-        );
+                    </React.Fragment>
+                ),
+                dataIndex: "core_exchange_rate",
+                render: item => {
+                    return this.formattedPrice(item, true);
+                }
+            },
+            {
+                key: "maintenance_collateral_ratio",
+                title: (
+                    <Translate content="explorer.asset.price_feed_data.maintenance_collateral_ratio" />
+                ),
+                dataIndex: "maintenance_collateral_ratio",
+                render: item => {
+                    return item;
+                }
+            },
+            {
+                key: "maximum_short_squeeze_ratio",
+                title: (
+                    <Translate content="explorer.asset.price_feed_data.maximum_short_squeeze_ratio" />
+                ),
+                dataIndex: "maximum_short_squeeze_ratio",
+                render: item => {
+                    return item;
+                }
+            },
+            {
+                key: "publishDate",
+                fixed: "right",
+                width: 150,
+                title: (
+                    <Translate content="explorer.asset.price_feed_data.published" />
+                ),
+                dataIndex: "publishDate",
+                sorter: (a, b) => {
+                    if (a.publishDate.getTime() > b.publishDate.getTime())
+                        return 1;
+                    if (a.publishDate.getTime() < b.publishDate.getTime())
+                        return -1;
+                    return 0;
+                },
+                render: item => {
+                    return <TimeAgo time={item} />;
+                }
+            }
+        ];
+
         for (var i = 0; i < feeds.length; i++) {
             var feed = feeds[i];
             var publisher = feed[0];
             var publishDate = new Date(feed[1][0] + "Z");
-            var settlement_price = feed[1][1].settlement_price;
+            var feed_price = assetUtils.extractRawFeedPrice(feed[1][1]);
             var core_exchange_rate = feed[1][1].core_exchange_rate;
             var maintenance_collateral_ratio =
                 "" + feed[1][1].maintenance_collateral_ratio / 1000;
             var maximum_short_squeeze_ratio =
                 "" + feed[1][1].maximum_short_squeeze_ratio / 1000;
-            rows.push(
-                <tr key={publisher}>
-                    <td>
-                        <LinkToAccountById account={publisher} />
-                    </td>
-                    <td style={{textAlign: "right"}}>
-                        {this.formattedPrice(settlement_price, true)}
-                    </td>
-                    <td
-                        style={{textAlign: "right"}}
-                        className="column-hide-small"
-                    >
-                        {this.formattedPrice(core_exchange_rate, true)}
-                    </td>
-                    <td style={{textAlign: "right"}}>
-                        {maintenance_collateral_ratio}
-                    </td>
-                    <td style={{textAlign: "right"}}>
-                        {maximum_short_squeeze_ratio}
-                    </td>
-                    <td
-                        style={{textAlign: "right"}}
-                        className="column-hide-small"
-                    >
-                        <TimeAgo time={publishDate} />
-                    </td>
-                </tr>
-            );
-        }
 
-        let isGlobalSettlement = bitAsset.settlement_fund > 0 ? true : false;
-
-        let secondRows = null;
-        let secondHeader = null;
-        if (isGlobalSettlement) {
-            // collateral bids
-            let dynamic = this.props.getDynamicObject(
-                asset.dynamic_asset_data_id
-            );
-            if (dynamic) {
-                dynamic = dynamic.toJS();
-                var currentSupply = dynamic ? dynamic.current_supply : 0;
-                this._analyzeBids(currentSupply);
-            }
-            secondHeader = (
-                <thead>
-                    <tr>
-                        <th
-                            className="clickable"
-                            onClick={this._toggleSortOrder.bind(this, "name")}
-                            style={{textAlign: "left"}}
-                        >
-                            <Translate content="transaction.bidder" />
-                        </th>
-                        <th
-                            style={{textAlign: "right"}}
-                            className="clickable column-hide-small"
-                            onClick={this._toggleSortOrder.bind(
-                                this,
-                                "collateral"
-                            )}
-                        >
-                            <Translate content="transaction.collateral" />
-                            {sortedCollateralBids.length && " ("}
-                            {sortedCollateralBids.length && (
-                                <FormattedAsset
-                                    amount={1}
-                                    asset={
-                                        sortedCollateralBids[0].bid.base
-                                            .asset_id
-                                    }
-                                    hide_amount
-                                />
-                            )}
-                            {sortedCollateralBids.length && ")"}
-                        </th>
-                        <th
-                            style={{textAlign: "right"}}
-                            className="clickable"
-                            onClick={this._toggleSortOrder.bind(this, "debt")}
-                        >
-                            <Translate content="transaction.borrow_amount" />
-                            {sortedCollateralBids.length && " ("}
-                            {sortedCollateralBids.length && (
-                                <FormattedAsset
-                                    amount={1}
-                                    asset={
-                                        sortedCollateralBids[0].bid.quote
-                                            .asset_id
-                                    }
-                                    hide_amount
-                                />
-                            )}
-                            {sortedCollateralBids.length && ")"}
-                        </th>
-                        <th
-                            style={{textAlign: "right"}}
-                            className="clickable column-hide-small"
-                            onClick={this._toggleSortOrder.bind(this, "price")}
-                        >
-                            <Translate content="explorer.asset.collateral_bid.bid" />
-                            {sortedCollateralBids.length && " ("}
-                            {sortedCollateralBids.length && (
-                                <FormattedPrice
-                                    base_amount={1}
-                                    base_asset={
-                                        sortedCollateralBids[0].bid.base
-                                            .asset_id
-                                    }
-                                    quote_amount={1}
-                                    quote_asset={
-                                        sortedCollateralBids[0].bid.quote
-                                            .asset_id
-                                    }
-                                    hide_value
-                                    noPopOver
-                                />
-                            )}
-                            {sortedCollateralBids.length && ")"}
-                        </th>
-
-                        <th
-                            style={{textAlign: "right"}}
-                            className="clickable column-hide-small"
-                            onClick={this._toggleSortOrder.bind(this, "ratio")}
-                        >
-                            <Translate content="borrow.coll_ratio" />
-                        </th>
-
-                        <th style={{textAlign: "right"}}>
-                            <Translate content="borrow.considered_on_revival" />
-                        </th>
-                    </tr>
-                </thead>
-            );
-
-            secondRows = sortedCollateralBids.map(c => {
-                let included = "no";
-                if (!!c.consideredIfRevived) {
-                    if (c.consideredIfRevived == 1) {
-                        included = "yes";
-                    } else if (c.consideredIfRevived == 2) {
-                        included = "partially";
-                    } else {
-                        included = "no";
-                    }
-                }
-                return (
-                    <tr className="margin-row" key={c.id}>
-                        <td>
-                            <LinkToAccountById account={c.bidder} />
-                        </td>
-                        <td
-                            style={{textAlign: "right"}}
-                            className="column-hide-small"
-                        >
-                            <FormattedAsset
-                                amount={c.bid.base.amount}
-                                asset={c.bid.base.asset_id}
-                                hide_asset
-                            />
-                        </td>
-                        <td style={{textAlign: "right"}} className="">
-                            <FormattedAsset
-                                amount={c.bid.quote.amount}
-                                asset={c.bid.quote.asset_id}
-                                hide_asset
-                            />
-                        </td>
-                        <td
-                            style={{textAlign: "right", paddingRight: 10}}
-                            className="column-hide-small"
-                        >
-                            <FormattedPrice
-                                base_amount={c.bid.base.amount}
-                                base_asset={c.bid.base.asset_id}
-                                quote_amount={c.bid.quote.amount}
-                                quote_asset={c.bid.quote.asset_id}
-                                hide_symbols
-                            />
-                        </td>
-
-                        <td
-                            style={{textAlign: "right"}}
-                            className="column-hide-small"
-                        >
-                            {c.getRatio().toFixed(3)}
-                        </td>
-
-                        <td style={{textAlign: "right"}}>{included}</td>
-                    </tr>
-                );
-            });
-        } else {
-            // margin positions
-            secondHeader = (
-                <thead>
-                    <tr>
-                        <th
-                            className="clickable"
-                            onClick={this._toggleSortOrder.bind(this, "name")}
-                            style={{textAlign: "left"}}
-                        >
-                            <Translate content="transaction.borrower" />
-                        </th>
-                        <th
-                            style={{textAlign: "right"}}
-                            className="clickable column-hide-small"
-                            onClick={this._toggleSortOrder.bind(
-                                this,
-                                "collateral"
-                            )}
-                        >
-                            <Translate content="transaction.collateral" />
-                            {this.state.callOrders.length && " ("}
-                            {this.state.callOrders.length && (
-                                <FormattedAsset
-                                    amount={this.state.callOrders[0]
-                                        .getCollateral()
-                                        .getAmount()}
-                                    asset={
-                                        this.state.callOrders[0].getCollateral()
-                                            .asset_id
-                                    }
-                                    hide_amount
-                                />
-                            )}
-                            {this.state.callOrders.length && ")"}
-                        </th>
-                        <th
-                            style={{textAlign: "right"}}
-                            className="clickable"
-                            onClick={this._toggleSortOrder.bind(this, "debt")}
-                        >
-                            <Translate content="transaction.borrow_amount" />
-                            {this.state.callOrders.length && " ("}
-                            {this.state.callOrders.length && (
-                                <FormattedAsset
-                                    amount={this.state.callOrders[0]
-                                        .amountToReceive()
-                                        .getAmount()}
-                                    asset={
-                                        this.state.callOrders[0].amountToReceive()
-                                            .asset_id
-                                    }
-                                    hide_amount
-                                />
-                            )}
-                            {this.state.callOrders.length && ")"}
-                        </th>
-                        <th
-                            style={{textAlign: "right"}}
-                            className="clickable  column-hide-small"
-                            onClick={this._toggleSortOrder.bind(this, "price")}
-                        >
-                            <Translate content="exchange.call" />
-                            {this.state.callOrders.length && " ("}
-                            {this.state.callOrders.length && (
-                                <FormattedPrice
-                                    base_amount={
-                                        this.state.callOrders[0].call_price.base
-                                            .amount
-                                    }
-                                    base_asset={
-                                        this.state.callOrders[0].call_price.base
-                                            .asset_id
-                                    }
-                                    quote_amount={
-                                        this.state.callOrders[0].call_price
-                                            .quote.amount
-                                    }
-                                    quote_asset={
-                                        this.state.callOrders[0].call_price
-                                            .quote.asset_id
-                                    }
-                                    hide_value
-                                    noPopOver
-                                />
-                            )}
-                            {this.state.callOrders.length && ")"}
-                        </th>
-                        <th
-                            style={{textAlign: "right"}}
-                            className="column-hide-small"
-                        >
-                            <Translate content="borrow.coll_ratio_target" />
-                        </th>
-                        <th
-                            style={{textAlign: "right"}}
-                            className="clickable"
-                            onClick={this._toggleSortOrder.bind(this, "ratio")}
-                        >
-                            <Translate content="borrow.coll_ratio" />
-                        </th>
-                    </tr>
-                </thead>
-            );
-
-            secondRows = sortedCallOrders.map(c => {
-                return (
-                    <tr className="margin-row" key={c.id}>
-                        <td>
-                            <LinkToAccountById account={c.borrower} />
-                        </td>
-                        <td
-                            style={{textAlign: "right"}}
-                            className="column-hide-small"
-                        >
-                            <FormattedAsset
-                                amount={c.collateral}
-                                asset={c.getCollateral().asset_id}
-                                hide_asset
-                            />
-                        </td>
-                        <td style={{textAlign: "right"}}>
-                            <FormattedAsset
-                                amount={c.debt}
-                                asset={c.amountToReceive().asset_id}
-                                hide_asset
-                            />
-                        </td>
-                        <td
-                            style={{textAlign: "right", paddingRight: 10}}
-                            className="column-hide-small"
-                        >
-                            <FormattedPrice
-                                base_amount={c.call_price.base.amount}
-                                base_asset={c.call_price.base.asset_id}
-                                quote_amount={c.call_price.quote.amount}
-                                quote_asset={c.call_price.quote.asset_id}
-                                hide_symbols
-                            />
-                        </td>
-                        <td
-                            style={{textAlign: "right", paddingRight: 10}}
-                            className="column-hide-small"
-                        >
-                            {!!c.order.target_collateral_ratio
-                                ? (
-                                      c.order.target_collateral_ratio / 1000
-                                  ).toFixed(3)
-                                : "-"}
-                        </td>
-                        <td
-                            className={c.getStatus()}
-                            style={{textAlign: "right"}}
-                        >
-                            {c.getRatio().toFixed(3)}
-                        </td>
-                    </tr>
-                );
+            dataSource.push({
+                publisher: publisher,
+                feed_price: feed_price,
+                core_exchange_rate: core_exchange_rate,
+                maintenance_collateral_ratio: maintenance_collateral_ratio,
+                maximum_short_squeeze_ratio: maximum_short_squeeze_ratio,
+                publishDate: publishDate
             });
         }
 
         return (
-            <div className="grid-block" style={{paddingBottom: "1rem"}}>
-                <div className="grid-content no-padding">
-                    <div className="">
-                        <Tabs
-                            defaultActiveTab={0}
-                            segmented={false}
-                            setting="bitassetDataTabs"
-                        >
-                            <Tab title="explorer.asset.price_feed_data.title">
-                                <table
-                                    className=" table order-table table-hover"
-                                    style={{padding: "1.2rem"}}
-                                >
-                                    {header}
-                                    <tbody>{rows}</tbody>
-                                </table>
-                            </Tab>
+            <Table
+                style={{width: "100%"}}
+                rowKey="feedPublisher"
+                columns={columns}
+                dataSource={dataSource}
+                pagination={false}
+                locale={{
+                    emptyText: (
+                        <Translate content="explorer.asset.price_feed_data.empty" />
+                    )
+                }}
+            />
+        );
+    }
 
-                            <Tab
-                                title={
-                                    isGlobalSettlement
-                                        ? "explorer.asset.collateral_bid.title"
-                                        : "explorer.asset.margin_positions.title"
-                                }
+    _renderMarginTable() {
+        let {cumulativeGrouping} = this.state;
+        let columns = [];
+        let dataSource = [];
+
+        if (this.state.callOrders && this.state.callOrders.length > 0) {
+            const cummulativeSuffix = cumulativeGrouping ? (
+                <span>
+                    &nbsp;(
+                    <Translate content="explorer.asset.cumulative" />)
+                </span>
+            ) : (
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            );
+
+            let debt_cum = 0;
+            let coll_cum = 0;
+
+            this.state.callOrders.map(c => {
+                debt_cum += c.debt;
+                coll_cum += c.collateral;
+
+                dataSource.push({
+                    borrower: c.borrower,
+                    collateral: {
+                        amount: cumulativeGrouping ? coll_cum : c.collateral,
+                        asset: c.getCollateral().asset_id
+                    },
+                    debt: {
+                        amount: cumulativeGrouping ? debt_cum : c.debt,
+                        asset: c.amountToReceive().asset_id
+                    },
+                    call: c.call_price,
+                    tcr: c.order.target_collateral_ratio,
+                    cr: {
+                        ratio: c.getRatio(),
+                        status: c.getStatus()
+                    }
+                });
+            });
+            const unitInfo = key => {
+                let item = dataSource[0][key];
+                return dataSource.length ? (
+                    <span>
+                        <br />
+                        {item.base ? (
+                            this.formattedPrice(item, false, true)
+                        ) : (
+                            <FormattedAsset
+                                asset={item.asset}
+                                amount={item.amount}
+                                hide_amount={true}
+                            />
+                        )}
+                    </span>
+                ) : null;
+            };
+
+            columns = [
+                {
+                    key: "borrower",
+                    fixed: "left",
+                    width: 200,
+                    title: <Translate content="transaction.borrower" />,
+                    dataIndex: "borrower",
+                    sorter: (a, b) => {
+                        let nameA = ChainStore.getAccount(a.borrower, false);
+                        if (nameA) nameA = nameA.get("name");
+                        let nameB = ChainStore.getAccount(b.borrower, false);
+                        if (nameB) nameB = nameB.get("name");
+                        if (nameA > nameB) return 1;
+                        if (nameA < nameB) return -1;
+                        return 0;
+                    },
+                    render: item => {
+                        return <LinkToAccountById account={item} />;
+                    }
+                },
+                {
+                    key: "collateral",
+                    title: (
+                        <React.Fragment>
+                            <Translate content="transaction.collateral" />
+                            {cummulativeSuffix}
+                            {unitInfo("collateral")}
+                        </React.Fragment>
+                    ),
+                    dataIndex: "collateral",
+                    sorter: (a, b) => {
+                        if (a.collateral.amount > b.collateral.amount) return 1;
+                        if (a.collateral.amount < b.collateral.amount)
+                            return -1;
+                        return 0;
+                    },
+                    render: item => {
+                        return (
+                            <Tooltip
+                                title={counterpart.translate(
+                                    "explorer.asset.margin_positions.click_to_switch_to_cumulative"
+                                )}
+                                mouseEnterDelay={0.5}
                             >
-                                <table
-                                    className=" table order-table table-hover"
-                                    style={{padding: "1.2rem"}}
+                                <span
+                                    onClick={this._toggleCumulativeGrouping.bind(
+                                        this
+                                    )}
+                                    style={{cursor: "pointer"}}
                                 >
-                                    {secondHeader}
-                                    <tbody>{secondRows}</tbody>
-                                </table>
-                            </Tab>
-                        </Tabs>
-                    </div>
-                </div>
-            </div>
+                                    <FormattedAsset
+                                        amount={item.amount}
+                                        asset={item.asset}
+                                        hide_asset={true}
+                                    />
+                                </span>
+                            </Tooltip>
+                        );
+                    }
+                },
+                {
+                    key: "debt",
+                    title: (
+                        <React.Fragment>
+                            <Translate content="transaction.borrow_amount" />
+                            {cummulativeSuffix}
+                            {unitInfo("debt")}
+                        </React.Fragment>
+                    ),
+                    dataIndex: "debt",
+                    sorter: (a, b) => {
+                        if (a.debt.amount > b.debt.amount) return 1;
+                        if (a.debt.amount < b.debt.amount) return -1;
+                        return 0;
+                    },
+                    render: item => {
+                        return (
+                            <div
+                                onClick={this._toggleCumulativeGrouping.bind(
+                                    this
+                                )}
+                                style={{cursor: "pointer"}}
+                            >
+                                <Tooltip
+                                    title={counterpart.translate(
+                                        "explorer.asset.margin_positions.click_to_switch_to_cumulative"
+                                    )}
+                                    mouseEnterDelay={0.5}
+                                >
+                                    <FormattedAsset
+                                        amount={item.amount}
+                                        asset={item.asset}
+                                        hide_asset={true}
+                                    />
+                                </Tooltip>
+                            </div>
+                        );
+                    }
+                },
+
+                {
+                    key: "call",
+                    title: (
+                        <span>
+                            <Translate content="exchange.call" />
+                            {unitInfo("call")}
+                        </span>
+                    ),
+                    dataIndex: "call",
+                    render: item => {
+                        return this.formattedPrice(item, true, false);
+                    }
+                },
+                {
+                    key: "tcr",
+                    title: (
+                        <Tooltip
+                            title={counterpart.translate(
+                                "borrow.target_collateral_ratio_explanation"
+                            )}
+                        >
+                            <Translate content="borrow.target_collateral_ratio_short" />
+                        </Tooltip>
+                    ),
+                    dataIndex: "tcr",
+                    render: item => {
+                        return !!item ? (item / 1000).toFixed(3) : "-";
+                    }
+                },
+                {
+                    key: "cr",
+                    title: <Translate content="borrow.coll_ratio" />,
+                    dataIndex: "cr",
+                    fixed: "right",
+                    width: 100,
+                    sorter: (a, b) => {
+                        if (a.cr.ratio > b.cr.ratio) return 1;
+                        if (a.cr.ratio < b.cr.ratio) return -1;
+                        return 0;
+                    },
+                    render: item => {
+                        let classNames = "margin-ratio " + item.status;
+
+                        return (
+                            <React.Fragment>
+                                <div className={classNames}>
+                                    {item.ratio.toFixed(3)}
+                                </div>
+                            </React.Fragment>
+                        );
+                    }
+                }
+            ];
+        }
+
+        return (
+            <Table
+                style={{width: "100%"}}
+                rowKey="feedMargins"
+                columns={columns}
+                dataSource={dataSource}
+                rowClassName="margin-row"
+                pagination={{
+                    pageSize: Number(25)
+                }}
+                locale={{
+                    emptyText: (
+                        <Translate content="explorer.asset.margin_positions.empty" />
+                    )
+                }}
+            />
+        );
+    }
+
+    _renderCollBidTable() {
+        let columns = [];
+        let dataSource = [];
+
+        columns = [
+            {
+                key: "bidder",
+                title: <Translate content="transaction.bidder" />,
+                dataIndex: "bidder",
+                fixed: "left",
+                width: 200,
+                render: item => {
+                    return <LinkToAccountById account={item} />;
+                }
+            },
+            {
+                key: "collateral",
+                title: <Translate content="transaction.collateral" />,
+                dataIndex: "collateral",
+                render: item => {
+                    return (
+                        <FormattedAsset
+                            amount={item.amount}
+                            asset={item.asset_id}
+                            hide_asset
+                        />
+                    );
+                }
+            },
+            {
+                key: "debt",
+                title: <Translate content="transaction.borrow_amount" />,
+                dataIndex: "debt",
+                render: item => {
+                    return (
+                        <FormattedAsset
+                            amount={item.amount}
+                            asset={item.asset_id}
+                            hide_asset
+                        />
+                    );
+                }
+            },
+            {
+                key: "debt_cum",
+                title: (
+                    <Translate content="transaction.cumulative_borrow_amount" />
+                ),
+                dataIndex: "debt_cum",
+                render: item => {
+                    return (
+                        <FormattedAsset
+                            amount={item.amount}
+                            asset={item.asset_id}
+                            hide_asset
+                        />
+                    );
+                }
+            },
+            {
+                key: "price",
+                title: (
+                    <Translate content="explorer.asset.collateral_bid.bid" />
+                ),
+                dataIndex: "price",
+                render: item => {
+                    return (
+                        <FormattedPrice
+                            base_amount={item.base.amount}
+                            base_asset={item.base.asset_id}
+                            quote_amount={item.quote.amount}
+                            quote_asset={item.quote.asset_id}
+                            hide_symbols
+                        />
+                    );
+                }
+            },
+            {
+                key: "cr",
+                title: <Translate content="borrow.coll_ratio" />,
+                dataIndex: "cr",
+                render: item => {
+                    return item.toFixed(3);
+                }
+            },
+            {
+                key: "included",
+                title: <Translate content="borrow.considered_on_revival" />,
+                dataIndex: "included",
+                render: item => {
+                    if (item == 2)
+                        return (
+                            <Translate content="explorer.asset.collateral_bid.included.partial" />
+                        );
+                    else if (item == 1)
+                        return (
+                            <Translate content="explorer.asset.collateral_bid.included.yes" />
+                        );
+                    else
+                        return (
+                            <Translate content="explorer.asset.collateral_bid.included.no" />
+                        );
+                }
+            }
+        ];
+
+        let debt_cum = 0;
+        this.state.collateralBids.map(c => {
+            debt_cum += c.debt;
+
+            dataSource.push({
+                bidder: c.bidder,
+                collateral: {
+                    amount: c.bid.base.amount,
+                    asset: c.bid.base.asset_id
+                },
+                debt: {
+                    amount: c.bid.quote.amount,
+                    asset: c.bid.quote.asset_id
+                },
+                debt_cum: {
+                    amount: debt_cum,
+                    asset: c.bid.quote.asset_id
+                },
+                price: c.bid,
+                cr: c.getRatio(),
+                included: c.consideredIfRevived
+            });
+        });
+
+        return (
+            <Table
+                style={{width: "100%"}}
+                rowKey="feedCollBid"
+                columns={columns}
+                dataSource={dataSource}
+                pagination={{
+                    pageSize: Number(25)
+                }}
+                locale={{
+                    emptyText: (
+                        <Translate content="explorer.asset.collateral_bid.empty" />
+                    )
+                }}
+            />
+        );
+    }
+
+    _setFeedTab(tab) {
+        this.setState({
+            activeFeedTab: tab
+        });
+    }
+
+    _setAssetTab(tab) {
+        this.setState({
+            activeAssetTab: tab
+        });
+    }
+
+    renderFeedTables(asset) {
+        var bitAsset = asset.bitasset;
+        if (
+            !("feeds" in bitAsset) ||
+            bitAsset.feeds.length == 0 ||
+            bitAsset.is_prediction_market ||
+            !bitAsset.feeds.length
+        ) {
+            return null;
+        }
+
+        let isGlobalSettlement = bitAsset.settlement_fund > 0 ? true : false;
+
+        return (
+            <Tabs
+                onChange={this._setFeedTab.bind(this)}
+                activeKey={this.state.activeFeedTab}
+            >
+                <Tabs.TabPane
+                    tab={counterpart.translate(
+                        isGlobalSettlement
+                            ? "explorer.asset.collateral_bid.title"
+                            : "explorer.asset.margin_positions.title"
+                    )}
+                    key="margin"
+                >
+                    {this.state.activeFeedTab == "margin"
+                        ? isGlobalSettlement
+                            ? this._renderCollBidTable()
+                            : this._renderMarginTable()
+                        : null}
+                </Tabs.TabPane>
+                <Tabs.TabPane
+                    tab={counterpart.translate(
+                        "explorer.asset.price_feed_data.title"
+                    )}
+                    key="feed"
+                >
+                    {this.state.activeFeedTab == "feed"
+                        ? this._renderFeedTable(asset)
+                        : null}
+                </Tabs.TabPane>
+            </Tabs>
+        );
+    }
+
+    renderAssetResolvePrediction(asset) {
+        return (
+            <Panel
+                header={
+                    <Translate content="account.user_issued_assets.resolve_prediction" />
+                }
+            >
+                <Translate
+                    component="p"
+                    content="account.user_issued_assets.resolve_prediction_text"
+                />
+                <AssetResolvePrediction
+                    asset={asset}
+                    account={this.props.currentAccount}
+                />
+            </Panel>
         );
     }
 
     render() {
+        if (this.props.backingAsset === null) {
+            return <Page404 subtitle="asset_not_found_subtitle" />;
+        }
+        if (!this.props.backingAsset.get || !this.props.coreAsset.get) {
+            return null;
+        }
+
         var asset = this.props.asset.toJS();
-        var sortedCallOrders = this.getMarginPositions();
-        var sortedCollateralBids = this.getCollateralBids();
         var priceFeed =
             "bitasset" in asset ? this.renderPriceFeed(asset) : null;
         var priceFeedData =
-            "bitasset" in asset
-                ? this.renderMarginPositions(
-                      asset,
-                      sortedCallOrders,
-                      sortedCollateralBids
-                  )
-                : null;
+            "bitasset" in asset ? this.renderFeedTables(asset) : null;
 
         return (
             <div className="grid-container asset-page">
@@ -1884,13 +2111,16 @@ class Asset extends React.Component {
                         </div>
 
                         <Tabs
-                            setting="assetDataTabs"
+                            onChange={this._setAssetTab.bind(this)}
+                            activeKey={this.state.activeAssetTab}
                             className="grid-block vertical"
-                            tabsClass="bordered-header content-block"
-                            contentClass="tab-no-background"
-                            segmented={false}
                         >
-                            <Tab title="explorer.asset.info">
+                            <Tabs.TabPane
+                                tab={counterpart.translate(
+                                    "explorer.asset.info"
+                                )}
+                                key="info"
+                            >
                                 <div
                                     className="grid-block vertical large-horizontal medium-up-1 large-up-2"
                                     style={{paddingTop: "1rem"}}
@@ -1898,52 +2128,53 @@ class Asset extends React.Component {
                                     <div className="grid-content small-no-padding">
                                         {this.renderSummary(asset)}
                                     </div>
+                                    <div>
+                                        <Collapse className="asset-collapse">
+                                            {this.renderPermissions(asset)}
 
-                                    <div className="grid-content small-no-padding">
-                                        {this.renderPermissions(asset)}
+                                            {this.renderFeePool(asset)}
+
+                                            {priceFeed
+                                                ? this.renderPriceFeed(asset)
+                                                : null}
+
+                                            {priceFeed
+                                                ? this.renderSettlement(asset)
+                                                : null}
+
+                                            {this.state.showCollateralBidInInfo
+                                                ? this.renderCollateralBid(
+                                                      asset
+                                                  )
+                                                : null}
+                                        </Collapse>
                                     </div>
-
-                                    <div className="grid-content small-no-padding">
-                                        {this.renderFeePool(asset)}
-                                    </div>
-
-                                    {priceFeed ? (
-                                        <div className="grid-content small-no-padding">
-                                            {this.renderPriceFeed(asset)}
-                                        </div>
-                                    ) : null}
-
-                                    {priceFeed ? (
-                                        <div className="grid-content small-no-padding">
-                                            {this.renderSettlement(asset)}
-                                        </div>
-                                    ) : null}
-
-                                    {this.state.showCollateralBidInInfo ? (
-                                        <div className="grid-content small-no-padding">
-                                            {this.renderCollateralBid(asset)}
-                                        </div>
-                                    ) : null}
                                 </div>
                                 {priceFeedData ? priceFeedData : null}
-                            </Tab>
-                            <Tab title="explorer.asset.actions">
-                                <div
-                                    className="grid-block vertical large-horizontal medium-up-1 large-up-2"
-                                    style={{paddingTop: "1rem"}}
-                                >
+                            </Tabs.TabPane>
+                            <Tabs.TabPane
+                                tab={counterpart.translate(
+                                    "explorer.asset.actions"
+                                )}
+                                key="actions"
+                            >
+                                <Collapse className="asset-collapse">
                                     {this.renderFeePoolFunding(asset)}
                                     {this.renderFeePoolClaiming(asset)}
                                     {this.renderFeesClaiming(asset)}
                                     {this.renderAssetOwnerUpdate(asset)}
                                     {"bitasset" in asset &&
-                                    !asset.bitasset.is_prediction_market
-                                        ? this.renderFeedPublish(asset)
-                                        : null}
-                                    {sortedCollateralBids.length > 0 &&
+                                        !asset.bitasset.is_prediction_market &&
+                                        this.renderFeedPublish(asset)}
+                                    {this.state.collateralBids.length > 0 &&
                                         this.renderCollateralBid(asset)}
-                                </div>
-                            </Tab>
+                                    {"bitasset" in asset &&
+                                        asset.bitasset.is_prediction_market &&
+                                        this.renderAssetResolvePrediction(
+                                            asset
+                                        )}
+                                </Collapse>
+                            </Tabs.TabPane>
                         </Tabs>
                     </div>
                 </div>
@@ -1969,13 +2200,16 @@ Asset = connect(
 );
 
 Asset = AssetWrapper(Asset, {
-    propNames: ["backingAsset"]
+    propNames: ["backingAsset", "coreAsset"]
 });
 
 class AssetContainer extends React.Component {
     render() {
         if (this.props.asset === null) {
             return <Page404 subtitle="asset_not_found_subtitle" />;
+        }
+        if (!this.props.asset.get) {
+            return null;
         }
         let backingAsset = this.props.asset.has("bitasset")
             ? this.props.asset.getIn([
@@ -1984,7 +2218,13 @@ class AssetContainer extends React.Component {
                   "short_backing_asset"
               ])
             : "1.3.0";
-        return <Asset {...this.props} backingAsset={backingAsset} />;
+        return (
+            <Asset
+                {...this.props}
+                backingAsset={backingAsset}
+                coreAsset={"1.3.0"}
+            />
+        );
     }
 }
 AssetContainer = AssetWrapper(AssetContainer, {

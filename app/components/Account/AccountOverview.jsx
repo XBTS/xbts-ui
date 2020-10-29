@@ -2,7 +2,6 @@ import React from "react";
 import Immutable from "immutable";
 import Translate from "react-translate-component";
 import TotalBalanceValue from "../Utility/TotalBalanceValue";
-import AssetName from "../Utility/AssetName";
 import MarginPositionsTable from "./MarginPositionsTable";
 import {RecentTransactions} from "./RecentTransactions";
 import Proposals from "components/Account/Proposals";
@@ -18,37 +17,30 @@ import BalanceWrapper from "./BalanceWrapper";
 import AccountTreemap from "./AccountTreemap";
 import AssetWrapper from "../Utility/AssetWrapper";
 import AccountPortfolioList from "./AccountPortfolioList";
-import {Input, Icon, Switch} from "bitshares-ui-style-guide";
+import {Input, Icon, Switch, Tooltip, Button} from "bitshares-ui-style-guide";
+import counterpart from "counterpart";
+import SearchInput from "../Utility/SearchInput";
 
 class AccountOverview extends React.Component {
     constructor(props) {
-        super();
+        super(props);
         this.state = {
-            sortKey: props.viewSettings.get("portfolioSort", "totalValue"),
-            sortDirection: props.viewSettings.get(
-                "portfolioSortDirection",
-                true
-            ), // alphabetical A -> B, numbers high to low
             shownAssets: props.viewSettings.get("shownAssets", "active"),
             alwaysShowAssets: [
                 "BTS"
                 // "USD",
-                // "CNY",
-                // "OPEN.BTC",
-                // "OPEN.USDT",
-                // "OPEN.ETH",
-                // "OPEN.MAID",
-                // "OPEN.STEEM",
-                // "OPEN.DASH"
+                // "CNY"
             ],
-            hideFishingProposals: true
+            hideFishingProposals: true,
+            question1: false,
+            question2: false,
+            question3: false
         };
 
         this._handleFilterInput = this._handleFilterInput.bind(this);
     }
 
     _handleFilterInput(e) {
-        e.preventDefault();
         this.setState({
             filterValue: e.target.value
         });
@@ -79,10 +71,12 @@ class AccountOverview extends React.Component {
         return (
             !utils.are_equal_shallow(nextProps.balances, this.props.balances) ||
             nextProps.account !== this.props.account ||
+            nextProps.isMyAccount !== this.props.isMyAccount ||
             nextProps.settings !== this.props.settings ||
             nextProps.hiddenAssets !== this.props.hiddenAssets ||
             !utils.are_equal_shallow(nextState, this.state) ||
-            this.state.filterValue !== nextState.filterValue
+            this.state.filterValue !== nextState.filterValue ||
+            this.state.enabledColumns !== nextState.enabledColumns
         );
     }
 
@@ -95,144 +89,35 @@ class AccountOverview extends React.Component {
         });
     }
 
-    _toggleSortOrder(key) {
-        if (this.state.sortKey === key) {
-            SettingsActions.changeViewSetting({
-                portfolioSortDirection: !this.state.sortDirection
-            });
-            this.setState({
-                sortDirection: !this.state.sortDirection
-            });
-        } else {
-            SettingsActions.changeViewSetting({
-                portfolioSort: key
-            });
-            this.setState({
-                sortDirection: false,
-                sortKey: key
-            });
-        }
-    }
     _toggleHideProposal() {
         this.setState({
             hideFishingProposals: !this.state.hideFishingProposals
         });
     }
 
-    getHeader() {
-        let {settings} = this.props;
-        let {shownAssets} = this.state;
+    _toggleQ1() {
+        this.setState({
+            question1: !this.state.question1
+        });
+    }
 
-        const preferredUnit =
-            settings.get("unit") || this.props.core_asset.get("symbol");
-        const showAssetPercent = settings.get("showAssetPercent", false);
+    _toggleQ2() {
+        this.setState({
+            question2: !this.state.question2
+        });
+    }
 
-        return (
-            <tr>
-                <th
-                    style={{textAlign: "left"}}
-                    className={cnames("clickable is-sortable", {
-                        "is-active": this.state.sortKey === "alphabetic"
-                    })}
-                    onClick={this._toggleSortOrder.bind(this, "alphabetic")}
-                >
-                    <Translate component="span" content="account.asset" />
-                </th>
-                <th
-                    onClick={this._toggleSortOrder.bind(this, "qty")}
-                    className={cnames("clickable is-sortable", {
-                        "is-active": this.state.sortKey === "qty"
-                    })}
-                    style={{textAlign: "right"}}
-                >
-                    <Translate content="account.qty" />
-                </th>
-                <th
-                    onClick={this._toggleSortOrder.bind(this, "priceValue")}
-                    className={cnames(
-                        "column-hide-small clickable is-sortable",
-                        {"is-active": this.state.sortKey === "priceValue"}
-                    )}
-                    style={{textAlign: "right"}}
-                >
-                    <Translate content="exchange.price" /> (
-                    <AssetName name={preferredUnit} noTip />)
-                </th>
-                <th
-                    onClick={this._toggleSortOrder.bind(this, "changeValue")}
-                    className={cnames(
-                        "column-hide-small clickable is-sortable",
-                        {"is-active": this.state.sortKey === "changeValue"}
-                    )}
-                    style={{textAlign: "right"}}
-                >
-                    <Translate content="account.hour_24_short" />
-                </th>
-                <th
-                    onClick={this._toggleSortOrder.bind(this, "totalValue")}
-                    style={{textAlign: "right"}}
-                    className={cnames(
-                        "column-hide-small clickable is-sortable",
-                        {"is-active": this.state.sortKey === "totalValue"}
-                    )}
-                >
-                    <TranslateWithLinks
-                        noLink
-                        string="account.eq_value_header"
-                        keys={[
-                            {
-                                type: "asset",
-                                value: preferredUnit,
-                                arg: "asset"
-                            }
-                        ]}
-                        noTip
-                    />
-                </th>
-                {showAssetPercent ? (
-                    <th
-                        style={{
-                            textAlign: "right"
-                        }}
-                    >
-                        <Translate component="span" content="account.percent" />
-                    </th>
-                ) : null}
-                <th>
-                    <Translate content="header.payments" />
-                </th>
-                <th>
-                    <Translate content="exchange.buy" />
-                </th>
-                <th>
-                    <Translate content="modal.deposit.submit" />
-                </th>
-                <th>
-                    <Translate content="modal.withdraw.submit" />
-                </th>
-                <th>
-                    <Translate content="account.trade" />
-                </th>
-                <th>
-                    <Translate content="exchange.borrow_short" />
-                </th>
-                <th>
-                    <Translate content="account.settle" />
-                </th>
-                <th className="column-hide-small">
-                    <Translate content="modal.reserve.submit" />
-                </th>
-                <th className="column-hide-small">
-                    <Translate
-                        content={
-                            shownAssets == "active"
-                                ? "exchange.hide"
-                                : "account.perm.show"
-                        }
-                    />
-                </th>
-            </tr>
-        );
+    _toggleQ3() {
+        this.setState({
+            question3: !this.state.question3
+        });
+    }
+
+    _showProposals() {
+        SettingsActions.changeSetting({
+            setting: "showProposedTx",
+            value: true
+        });
     }
 
     render() {
@@ -243,12 +128,16 @@ class AccountOverview extends React.Component {
             return null;
         }
 
-        const preferredUnit =
-            settings.get("unit") || this.props.core_asset.get("symbol");
+        const preferredUnit = !settings.get("unit")
+            ? this.props.core_asset.get("symbol")
+            : settings.get("unit");
 
         let call_orders = [],
             collateral = {},
             debt = {};
+
+        // Request all balance objects for dashboard view
+        ChainStore.requestAllDataForAccount(account.toJS().id, "balance");
 
         if (account.toJS && account.has("call_orders"))
             call_orders = account.get("call_orders").toJS();
@@ -385,31 +274,15 @@ class AccountOverview extends React.Component {
         );
 
         const includedPortfolioBalance = (
-            <tr key="portfolio" className="total-value">
-                <td colSpan="2" style={{textAlign: "left"}}>
-                    {totalValueText}
-                </td>
-                <td className="column-hide-small" />
-                <td className="column-hide-small" />
-                <td style={{textAlign: "right"}}>
-                    {portfolioActiveAssetsBalance}
-                </td>
-                <td colSpan="9" />
-            </tr>
+            <span key="portfolio" className="total-value">
+                {totalValueText}: {portfolioActiveAssetsBalance}
+            </span>
         );
 
         const hiddenPortfolioBalance = (
-            <tr key="portfolio" className="total-value">
-                <td colSpan="2" style={{textAlign: "left"}}>
-                    {totalValueText}
-                </td>
-                <td className="column-hide-small" />
-                <td className="column-hide-small" />
-                <td style={{textAlign: "right"}}>
-                    {portfolioHiddenAssetsBalance}
-                </td>
-                <td colSpan="9" />
-            </tr>
+            <span key="portfolio" className="total-value">
+                {totalValueText}: {portfolioHiddenAssetsBalance}
+            </span>
         );
 
         includedPortfolioList = (
@@ -425,12 +298,11 @@ class AccountOverview extends React.Component {
                 hiddenAssets={hiddenAssets}
                 orders={orders}
                 account={this.props.account}
-                sortKey={this.state.sortKey}
-                sortDirection={this.state.sortDirection}
                 isMyAccount={this.props.isMyAccount}
                 balances={this.props.balances}
-                header={this.getHeader()}
                 extraRow={includedPortfolioBalance}
+                viewSettings={this.props.viewSettings}
+                callOrders={call_orders}
             />
         );
 
@@ -447,12 +319,11 @@ class AccountOverview extends React.Component {
                 hiddenAssets={hiddenAssets}
                 orders={orders}
                 account={this.props.account}
-                sortKey={this.state.sortKey}
-                sortDirection={this.state.sortDirection}
                 isMyAccount={this.props.isMyAccount}
                 balances={this.props.balances}
-                header={this.getHeader()}
                 extraRow={hiddenPortfolioBalance}
+                viewSettings={this.props.viewSettings}
+                enabledColumns={this.state.enabledColumns}
             />
         );
 
@@ -477,18 +348,16 @@ class AccountOverview extends React.Component {
                             >
                                 <div className="header-selector">
                                     <div className="filter inline-block">
-                                        <Input
-                                            type="text"
-                                            placeholder="Filter..."
+                                        <SearchInput
+                                            value={this.state.filterValue}
                                             onChange={this._handleFilterInput}
-                                            addonAfter={<Icon type="search" />}
                                         />
                                     </div>
                                     <div
                                         className="selector inline-block"
                                         style={{
                                             position: "relative",
-                                            top: "6px"
+                                            top: "8px"
                                         }}
                                     >
                                         <div
@@ -567,21 +436,14 @@ class AccountOverview extends React.Component {
                                 subText={ordersValue}
                             >
                                 <AccountOrders {...this.props}>
-                                    <tr className="total-value">
-                                        <td
-                                            colSpan="8"
-                                            style={{textAlign: "right"}}
-                                        >
+                                    <div className="total-value">
+                                        <span className="text">
                                             {totalValueText}
-                                        </td>
-                                        <td
-                                            colSpan="1"
-                                            style={{textAlign: "right"}}
-                                        >
+                                        </span>
+                                        <span className="value">
                                             {ordersValue}
-                                        </td>
-                                        {this.props.isMyAccount ? <td /> : null}
-                                    </tr>
+                                        </span>
+                                    </div>
                                 </AccountOrders>
                             </Tab>
 
@@ -641,36 +503,147 @@ class AccountOverview extends React.Component {
                             </Tab>
 
                             {account.get("proposals") &&
-                            account.get("proposals").size ? (
-                                <Tab
-                                    title="explorer.proposals.title"
-                                    subText={String(
-                                        account.get("proposals")
-                                            ? account.get("proposals").size
-                                            : 0
-                                    )}
-                                >
-                                    <div>
-                                        <Switch
-                                            style={{margin: 16}}
-                                            checked={
-                                                this.state.hideFishingProposals
-                                            }
-                                            onChange={this._toggleHideProposal.bind(
-                                                this
-                                            )}
-                                        />
-                                        <Translate content="account.deactivate_suspicious_proposals" />
-                                    </div>
-                                    <Proposals
-                                        className="dashboard-table"
-                                        account={account}
-                                        hideFishingProposals={
-                                            this.state.hideFishingProposals
-                                        }
-                                    />
-                                </Tab>
-                            ) : null}
+                                account.get("proposals").size && (
+                                    <Tab
+                                        title="explorer.proposals.title"
+                                        subText={String(
+                                            account.get("proposals")
+                                                ? account.get("proposals").size
+                                                : 0
+                                        )}
+                                    >
+                                        {this.props.settings.get(
+                                            "showProposedTx"
+                                        ) && (
+                                            <div
+                                                onClick={this._toggleHideProposal.bind(
+                                                    this
+                                                )}
+                                                style={{cursor: "pointer"}}
+                                            >
+                                                <Tooltip
+                                                    title={counterpart.translate(
+                                                        "tooltip.propose_unhide"
+                                                    )}
+                                                    placement="bottom"
+                                                >
+                                                    <Switch
+                                                        style={{margin: 16}}
+                                                        checked={
+                                                            this.state
+                                                                .hideFishingProposals
+                                                        }
+                                                        onChange={this._toggleHideProposal.bind(
+                                                            this
+                                                        )}
+                                                    />
+                                                    <Translate content="account.deactivate_suspicious_proposals" />
+                                                </Tooltip>
+                                            </div>
+                                        )}
+                                        {this.props.settings.get(
+                                            "showProposedTx"
+                                        ) && (
+                                            <Proposals
+                                                className="dashboard-table"
+                                                account={account}
+                                                hideFishingProposals={
+                                                    this.state
+                                                        .hideFishingProposals
+                                                }
+                                            />
+                                        )}
+                                        {!this.props.settings.get(
+                                            "showProposedTx"
+                                        ) && (
+                                            <div className="padding">
+                                                <div>
+                                                    <Translate content="account.proposed_transactions.advanced_feature" />
+                                                    :
+                                                </div>
+                                                <br />
+                                                <br />
+                                                <div>
+                                                    <Translate content="account.proposed_transactions.question1" />
+                                                    <Switch
+                                                        style={{margin: 16}}
+                                                        checked={
+                                                            this.state.question1
+                                                        }
+                                                        onChange={this._toggleQ1.bind(
+                                                            this
+                                                        )}
+                                                        checkedChildren={"Yes"}
+                                                        unCheckedChildren={"No"}
+                                                    />
+                                                </div>
+                                                {this.state.question1 && (
+                                                    <div>
+                                                        <Translate content="account.proposed_transactions.question2" />
+                                                        <Switch
+                                                            style={{margin: 16}}
+                                                            checked={
+                                                                this.state
+                                                                    .question2
+                                                            }
+                                                            onChange={this._toggleQ2.bind(
+                                                                this
+                                                            )}
+                                                            checkedChildren={
+                                                                "Yes"
+                                                            }
+                                                            unCheckedChildren={
+                                                                "No"
+                                                            }
+                                                        />
+                                                    </div>
+                                                )}
+                                                {this.state.question2 && (
+                                                    <div>
+                                                        <Translate content="account.proposed_transactions.question3" />
+                                                        <Switch
+                                                            style={{margin: 16}}
+                                                            checked={
+                                                                this.state
+                                                                    .question3
+                                                            }
+                                                            onChange={this._toggleQ3.bind(
+                                                                this
+                                                            )}
+                                                            checkedChildren={
+                                                                "Yes"
+                                                            }
+                                                            unCheckedChildren={
+                                                                "No"
+                                                            }
+                                                        />
+                                                    </div>
+                                                )}
+                                                <br />
+                                                {this.state.question3 && (
+                                                    <div
+                                                        style={{
+                                                            marginTop: 16,
+                                                            marginBottom: 16
+                                                        }}
+                                                    >
+                                                        <Translate content="account.proposed_transactions.answered_no" />
+                                                        <Button
+                                                            style={{
+                                                                marginLeft: 16
+                                                            }}
+                                                            onClick={this._showProposals.bind(
+                                                                this
+                                                            )}
+                                                        >
+                                                            <Translate content="account.proposed_transactions.show_me_proposals" />
+                                                        </Button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </Tab>
+                                )}
                         </Tabs>
                     </div>
                 </div>

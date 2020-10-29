@@ -1,5 +1,6 @@
 import {Apis, Manager} from "bitsharesjs-ws";
 import {ChainStore} from "bitsharesjs";
+import hirestime from "hirestime";
 
 // Stores
 import iDB from "idb-instance";
@@ -405,7 +406,25 @@ class RouterTransitioner {
      * @returns list of dictionaries with keys: url, hidden, location
      */
     getAllApiServers() {
-        return SettingsStore.getState().defaults.apiServer;
+        return SettingsStore.getState().defaults.apiServer.filter(item => {
+            // Remove all but the whitelisted ones
+            let filteredApiServers = SettingsStore.getState().settings.get(
+                "filteredApiServers",
+                []
+            );
+            if (filteredApiServers.length > 0) {
+                // list may contain urls or regions
+                if (filteredApiServers.indexOf(item.url) !== -1) return true;
+                if (
+                    !!item.region &&
+                    filteredApiServers.indexOf(item.region) !== -1
+                )
+                    return true;
+                return false;
+            } else {
+                return true;
+            }
+        });
     }
 
     /**
@@ -484,9 +503,9 @@ class RouterTransitioner {
         });
 
         /*
-        * We've somehow filtered out all nodes, revert to the full list of
-        * nodes in that case
-        */
+         * We've somehow filtered out all nodes, revert to the full list of
+         * nodes in that case
+         */
         if (!filtered.length) {
             console.warn("No nodes length, returning all of them");
             return this.getAllApiServers();
@@ -559,6 +578,11 @@ class RouterTransitioner {
         if (this.isAutoSelection()) {
             tryThisNode = urls[0];
             console.log("auto selecting to " + tryThisNode);
+        }
+
+        if (!tryThisNode) {
+            // something went horribly wrong, no node to connect to
+            throw "No node to connect to found, this should not happen.";
         }
 
         // ... if insecure websocket url is used when using secure protocol
@@ -799,7 +823,7 @@ class Pinger {
         if (pingAll) {
             this._beSatisfiedWith = {instant: 0, low: 0, medium: 0};
         } else {
-            this._beSatisfiedWith = {instant: 200, low: 400, medium: 800};
+            this._beSatisfiedWith = {instant: 500, low: 800, medium: 1500};
         }
     }
 
@@ -872,7 +896,7 @@ class Pinger {
         this._callback = callbackFunc;
 
         // defaults
-        this._range = 1;
+        this._range = 3;
 
         this._pingNodesInBatches();
     }
@@ -910,10 +934,10 @@ class Pinger {
                 this._callback();
             }
         }
+
         if (continueToPing) {
-            this._connectionManager.url = this._nodeURLs[this._current];
-            this._connectionManager.urls = this._nodeURLs.slice(
-                this._current + 1,
+            let pingNow = this._nodeURLs.slice(
+                this._current,
                 this._current + this._range
             );
             let key =
@@ -936,21 +960,29 @@ class Pinger {
                     })
                 });
             }
-            this._connectionManager
-                .checkConnections()
-                .then(this._handlePingResult.bind(this))
-                .catch(err => {
-                    console.log("doLatencyUpdate error", err);
-                })
-                .finally(() => {
-                    this._current = this._current + this._range;
-                    setTimeout(this._pingNodesInBatches.bind(this), 50);
-                });
+            try {
+                let _ping = new DirectPinger(2000);
+                _ping
+                    .check(pingNow)
+                    .then(this._handlePingResult.bind(this))
+                    .catch(err => {
+                        console.log("doLatencyUpdate error", err);
+                    })
+                    .finally(() => {
+                        this._current = this._current + pingNow.length;
+                        setTimeout(this._pingNodesInBatches.bind(this), 500);
+                    });
+            } catch (err) {
+                console.error(err);
+            }
+        } else {
+            // show message for seconds, then finished
+            this._updateTransitionTarget(false);
         }
     }
 
     _updateSuitabilityCounter(res = null) {
-        for (var nodeUrl in res) {
+        for (let nodeUrl in res) {
             if (this._beSatisfiedWith != null) {
                 if (res[nodeUrl] < this._beSatisfiedWith.instant) {
                     this._counter.instant = this._counter.instant + 1;
@@ -981,6 +1013,82 @@ class Pinger {
             // build additional ping cache
             this._updateLatencies(res, true, this._localLatencyCache);
         }
+    }
+}
+
+class DirectPinger {
+    constructor(timeout) {
+        this.urls = [];
+        this.timeout = timeout;
+    }
+
+    async check(urls) {
+        urls.forEach(item => {
+            this.addURL(item);
+        });
+        try {
+            await this._runCheck();
+        } catch (err) {
+            console.error(err);
+        }
+        let _all = {};
+        this._result.forEach(item => {
+            _all[item.url] = item.latency;
+        });
+        return _all;
+    }
+
+    addURL(url) {
+        this.urls.push({
+            url: url,
+            latency: NaN
+        });
+    }
+
+    _checkURL(url) {
+        return new Promise(resolve => {
+            setTimeout(function() {
+                resolve(null);
+            }, this.timeout);
+            try {
+                let connection = new WebSocket(url);
+                connection.openTime = hirestime();
+                connection.onerror = event => {
+                    resolve(null);
+                };
+                connection.onopen = event => {
+                    connection.onmessage = function() {
+                        this.closeTime = connection.openTime(hirestime.MS);
+                        connection.close();
+                        resolve(this.closeTime);
+                    };
+                    connection.onmessage.bind(connection);
+                    connection.send(
+                        '{"id":1,"method":"call","params":[1,"login",["",""]]}'
+                    );
+                };
+            } catch (e) {
+                resolve(null);
+            }
+        });
+    }
+
+    async _runCheck() {
+        for (let i = 0; i < this.urls.length; i++) {
+            this.urls[i].latency = this._checkURL(this.urls[i].url);
+            this.urls[i].latency.then(res => {
+                this.urls[i].latency = res;
+            });
+        }
+        await Promise.all(
+            this.urls.map(x => {
+                return x.latency;
+            })
+        );
+        this.urls.sort((a, b) => {
+            return Number(a.latency) - Number(b.latency);
+        });
+        this._result = this.urls.slice();
     }
 }
 
@@ -1019,27 +1127,31 @@ class PingStrategy {
         function ping_all_from_one_region(region = null) {
             if (region == null) {
                 let bestOne = this._getNodes(this._pinger.getLocalLatencyMap());
-                region = bestOne[0].region;
+                region = bestOne && bestOne[0].region;
             }
-            this._pinger.addNodes(
-                this.getFromRegion(region).map(a => a.url),
-                false,
-                "app_init.check_latency_feedback_region"
-            );
+            if (region) {
+                this._pinger.addNodes(
+                    this.getFromRegion(region).map(a => a.url),
+                    false,
+                    "app_init.check_latency_feedback_region"
+                );
+            }
             this._pinger.pingNodes(ping_the_rest.bind(this));
         }
 
         function ping_all_from_one_country(region = null, country = null) {
             if (region == null) {
                 let bestOne = this._getNodes(this._pinger.getLocalLatencyMap());
-                region = bestOne[0].region;
-                country = bestOne[0].country;
+                region = bestOne && bestOne[0].region;
+                country = bestOne && bestOne[0].country;
             }
-            this._pinger.addNodes(
-                this.getFromRegion(region, country).map(a => a.url),
-                false,
-                "app_init.check_latency_feedback_country"
-            );
+            if (region && country) {
+                this._pinger.addNodes(
+                    this.getFromRegion(region, country).map(a => a.url),
+                    false,
+                    "app_init.check_latency_feedback_country"
+                );
+            }
             this._pinger.pingNodes(ping_all_from_one_region.bind(this));
         }
 
@@ -1114,6 +1226,13 @@ class PingStrategy {
         }
 
         countryKeys.forEach(_countryKey => {
+            if (
+                !this._nodeTree[regionKey] ||
+                !this._nodeTree[regionKey][_countryKey]
+            ) {
+                return;
+            }
+
             let allFromRegion = this._nodeTree[regionKey][_countryKey];
 
             let shuffled = randomOrder

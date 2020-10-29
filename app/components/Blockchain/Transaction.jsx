@@ -8,6 +8,7 @@ import classNames from "classnames";
 import {FormattedDate} from "react-intl";
 import Inspector from "react-json-inspector";
 import utils from "common/utils";
+import {Icon as AntIcon} from "bitshares-ui-style-guide";
 import LinkToAccountById from "../Utility/LinkToAccountById";
 import LinkToAssetById from "../Utility/LinkToAssetById";
 import FormattedPrice from "../Utility/FormattedPrice";
@@ -20,15 +21,11 @@ import {ChainTypes} from "bitsharesjs";
 let {operations} = ChainTypes;
 import ReactTooltip from "react-tooltip";
 import moment from "moment";
-import {
-    Link,
-    DirectLink,
-    Element,
-    Events,
-    animateScroll as scroll,
-    scrollSpy,
-    scroller
-} from "react-scroll";
+import {Link, DirectLink} from "react-scroll";
+import {Tooltip} from "bitshares-ui-style-guide";
+import JSONModal from "components/Modal/JSONModal";
+import asset_utils from "../../lib/common/asset_utils";
+import sanitize from "sanitize";
 
 require("./operations.scss");
 require("./json-inspector.scss");
@@ -67,7 +64,10 @@ class OpType extends React.Component {
                         {trxTypes[ops[this.props.type]]}
                     </span>
                 </td>
-                <td />
+                <td className="json-link" onClick={this.props.openJSONModal}>
+                    <AntIcon type="file-search" />
+                    <Translate component="a" content="transaction.view_json" />
+                </td>
             </tr>
         );
     }
@@ -80,22 +80,53 @@ class NoLinkDecorator extends React.Component {
 }
 
 class OperationTable extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            visible: false
+        };
+    }
+
+    openJSONModal = () => {
+        this.setState({visible: true});
+    };
+
+    closeJSONModal = () => {
+        this.setState({visible: false});
+    };
+
     render() {
-        let fee_row =
-            this.props.fee.amount > 0 ? (
-                <tr>
-                    <td>
-                        <Translate component="span" content="transfer.fee" />
-                    </td>
-                    <td>
-                        <FormattedAsset
-                            color="fee"
-                            amount={this.props.fee.amount}
-                            asset={this.props.fee.asset_id}
-                        />
-                    </td>
-                </tr>
-            ) : null;
+        const {operation} = this.props;
+        let fee_row = (
+            <tr>
+                <td>
+                    <Translate component="span" content="transfer.fee" />
+                </td>
+                <td>
+                    {operation[1].fee.amount > 0 ? (
+                        <span>
+                            <FormattedAsset
+                                color="fee"
+                                amount={operation[1].fee.amount}
+                                asset={operation[1].fee.asset_id}
+                                style={{marginRight: "10px"}}
+                            />
+                            &nbsp;&nbsp;
+                            <Icon
+                                name="question-circle"
+                                title="settings.can_change_default_fee_asset_tooltip"
+                            />
+                        </span>
+                    ) : (
+                        <label>
+                            <Translate content="transfer.free" />
+                        </label>
+                    )}
+                </td>
+            </tr>
+        );
+        const trxTypes = counterpart.translate("transaction.trxTypes");
 
         return (
             <div>
@@ -105,19 +136,31 @@ class OperationTable extends React.Component {
                     <tbody>
                         <OpType
                             txIndex={this.props.txIndex}
-                            type={this.props.type}
+                            type={operation[0]}
                             color={this.props.color}
+                            openJSONModal={this.openJSONModal}
                         />
                         {this.props.children}
                         {fee_row}
                     </tbody>
                 </table>
+                <JSONModal
+                    visible={this.state.visible}
+                    operation={operation}
+                    title={trxTypes[ops[operation[0]] || ""]}
+                    hideModal={this.closeJSONModal}
+                />
             </div>
         );
     }
 }
 
 class Transaction extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
     componentDidMount() {
         ReactTooltip.rebuild();
     }
@@ -291,18 +334,18 @@ class Transaction extends React.Component {
 
                     rows.push(
                         <tr key={key++}>
-                            <td
-                                data-place="left"
-                                data-class="tooltip-zindex"
-                                className="tooltip"
-                                data-tip={counterpart.translate(
-                                    "tooltip.buy_min"
-                                )}
-                            >
-                                <Translate
-                                    component="span"
-                                    content="exchange.buy_min"
-                                />
+                            <td>
+                                <Tooltip
+                                    placement="left"
+                                    title={counterpart.translate(
+                                        "tooltip.buy_min"
+                                    )}
+                                >
+                                    <Translate
+                                        component="span"
+                                        content="exchange.buy_min"
+                                    />
+                                </Tooltip>
                             </td>
                             <td>
                                 <FormattedAsset
@@ -1310,22 +1353,26 @@ class Transaction extends React.Component {
                             <td>
                                 <Translate
                                     component="span"
-                                    content="explorer.block.settlement_price"
+                                    content="explorer.block.feed_price"
                                 />
                             </td>
                             <td>
                                 <FormattedPrice
                                     base_asset={
-                                        feed.settlement_price.base.asset_id
+                                        asset_utils.extractRawFeedPrice(feed)
+                                            .base.asset_id
                                     }
                                     quote_asset={
-                                        feed.settlement_price.quote.asset_id
+                                        asset_utils.extractRawFeedPrice(feed)
+                                            .quote.asset_id
                                     }
                                     base_amount={
-                                        feed.settlement_price.base.amount
+                                        asset_utils.extractRawFeedPrice(feed)
+                                            .base.amount
                                     }
                                     quote_amount={
-                                        feed.settlement_price.quote.amount
+                                        asset_utils.extractRawFeedPrice(feed)
+                                            .quote.amount
                                     }
                                     noPopOver
                                 />
@@ -1712,6 +1759,7 @@ class Transaction extends React.Component {
                                 hideOpLabel={true}
                                 hideDate={true}
                                 proposal={true}
+                                collapsed={true}
                             />
                         );
                     });
@@ -1988,7 +2036,7 @@ class Transaction extends React.Component {
                                     content="explorer.workers.website"
                                 />
                             </td>
-                            <td>{op[1].url}</td>
+                            <td>{utils.sanitize(op[1].url)}</td>
                         </tr>
                     );
 
@@ -2156,7 +2204,180 @@ class Transaction extends React.Component {
                     );
 
                     break;
+                case "htlc_create":
+                    // add claim period to block time
+                    const block_time = this.props.block
+                        ? this.props.block.timestamp.getTime()
+                        : new Date().getTime();
+                    let claim_due = new Date(
+                        block_time + op[1].claim_period_seconds * 1000
+                    );
 
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate
+                                    component="span"
+                                    content="transfer.from"
+                                />
+                            </td>
+                            <td>
+                                <LinkToAccountById account={op[1].from} />
+                            </td>
+                        </tr>
+                    );
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate
+                                    component="span"
+                                    content="transfer.to"
+                                />
+                            </td>
+                            <td>
+                                <LinkToAccountById account={op[1].to} />
+                            </td>
+                        </tr>
+                    );
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate
+                                    component="span"
+                                    content="transfer.amount"
+                                />
+                            </td>
+                            <td>
+                                <FormattedAsset
+                                    amount={op[1].amount.amount}
+                                    asset={op[1].amount.asset_id}
+                                />
+                            </td>
+                        </tr>
+                    );
+
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate
+                                    component="span"
+                                    content="htlc.claim_period_due"
+                                />
+                            </td>
+                            <td>
+                                <FormattedDate
+                                    value={claim_due}
+                                    format="full"
+                                />
+                            </td>
+                        </tr>
+                    );
+
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate
+                                    component="span"
+                                    content="htlc.preimage_hash"
+                                />
+                            </td>
+                            <td>
+                                <Tooltip
+                                    placement="bottom"
+                                    title={counterpart.translate(
+                                        "htlc.preimage_hash_explanation"
+                                    )}
+                                >
+                                    <span>
+                                        {"(" +
+                                            op[1].preimage_size +
+                                            ", " +
+                                            op[1].preimage_hash[0] +
+                                            "): " +
+                                            op[1].preimage_hash[1]}
+                                    </span>
+                                </Tooltip>
+                            </td>
+                        </tr>
+                    );
+
+                    break;
+                case "htlc_redeem":
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate component="span" content="htlc.id" />
+                            </td>
+                            <td>
+                                <span>{op[1].htlc_id}</span>
+                            </td>
+                        </tr>
+                    );
+
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate
+                                    component="span"
+                                    content="htlc.redeemer"
+                                />
+                            </td>
+                            <td>{this.linkToAccount(op[1].redeemer)}</td>
+                        </tr>
+                    );
+
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate
+                                    component="span"
+                                    content="htlc.preimage"
+                                />
+                            </td>
+                            <td>{this.linkToAccount(op[1].preimage)}</td>
+                        </tr>
+                    );
+
+                    break;
+                case "htlc_extend":
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate component="span" content="htlc.id" />
+                            </td>
+                            <td>
+                                <span>{op[1].htlc_id}</span>
+                            </td>
+                        </tr>
+                    );
+
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate
+                                    component="span"
+                                    content="htlc.update_issuer"
+                                />
+                            </td>
+                            <td>{this.linkToAccount(op[1].update_issuer)}</td>
+                        </tr>
+                    );
+
+                    rows.push(
+                        <tr key={key++}>
+                            <td>
+                                <Translate
+                                    component="span"
+                                    content="htlc.seconds_to_add"
+                                />
+                            </td>
+                            <td>
+                                <span>{op[1].seconds_to_add}</span>
+                            </td>
+                        </tr>
+                    );
+
+                    break;
                 default:
                     console.log("unimplemented tx op:", op);
 
@@ -2183,8 +2404,7 @@ class Transaction extends React.Component {
                     opCount={opCount}
                     index={opIndex}
                     color={color}
-                    type={op[0]}
-                    fee={op[1].fee}
+                    operation={op}
                 >
                     {rows}
                 </OperationTable>

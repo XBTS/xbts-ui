@@ -1,381 +1,58 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {Link} from "react-router-dom";
-import counterpart from "counterpart";
 import Ps from "perfect-scrollbar";
 import OpenSettleOrders from "./OpenSettleOrders";
-import utils from "common/utils";
+import MarketsActions from "actions/MarketsActions";
 import Translate from "react-translate-component";
-import PriceText from "../Utility/PriceText";
 import TransitionWrapper from "../Utility/TransitionWrapper";
 import SettingsActions from "actions/SettingsActions";
-import AssetName from "../Utility/AssetName";
-import Icon from "../Icon/Icon";
 import {ChainStore} from "bitsharesjs";
 import {LimitOrder, CallOrder} from "common/MarketClasses";
-import {EquivalentValueComponent} from "../Utility/EquivalentValueComponent";
-import {MarketPrice} from "../Utility/MarketPrice";
-import FormattedPrice from "../Utility/FormattedPrice";
-const leftAlign = {textAlign: "left"};
-const rightAlign = {textAlign: "right"};
-const centerAlign = {textAlign: "center"};
 import ReactTooltip from "react-tooltip";
+import {Button} from "bitshares-ui-style-guide";
+import {MarketsOrderView, MarketOrdersRowView} from "./View/MarketOrdersView";
 
-class TableHeader extends React.Component {
-    render() {
-        let {
-            baseSymbol,
-            quoteSymbol,
-            dashboard,
-            isMyAccount,
-            leftAlign
-        } = this.props;
-
-        return !dashboard ? (
-            <thead>
-                <tr>
-                    <th style={leftAlign ? leftAlign : rightAlign}>
-                        <Translate
-                            className="header-sub-title"
-                            content="exchange.price"
-                        />
-                    </th>
-                    <th style={leftAlign ? leftAlign : rightAlign}>
-                        {baseSymbol ? (
-                            <span className="header-sub-title">
-                                <AssetName dataPlace="top" name={quoteSymbol} />
-                            </span>
-                        ) : null}
-                    </th>
-                    <th style={leftAlign ? leftAlign : rightAlign}>
-                        {baseSymbol ? (
-                            <span className="header-sub-title">
-                                <AssetName dataPlace="top" name={baseSymbol} />
-                            </span>
-                        ) : null}
-                    </th>
-                    <th style={leftAlign ? leftAlign : rightAlign}>
-                        <Translate
-                            className="header-sub-title"
-                            content="transaction.expiration"
-                        />
-                    </th>
-                    <th style={{width: "6%"}} />
-                </tr>
-            </thead>
-        ) : (
-            <tr>
-                {isMyAccount ? (
-                    <th id="cancelAllOrders" style={{cursor: "pointer"}}>
-                        <Translate content="wallet.cancel" />
-                    </th>
-                ) : null}
-                <th>
-                    <Translate content="account.trade" />
-                </th>
-                <th style={leftAlign}>
-                    <Translate content="transaction.order_id" />
-                </th>
-                <th style={leftAlign} colSpan="4">
-                    <Translate content="exchange.description" />
-                </th>
-                <th style={leftAlign}>
-                    <Translate content="exchange.price" />
-                </th>
-                <th style={leftAlign}>
-                    <Translate content="exchange.price_market" />
-                </th>
-                <th style={{textAlign: "right"}}>
-                    <Translate content="exchange.value" />
-                </th>
-            </tr>
-        );
-    }
-}
-
-TableHeader.defaultProps = {
-    quoteSymbol: null,
-    baseSymbol: null
-};
-
-class OrderRow extends React.Component {
+class MarketOrdersRow extends React.Component {
     shouldComponentUpdate(nextProps) {
         return (
             nextProps.order.for_sale !== this.props.order.for_sale ||
             nextProps.order.id !== this.props.order.id ||
             nextProps.quote !== this.props.quote ||
             nextProps.base !== this.props.base ||
-            nextProps.order.market_base !== this.props.order.market_base
+            nextProps.order.market_base !== this.props.order.market_base ||
+            nextProps.selected !== this.props.selected
         );
     }
 
     render() {
-        let {
-            base,
-            quote,
-            order,
-            showSymbols,
-            dashboard,
-            isMyAccount,
-            settings
-        } = this.props;
-        const isBid = order.isBid();
-        const isCall = order.isCall();
-        let tdClass = isCall
-            ? "orderHistoryCall"
-            : isBid
-                ? "orderHistoryBid"
-                : "orderHistoryAsk";
+        let {base, quote, order, selected} = this.props;
 
-        let priceSymbol = showSymbols ? (
-            <span>{` ${base.get("symbol")}/${quote.get("symbol")}`}</span>
-        ) : null;
-        let valueSymbol = showSymbols ? " " + base.get("symbol") : null;
-        let amountSymbol = showSymbols ? " " + quote.get("symbol") : null;
-        let preferredUnit = settings ? settings.get("unit") : "1.3.0";
-        let quoteColor = !isBid ? "value negative" : "value positive";
-        let baseColor = isBid ? "value negative" : "value positive";
-
-        return !dashboard ? (
-            <tr key={order.id}>
-                <td className={tdClass} style={{paddingLeft: 10}}>
-                    <PriceText
-                        price={order.getPrice()}
-                        base={base}
-                        quote={quote}
-                    />
-                    {priceSymbol}
-                </td>
-                <td>
-                    {utils.format_number(
-                        order[
-                            !isBid ? "amountForSale" : "amountToReceive"
-                        ]().getAmount({real: true}),
-                        quote.get("precision")
-                    )}{" "}
-                    {amountSymbol}
-                </td>
-                <td>
-                    {utils.format_number(
-                        order[
-                            !isBid ? "amountToReceive" : "amountForSale"
-                        ]().getAmount({real: true}),
-                        base.get("precision")
-                    )}{" "}
-                    {valueSymbol}
-                </td>
-                <td
-                    style={{
-                        width: "25%",
-                        textAlign: "right",
-                        whiteSpace: "nowrap"
-                    }}
-                    className="tooltip"
-                    data-tip={order.expiration.toLocaleString()}
-                >
-                    {isCall
-                        ? null
-                        : counterpart.localize(new Date(order.expiration), {
-                              type: "date",
-                              format: "short_custom"
-                          })}
-                </td>
-                <td className="text-center" style={{width: "6%"}}>
-                    {isCall ? null : (
-                        <a
-                            style={{marginRight: 0}}
-                            className="order-cancel"
-                            onClick={this.props.onCancel}
-                        >
-                            <Icon
-                                name="cross-circle"
-                                title="icons.cross_circle.cancel_order"
-                                className="icon-14px"
-                            />
-                        </a>
-                    )}
-                </td>
-            </tr>
-        ) : (
-            <tr key={order.id} className="clickable">
-                {isMyAccount ? (
-                    <td className="text-center">
-                        {isCall ? null : (
-                            <span
-                                style={{marginRight: 0}}
-                                className="order-cancel"
-                            >
-                                <input
-                                    type="checkbox"
-                                    className="orderCancel"
-                                    onChange={this.props.onCheckCancel}
-                                />
-                            </span>
-                        )}
-                    </td>
-                ) : null}
-                <td>
-                    <Link
-                        to={`/market/${quote.get("symbol")}_${base.get(
-                            "symbol"
-                        )}`}
-                    >
-                        <Icon
-                            name="trade"
-                            title="icons.trade.trade"
-                            className="icon-14px"
-                        />
-                    </Link>
-                </td>
-                <td style={leftAlign}>#{order.id.substring(4)}</td>
-                <td colSpan="4" style={leftAlign} onClick={this.props.onFlip}>
-                    {isBid ? (
-                        <Translate
-                            content="exchange.buy_description"
-                            baseAsset={utils.format_number(
-                                order[
-                                    isBid ? "amountToReceive" : "amountForSale"
-                                ]().getAmount({real: true}),
-                                base.get("precision"),
-                                false
-                            )}
-                            quoteAsset={utils.format_number(
-                                order[
-                                    isBid ? "amountForSale" : "amountToReceive"
-                                ]().getAmount({real: true}),
-                                quote.get("precision"),
-                                false
-                            )}
-                            baseName={
-                                <AssetName
-                                    noTip
-                                    customClass={quoteColor}
-                                    name={quote.get("symbol")}
-                                />
-                            }
-                            quoteName={
-                                <AssetName
-                                    noTip
-                                    customClass={baseColor}
-                                    name={base.get("symbol")}
-                                />
-                            }
-                        />
-                    ) : (
-                        <Translate
-                            content="exchange.sell_description"
-                            baseAsset={utils.format_number(
-                                order[
-                                    isBid ? "amountToReceive" : "amountForSale"
-                                ]().getAmount({real: true}),
-                                base.get("precision"),
-                                false
-                            )}
-                            quoteAsset={utils.format_number(
-                                order[
-                                    isBid ? "amountForSale" : "amountToReceive"
-                                ]().getAmount({real: true}),
-                                quote.get("precision"),
-                                false
-                            )}
-                            baseName={
-                                <AssetName
-                                    noTip
-                                    customClass={quoteColor}
-                                    name={quote.get("symbol")}
-                                />
-                            }
-                            quoteName={
-                                <AssetName
-                                    noTip
-                                    customClass={baseColor}
-                                    name={base.get("symbol")}
-                                />
-                            }
-                        />
-                    )}
-                </td>
-                <td style={leftAlign} onClick={this.props.onFlip}>
-                    <FormattedPrice
-                        base_amount={order.sellPrice().base.amount}
-                        base_asset={order.sellPrice().base.asset_id}
-                        quote_amount={order.sellPrice().quote.amount}
-                        quote_asset={order.sellPrice().quote.asset_id}
-                        force_direction={base.get("symbol")}
-                        hide_symbols
-                    />
-                </td>
-                <td style={leftAlign} onClick={this.props.onFlip}>
-                    {isBid ? (
-                        <MarketPrice
-                            base={base.get("id")}
-                            quote={quote.get("id")}
-                            force_direction={base.get("symbol")}
-                            hide_symbols
-                            hide_asset
-                        />
-                    ) : (
-                        <MarketPrice
-                            base={base.get("id")}
-                            quote={quote.get("id")}
-                            force_direction={base.get("symbol")}
-                            hide_symbols
-                            hide_asset
-                        />
-                    )}
-                </td>
-                <td style={{textAlign: "right"}} onClick={this.props.onFlip}>
-                    <EquivalentValueComponent
-                        hide_asset
-                        amount={order.amountForSale().getAmount()}
-                        fromAsset={order.amountForSale().asset_id}
-                        noDecimals={true}
-                        toAsset={preferredUnit}
-                    />{" "}
-                    <AssetName name={preferredUnit} />
-                </td>
-            </tr>
+        return (
+            <MarketOrdersRowView
+                key={order.id}
+                order={order}
+                selected={selected}
+                base={base}
+                quote={quote}
+                onCheckCancel={this.props.onCheckCancel.bind(this)}
+            />
         );
     }
 }
 
-OrderRow.defaultProps = {
-    showSymbols: false
-};
-
-class MyOpenOrders extends React.Component {
+class MarketOrders extends React.Component {
     constructor(props) {
         super();
         this.state = {
             activeTab: props.activeTab,
             rowCount: 20,
-            showAll: false
+            showAll: false,
+            selectedOrders: []
         };
         this._getOrders = this._getOrders.bind(this);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.activeTab !== this.state.activeTab) {
-            this._changeTab(nextProps.activeTab);
-        }
-
-        if (
-            this.props.hideScrollbars &&
-            nextState.showAll != this.state.showAll
-        ) {
-            let contentContainer = this.refs.container;
-            if (!nextState.showAll) {
-                Ps.destroy(contentContainer);
-            } else {
-                Ps.initialize(contentContainer);
-                Ps.update(contentContainer);
-            }
-            if (this.refs.contentTransition) {
-                this.refs.contentTransition.resetAnimation();
-            }
-            if (contentContainer) contentContainer.scrollTop = 0;
-        }
-
         return (
             nextProps.baseSymbol !== this.props.baseSymbol ||
             nextProps.quoteSymbol !== this.props.quoteSymbol ||
@@ -383,45 +60,88 @@ class MyOpenOrders extends React.Component {
             nextProps.activeTab !== this.props.activeTab ||
             nextState.activeTab !== this.state.activeTab ||
             nextState.showAll !== this.state.showAll ||
-            nextProps.currentAccount !== this.props.currentAccount
+            nextProps.currentAccount !== this.props.currentAccount ||
+            nextState.selectedOrders !== this.state.selectedOrders ||
+            nextProps.settleOrders !== this.props.settleOrders
         );
     }
 
     componentDidMount() {
         if (!this.props.hideScrollbars) {
-            let contentContainer = this.refs.container;
-            if (contentContainer) Ps.initialize(contentContainer);
+            this.updateContainer(1);
         }
     }
 
-    componentDidUpdate() {
-        if (
-            !this.props.hideScrollbars ||
-            (this.props.hideScrollbars && this.state.showAll)
-        ) {
-            let contentContainer = this.refs.container;
-            if (contentContainer) Ps.update(contentContainer);
+    componentDidUpdate(prevState) {
+        let {hideScrollbars} = this.props;
+        let {showAll} = this.state;
+
+        if (prevState.showAll != showAll) {
+            if (showAll && !hideScrollbars) {
+                this.updateContainer(2);
+            } else if (!showAll && !hideScrollbars) {
+                this.updateContainer(3);
+            } else if (showAll && hideScrollbars) {
+                this.updateContainer(1);
+            } else {
+                this.updateContainer(0);
+            }
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        let contentContainer = this.refs.container;
-
-        if (
-            nextProps.hideScrollbars !== this.props.hideScrollbars &&
-            nextProps.hideScrollbars
-        ) {
-            Ps.destroy(contentContainer);
+        if (nextProps.activeTab !== this.state.activeTab) {
+            this.changeTab(nextProps.activeTab);
         }
 
+        // Reset on Market Switch
         if (
-            nextProps.hideScrollbars !== this.props.hideScrollbars &&
-            !nextProps.hideScrollbars
+            nextProps.baseSymbol !== this.props.baseSymbol ||
+            nextProps.quoteSymbol !== this.props.quoteSymbol
         ) {
-            Ps.initialize(contentContainer);
-            this.refs.contentTransition.resetAnimation();
-            if (contentContainer) contentContainer.scrollTop = 0;
-            Ps.update(contentContainer);
+            this.setState({showAll: false});
+            this.updateContainer(0);
+
+            if (!this.props.hideScrollbars) {
+                this.updateContainer(1);
+            }
+        }
+
+        // Reset on hideScrollbars switch
+        if (nextProps.hideScrollbars !== this.props.hideScrollbars) {
+            this.updateContainer(0);
+
+            if (!nextProps.hideScrollbars) {
+                this.updateContainer(1);
+            }
+        }
+    }
+
+    /***
+     * Update PS Container
+     * type:int [0:destroy, 1:init, 2:update, 3:update w/ scrollTop] (default: 2)
+     */
+    updateContainer(type = 2) {
+        let containerNode = this.refs.view.refs.container;
+        let containerTransition = this.refs.contentTransition;
+
+        if (!containerNode) return;
+
+        if (type == 0) {
+            containerNode.scrollTop = 0;
+            Ps.destroy(containerNode);
+        } else if (type == 1) {
+            Ps.initialize(containerNode);
+            this.updateContainer(3);
+        } else if (type == 2) {
+            Ps.update(containerNode);
+        } else if (type == 3) {
+            containerNode.scrollTop = 0;
+            Ps.update(containerNode);
+        }
+
+        if (containerTransition) {
+            containerTransition.resetAnimation();
         }
     }
 
@@ -429,10 +149,75 @@ class MyOpenOrders extends React.Component {
         this.setState({
             showAll: !this.state.showAll
         });
+    }
 
-        if (this.state.showAll) {
-            this.refs.container.scrollTop = 0;
+    changeTab(tab) {
+        SettingsActions.changeViewSetting({
+            ordersTab: tab
+        });
+        this.setState({
+            activeTab: tab
+        });
+
+        // Ensure that focus goes back to top of scrollable container when tab is changed
+        this.updateContainer(3);
+
+        setTimeout(ReactTooltip.rebuild, 1000);
+    }
+
+    onCheckCancel(orderId, evt) {
+        let {selectedOrders} = this.state;
+        let checked = evt.target.checked;
+
+        if (checked) {
+            this.setState({selectedOrders: selectedOrders.concat([orderId])});
+        } else {
+            let index = selectedOrders.indexOf(orderId);
+
+            if (index > -1) {
+                this.setState({
+                    selectedOrders: selectedOrders
+                        .slice(0, index)
+                        .concat(selectedOrders.slice(index + 1))
+                });
+            }
         }
+    }
+
+    cancelSelected() {
+        this._cancelLimitOrders.call(this);
+    }
+
+    resetSelected() {
+        this.setState({selectedOrders: []});
+    }
+
+    onCancelToggle(evt) {
+        const orders = this._getOrders();
+        let selectedOrders = [];
+
+        orders.forEach(order => {
+            selectedOrders.push(order.id);
+        });
+
+        if (evt.target.checked) {
+            this.setState({selectedOrders: selectedOrders});
+        } else {
+            this.resetSelected();
+        }
+    }
+
+    _cancelLimitOrders() {
+        MarketsActions.cancelLimitOrders(
+            this.props.currentAccount.get("id"),
+            this.state.selectedOrders
+        )
+            .then(() => {
+                this.resetSelected();
+            })
+            .catch(err => {
+                console.log("cancel orders error:", err);
+            });
     }
 
     _getOrders() {
@@ -501,60 +286,21 @@ class MyOpenOrders extends React.Component {
         return limitOrders.concat(callOrders);
     }
 
-    _changeTab(tab) {
-        SettingsActions.changeViewSetting({
-            ordersTab: tab
-        });
-        this.setState({
-            activeTab: tab
-        });
-
-        // Ensure that focus goes back to top of scrollable container when tab is changed
-        let contentContainer = this.refs.container;
-        contentContainer.scrollTop = 0;
-        Ps.update(contentContainer);
-
-        setTimeout(ReactTooltip.rebuild, 1000);
-    }
-
     render() {
         let {base, quote, quoteSymbol, baseSymbol, settleOrders} = this.props;
-        let {activeTab, showAll, rowCount} = this.state;
+        let {activeTab, showAll, rowCount, selectedOrders} = this.state;
 
         if (!base || !quote) return null;
 
         let contentContainer;
         let footerContainer;
 
-        // Is asset a BitAsset with Settlements
-        let baseIsBitAsset =
-            base.get("bitasset_data_id") && settleOrders.size > 0
-                ? true
-                : false;
-        let quoteIsBitAsset =
-            quote.get("bitasset_data_id") && settleOrders.size > 0
-                ? true
-                : false;
+        /* Users Open Orders Tab (default) */
+        let totalRows = 0;
 
-        {
-            /* Users Open Orders Tab (default) */
-        }
+        // User Orders
         if (!activeTab || activeTab == "my_orders") {
             const orders = this._getOrders();
-            let emptyRow = (
-                <tr>
-                    <td
-                        style={{
-                            textAlign: "center",
-                            lineHeight: 4,
-                            fontStyle: "italic"
-                        }}
-                        colSpan="5"
-                    >
-                        <Translate content="account.no_orders" />
-                    </td>
-                </tr>
-            );
 
             let bids = orders
                 .filter(a => {
@@ -566,13 +312,21 @@ class MyOpenOrders extends React.Component {
                 .map(order => {
                     let price = order.getPrice();
                     return (
-                        <OrderRow
+                        <MarketOrdersRow
                             price={price}
                             key={order.id}
                             order={order}
                             base={base}
                             quote={quote}
+                            selected={
+                                this.state.selectedOrders.length > 0 &&
+                                this.state.selectedOrders.includes(order.id)
+                            }
                             onCancel={this.props.onCancel.bind(this, order.id)}
+                            onCheckCancel={this.onCheckCancel.bind(
+                                this,
+                                order.id
+                            )}
                         />
                     );
                 });
@@ -587,13 +341,21 @@ class MyOpenOrders extends React.Component {
                 .map(order => {
                     let price = order.getPrice();
                     return (
-                        <OrderRow
+                        <MarketOrdersRow
                             price={price}
                             key={order.id}
                             order={order}
                             base={base}
                             quote={quote}
+                            selected={
+                                this.state.selectedOrders.length > 0 &&
+                                this.state.selectedOrders.includes(order.id)
+                            }
                             onCancel={this.props.onCancel.bind(this, order.id)}
+                            onCheckCancel={this.onCheckCancel.bind(
+                                this,
+                                order.id
+                            )}
                         />
                     );
                 });
@@ -612,10 +374,34 @@ class MyOpenOrders extends React.Component {
                 return a.props.price - b.props.price;
             });
 
-            let rowsLength = rows.length;
-            if (!showAll) {
+            totalRows = rows.length;
+
+            if (totalRows > 0 && !showAll) {
                 rows.splice(rowCount, rows.length);
             }
+
+            let emptyRow = (
+                <tr>
+                    <td
+                        style={{
+                            textAlign: "center",
+                            lineHeight: 4,
+                            fontStyle: "italic"
+                        }}
+                        colSpan="5"
+                    >
+                        <Translate content="account.no_orders" />
+                    </td>
+                </tr>
+            );
+
+            let cancelOrderButton = (
+                <div style={{display: "grid"}}>
+                    <Button onClick={this.cancelSelected.bind(this)}>
+                        <Translate content="exchange.cancel_selected_orders" />
+                    </Button>
+                </div>
+            );
 
             contentContainer = (
                 <TransitionWrapper
@@ -628,32 +414,33 @@ class MyOpenOrders extends React.Component {
             );
 
             footerContainer =
-                rowsLength > 11 ? (
-                    <div className="orderbook-showall">
-                        <a onClick={this._onSetShowAll.bind(this)}>
-                            <Translate
-                                content={
-                                    showAll
-                                        ? "exchange.hide"
-                                        : "exchange.show_all_orders"
-                                }
-                                rowcount={rowsLength}
-                            />
-                        </a>
-                    </div>
+                totalRows > 11 ? (
+                    <React.Fragment>
+                        <div className="orderbook-showall">
+                            <a onClick={this._onSetShowAll.bind(this)}>
+                                <Translate
+                                    content={
+                                        showAll
+                                            ? "exchange.hide"
+                                            : "exchange.show_all_orders"
+                                    }
+                                    rowcount={totalRows}
+                                />
+                            </a>
+                        </div>
+                        {selectedOrders.length > 0 ? cancelOrderButton : null}
+                    </React.Fragment>
+                ) : selectedOrders.length > 0 ? (
+                    cancelOrderButton
                 ) : null;
         }
 
-        {
-            /* Open Settle Orders */
-        }
+        // Open Settle Orders
         if (activeTab && activeTab == "open_settlement") {
-            let settleOrdersLength = settleOrders.length;
+            totalRows = settleOrders.length;
 
-            if (settleOrdersLength > 0) {
-                if (!showAll) {
-                    settleOrders.splice(rowCount, settleOrders.length);
-                }
+            if (totalRows > 0 && !showAll) {
+                settleOrders.splice(rowCount, settleOrders.length);
             }
 
             contentContainer = (
@@ -667,113 +454,54 @@ class MyOpenOrders extends React.Component {
                 />
             );
 
-            footerContainer =
-                settleOrdersLength > 11 ? (
-                    <div className="orderbook-showall">
-                        <a onClick={this._onSetShowAll.bind(this)}>
-                            <Translate
-                                content={
-                                    showAll
-                                        ? "exchange.hide"
-                                        : "exchange.show_all_orders"
-                                }
-                                rowcount={settleOrdersLength}
-                            />
-                        </a>
-                    </div>
-                ) : null;
+            footerContainer = totalRows > 11 && (
+                <div className="orderbook-showall">
+                    <a onClick={this._onSetShowAll.bind(this)}>
+                        <Translate
+                            content={
+                                showAll
+                                    ? "exchange.hide"
+                                    : "exchange.show_all_orders"
+                            }
+                            rowcount={totalRows}
+                        />
+                    </a>
+                </div>
+            );
         }
 
-        return (
-            <div
-                style={this.props.style}
-                key="open_orders"
-                className={this.props.className}
-            >
-                <div
-                    className={this.props.innerClass}
-                    style={this.props.innerStyle}
-                >
-                    {this.props.noHeader ? null : (
-                        <div
-                            style={this.props.headerStyle}
-                            className="exchange-content-header"
-                        >
-                            {activeTab == "my_orders" ? (
-                                <Translate content="exchange.my_orders" />
-                            ) : null}
-                            {activeTab == "open_settlement" ? (
-                                <Translate content="exchange.settle_orders" />
-                            ) : null}
-                        </div>
-                    )}
-                    <div className="grid-block shrink left-orderbook-header market-right-padding-only">
-                        <table className="table order-table text-right fixed-table market-right-padding">
-                            {activeTab == "my_orders" ? (
-                                <TableHeader
-                                    type="sell"
-                                    baseSymbol={baseSymbol}
-                                    quoteSymbol={quoteSymbol}
-                                />
-                            ) : (
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <Translate
-                                                className="header-sub-title"
-                                                content="exchange.price"
-                                            />
-                                        </th>
-                                        <th>
-                                            <span className="header-sub-title">
-                                                <AssetName
-                                                    dataPlace="top"
-                                                    name={quoteSymbol}
-                                                />
-                                            </span>
-                                        </th>
-                                        <th>
-                                            <span className="header-sub-title">
-                                                <AssetName
-                                                    dataPlace="top"
-                                                    name={baseSymbol}
-                                                />
-                                            </span>
-                                        </th>
-                                        <th>
-                                            <Translate
-                                                className="header-sub-title"
-                                                content="explorer.block.date"
-                                            />
-                                        </th>
-                                    </tr>
-                                </thead>
-                            )}
-                        </table>
-                    </div>
+        let isSelected =
+            this.state.selectedOrders.length > 0 &&
+            this.state.selectedOrders.length == totalRows;
 
-                    <div
-                        className="table-container grid-block market-right-padding-only no-overflow"
-                        ref="container"
-                        style={{
-                            overflow: "hidden",
-                            minHeight: !this.props.tinyScreen ? 260 : 0,
-                            maxHeight: 260,
-                            lineHeight: "13px"
-                        }}
-                    >
-                        <table className="table order-table table-highlight-hover table-hover no-stripes text-right fixed-table market-right-padding">
-                            {contentContainer}
-                        </table>
-                    </div>
-                    {footerContainer}
-                </div>
-            </div>
+        return (
+            <MarketsOrderView
+                ref="view"
+                // Styles and Classes
+                style={this.props.style}
+                className={this.props.className}
+                innerClass={this.props.innerClass}
+                innerStyle={this.props.innerStyle}
+                headerStyle={this.props.headerStyle}
+                // Bools
+                noHeader={this.props.noHeader}
+                isSelected={isSelected}
+                tinyScreen={this.props.tinyScreen}
+                // Strings
+                activeTab={activeTab}
+                baseSymbol={baseSymbol}
+                quoteSymbol={quoteSymbol}
+                // Containers
+                contentContainer={contentContainer}
+                footerContainer={footerContainer}
+                // Functions
+                onCancelToggle={this.onCancelToggle.bind(this)}
+            />
         );
     }
 }
 
-MyOpenOrders.defaultProps = {
+MarketOrders.defaultProps = {
     base: {},
     quote: {},
     orders: {},
@@ -781,7 +509,7 @@ MyOpenOrders.defaultProps = {
     baseSymbol: ""
 };
 
-MyOpenOrders.propTypes = {
+MarketOrders.propTypes = {
     base: PropTypes.object.isRequired,
     quote: PropTypes.object.isRequired,
     orders: PropTypes.object.isRequired,
@@ -789,4 +517,4 @@ MyOpenOrders.propTypes = {
     baseSymbol: PropTypes.string.isRequired
 };
 
-export {OrderRow, TableHeader, MyOpenOrders};
+export {MarketOrders};
