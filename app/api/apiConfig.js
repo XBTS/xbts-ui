@@ -156,14 +156,6 @@ export const settingsAPIs = {
             contact: "telegram:btsplusplus"
         },
         {
-            url: "wss://blockzms.xyz/ws",
-            region: "Northern America",
-            country: "U.S.A.",
-            location: "New Jersey",
-            operator: "Witness: delegate-zhaomu",
-            contact: "telegram:lzmlam;wechat:lzmlam"
-        },
-        {
             url: "wss://api.bts.mobi/ws",
             region: "Northern America",
             country: "U.S.A.",
@@ -185,14 +177,6 @@ export const settingsAPIs = {
             country: "Canada",
             operator: "Witness: bhuz",
             contact: "telegram:bhuzor"
-        },
-        {
-            url: "wss://kimziv.com/ws",
-            region: "Northern America",
-            country: "U.S.A.",
-            location: "New Jersey",
-            operator: "Witness: witness.yao",
-            contact: "telegram:imyao"
         },
         {
             url: "wss://api.btsgo.net/ws",
@@ -248,15 +232,15 @@ export const settingsAPIs = {
             country: "China",
             location: "Shandong",
             operator: "Witness: liuye",
-            contact: "email:work@domyself.me"
+            contact: "email:work@akawa.ink"
         },
         {
-            url: "wss://btsfullnode.bangzi.info/ws",
-            region: "Western Europe",
-            country: "Germany",
-            location: "Munich",
-            operator: "Witness: Bangzi",
-            contact: "telegram:Bangzi"
+            url: "wss://api-us.61bts.com",
+            region: "Northern America",
+            country: "USA",
+            location: "St. Louis",
+            operator: "Witness: liuye",
+            contact: "email:work@akawa.ink"
         },
         {
             url: "wss://api.dex.trading/",
@@ -348,12 +332,12 @@ export const settingsAPIs = {
             contact: "wechat:xiaoyuan_409"
         },
         {
-            url: "wss://fujian.cnvote.vip:81/",
-            region: "Eastern Asia",
+            url: "wss://hongkong.bitshares.im/ws",
+            region: "East Asia",
             country: "China",
-            location: "Fujian",
-            operator: "ptschina",
-            contact: "wechat:planetlife"
+            location: "Hong Kong",
+            operator: "Witness: clone",
+            contact: "telegram: yexiao"
         },
         {
             url: "wss://singapore.bitshares.im/ws",
@@ -370,7 +354,15 @@ export const settingsAPIs = {
             location: "New York",
             operator: "Witness: clone",
             contact: "telegram: yexiao"
-        },        
+        },
+        {
+            url: "wss://api.iamredbar.com/ws",
+            region: "Northern America",
+            country: "U.S.A.",
+            location: "Minnesota",
+            operator: "Witness: iamredbar",
+            contact: "telegram: iamredbar"
+        },
         // Testnet
         {
             url: "wss://node.testnet.bitshares.eu",
@@ -403,10 +395,32 @@ export const settingsAPIs = {
             location: "Tokyo",
             operator: "Witness: clone",
             contact: "telegram: yexiao"
+        },
+        {
+            url: "wss://api-testnet.61bts.com/ws",
+            region: "Eastern Asia",
+            country: "China",
+            location: "Shandong",
+            operator: "Witness: liuye",
+            contact: "email:work@akawa.ink"
+        },
+        {
+            url: "wss://api-us-testnet.61bts.com/ws",
+            region: "Northern America",
+            country: "USA",
+            location: "St. Louis",
+            operator: "Witness: liuye",
+            contact: "email:work@akawa.ink"
         }
-        
     ],
     ES_WRAPPER_LIST: [
+        {
+            url: "https://api.bitshares.ws/openexplorer",
+            region: "Western Europe",
+            country: "Germany",
+            operator: "blocksights.info",
+            contact: "bitshares:blocksights"
+        }
     ],
     DEFAULT_FAUCET: getFaucet().url,
     TESTNET_FAUCET: getTestFaucet().url
