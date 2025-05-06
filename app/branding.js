@@ -123,7 +123,7 @@ export function getMyMarketsBases() {
     if (_isTestnet()) {
         return ["TEST"];
     }
-    return ["XBTSX.USDT", "BTS", "XBTSX.BTC", "XBTSX.STH"];
+    return ["BTS", "XBTSX.USDT", "XBTSX.BTC", "XBTSX.STH"];
 }
 
 /**
@@ -138,21 +138,22 @@ export function getMyMarketsQuotes() {
     let tokens = {
         nativeTokens: [
             "BTC",
-            "BTC1.0",
+            //"BTC1.0",
             "BTS",
             "CNY",
-            "CNY1.0",
+            //"CNY1.0",
             "EUR",
-            "EUR1.0",
+            //"EUR1.0",
             "GOLD",
-            "GOLD1.0",
+            //"GOLD1.0",
             "RUBLE",
-            "RUB1.0",
+            //"RUB1.0",
             "SILVER",
-            "SILVER1.0",
-            "USD",
-            "USD1.0"
+            //"SILVER1.0",
+            "USD"
+            //"USD1.0"
         ],
+        /*
         gdexTokens: [
             "GDEX.BTC",
             "GDEX.BTO",
@@ -170,8 +171,11 @@ export function getMyMarketsQuotes() {
             "GDEX.NULS",
             "GDEX.USDT"
         ],
+
+         */
         openledgerTokens: [],
         rudexTokens: [],
+        /*
         piratecashTockens: [
             "PIRATE.PIRATE",
             "PIRATE.BTC",
@@ -180,6 +184,8 @@ export function getMyMarketsQuotes() {
             "PIRATE.DOGE",
             "PIRATE.COSA"
         ],
+
+         */
         xbtsxTokens: [
             "XBTSX.STH",
             "XBTSX.POST",
@@ -202,12 +208,10 @@ export function getMyMarketsQuotes() {
             "XBTSX.XBB",
             "XBTSX.EXR",
             "XBTSX.AXAI",
-            "XBTSX.TUSD",
             "XBTSX.USDT",
             "XBTSX.RVN",
             "XBTSX.TRD",
             "XBTSX.SCH",
-            "XBTSX.USDN",
             "XBTSX.EOS",
             "XBTSX.RUB",
             "XBTSX.USD",
@@ -258,7 +262,10 @@ export function getMyMarketsQuotes() {
             "XBTSX.DPR",
             "XBTSX.XCH",
             "XBTSX.PEP"
+            //"XBTSX.TUSD",
+            //"XBTSX.USDN",
         ],
+        /*
         honestTokens: [
             "HONEST",
             "HONEST.MONEY",
@@ -311,7 +318,11 @@ export function getMyMarketsQuotes() {
             "HONEST.XAGSHORT",
             "HONEST.CNYSHORT"
         ],
+        */
+        /*
         ioxbankTokens: ["IOB.XRP", "IOB.XLM"],
+         */
+
         otherTokens: [
             "CVCOIN",
             "HERO",
@@ -319,7 +330,6 @@ export function getMyMarketsQuotes() {
             "HERTZ",
             "YOYOW",
             "EVRAZ",
-            "CRUDE.NGN",
             "BEOS",
             "TWENTIX",
             "BTWTY",
@@ -351,10 +361,6 @@ export function getFeaturedMarkets(quotes = []) {
         ["USD", "BTS"],
         ["USD", "GOLD"],
         ["USD", "HERO"],
-        ["USD", "GDEX.BTC"],
-        ["USD", "GDEX.ETH"],
-        ["USD", "GDEX.EOS"],
-        ["USD", "GDEX.BTO"],
         ["USD", "HONEST.BTC"],
         ["USD", "HONEST.USD"],
         ["USD", "HONEST.BTCSHORT"],
@@ -367,14 +373,6 @@ export function getFeaturedMarkets(quotes = []) {
         ["CNY", "USD"],
         ["CNY", "YOYOW"],
         ["CNY", "OCT"],
-        ["CNY", "GDEX.BTC"],
-        ["CNY", "GDEX.ETH"],
-        ["CNY", "GDEX.EOS"],
-        ["CNY", "GDEX.BTO"],
-        ["CNY", "GDEX.SEER"],
-        ["CNY", "GDEX.BKBT"],
-        ["CNY", "GDEX.USDT"],
-        ["CNY", "GDEX.GXC"],
         ["CNY", "HONEST.BTC"],
         ["CNY", "HONEST.USD"],
         ["CNY", "HONEST.BTCSHORT"],
@@ -389,11 +387,6 @@ export function getFeaturedMarkets(quotes = []) {
         ["BTS", "OCT"],
         ["BTS", "SILVER"],
         ["BTS", "GOLD"],
-        ["BTS", "GDEX.BTC"],
-        ["BTS", "GDEX.ETH"],
-        ["BTS", "GDEX.EOS"],
-        ["BTS", "GDEX.BTO"],
-        ["BTS", "GDEX.USDT"],
         ["BTS", "XBTSX.BTC"],
         ["BTS", "XBTSX.ETH"],
         ["BTS", "XBTSX.EUR"],
@@ -475,7 +468,7 @@ export function getAssetNamespaces() {
     if (_isTestnet()) {
         return [];
     }
-    return ["XBTSX.", "GDEX.", "HONEST.", "IOB.", "PIRATE."];
+    return ["XBTSX.", "HONEST.", "IOB."];
 }
 
 /**
