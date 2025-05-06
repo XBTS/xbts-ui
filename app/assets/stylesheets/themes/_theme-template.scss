@@ -2247,7 +2247,7 @@
     .header-container {
         background-color: $header-background-color;
         box-shadow: $header-shadow;
-        z-index: 2;
+        z-index: 3; //2
         .menu-group {
             .menu-bar {
                 li {

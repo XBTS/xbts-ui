@@ -1,5 +1,32 @@
 import {getFaucet, getTestFaucet} from "../branding";
 
+export const xbtsxAPIs = {
+    //BASE: "http://localhost:3080/api/v2", //for tests local
+    BASE: "https://apis.xbts.io/api/v2", // new !!!
+    COINS_LIST: "/coin"
+};
+
+export const wavesAPIs = {
+    BASE: "https://apis.xbts.io/waves",
+    COINS_LIST: "/coin"
+};
+
+export const bscAPIs = {
+    BASE: "https://apis.xbts.io/bsc",
+    COINS_LIST: "/coin"
+};
+
+export const ethAPIs = {
+    BASE: "https://apis.xbts.io/eth",
+    //BASE: "http://localhost:3080/eth", //for tests local
+    COINS_LIST: "/coin"
+};
+
+export const eosAPIs = {
+    BASE: "https://apis.xbts.io/eos",
+    COINS_LIST: "/coin"
+};
+
 export const ioxbankAPIs = {
     BASE: "https://api.ioxbank.com/bitshares",
     COINS_LIST: "/coins",
@@ -91,10 +118,12 @@ export const pirateCashAPIs = {
     COINS_LIST: "/coins"
 };
 
+/*
 export const xbtsxAPIs = {
     BASE: "https://apis.xbts.io/api/v2",
     COINS_LIST: "/coin"
 };
+ */
 
 export const nodeRegions = [
     // region of the node follows roughly https://en.wikipedia.org/wiki/Subregion#/media/File:United_Nations_geographical_subregions.png
@@ -304,7 +333,7 @@ export const settingsAPIs = {
             location: "Chicago",
             operator: "bitshares.info",
             contact: "telegram:brekyrself"
-        },
+        }
     ],
     ES_WRAPPER_LIST: [
         {

@@ -24,7 +24,7 @@ function _isTestnet() {
  * @returns {string}
  */
 export function getWalletName() {
-    return "BitShares";
+    return "XBTS";
 }
 
 /**
@@ -32,7 +32,7 @@ export function getWalletName() {
  * @returns {string}
  */
 export function getWalletURL() {
-    return "https://wallet.bitshares.org";
+    return "https://ex.xbts.io";
 }
 
 /**
@@ -42,19 +42,19 @@ export function getWalletURL() {
  */
 export function getFaucet() {
     return {
-        url: "https://faucet.bitshares.eu/onboarding", // 2017-12-infrastructure worker proposal
+        url: "https://faucet.xbts.io", // 2017-12-infrastructure worker proposal
         show: true,
         editable: false,
-        referrer: "onboarding.bitshares.foundation"
+        referrer: "xbtsx"
     };
 }
 
 export function getTestFaucet() {
     // fixme should be solved by introducing _isTestnet into getFaucet and fixing the mess in the Settings when fetching faucet address
     return {
-        url: "https://faucet.testnet.bitshares.eu", // operated as a contribution by BitShares EU
+        url: "https://testnet-faucet.xbts.io", // operated as a contribution by BitShares EU
         show: true,
-        editable: false
+        editable: true
     };
 }
 
@@ -64,6 +64,7 @@ export function getTestFaucet() {
  */
 export function getLogo() {
     return require("assets/logo-ico-blue.png").default;
+    //return require("assets/logo-year.png");
 }
 
 /**
@@ -72,7 +73,7 @@ export function getLogo() {
  */
 export function getDefaultTheme() {
     // possible ["darkTheme", "lightTheme", "midnightTheme"]
-    return "darkTheme";
+    return "midnightTheme";
 }
 
 /**
@@ -93,14 +94,24 @@ export function getUnits() {
     if (_isTestnet()) {
         return ["TEST"];
     }
-    return ["BTS", "USD", "CNY", "BTC", "EUR", "GBP"];
+    return [
+        "BTS",
+        "USD",
+        "CNY",
+        "BTC",
+        "EUR",
+        "GBP",
+        "XBTSX.USDT",
+        "XBTSX.BTC",
+        "XBTSX.RUB"
+    ];
 }
 
 export function getDefaultMarket() {
     if (_isTestnet()) {
         return "USD_TEST";
     }
-    return "BTS_CNY";
+    return "BTS_XBTSX.STH";
 }
 
 /**
@@ -112,7 +123,7 @@ export function getMyMarketsBases() {
     if (_isTestnet()) {
         return ["TEST"];
     }
-    return ["BTS", "BTC", "CNY", "USD", "USDT", "ETH"];
+    return ["XBTSX.USDT", "BTS", "XBTSX.BTC", "XBTSX.STH"];
 }
 
 /**
@@ -187,13 +198,9 @@ export function getMyMarketsQuotes() {
             "XBTSX.BCH",
             "XBTSX.MDL",
             "XBTSX.SKY",
-            "XBTSX.SLB",
             "XBTSX.GRS",
-            "XBTSX.XSM",
             "XBTSX.XBB",
             "XBTSX.EXR",
-            "XBTSX.BCCX",
-            "XBTSX.GUAP",
             "XBTSX.AXAI",
             "XBTSX.TUSD",
             "XBTSX.USDT",
@@ -201,7 +208,6 @@ export function getMyMarketsQuotes() {
             "XBTSX.TRD",
             "XBTSX.SCH",
             "XBTSX.USDN",
-            "XBTSX.FIL",
             "XBTSX.EOS",
             "XBTSX.RUB",
             "XBTSX.USD",
@@ -209,15 +215,11 @@ export function getMyMarketsQuotes() {
             "XBTSX.VTC",
             "XBTSX.USDC",
             "XBTSX.BAT",
-            "XBTSX.PING",
             "XBTSX.ATRI",
             "XBTSX.BNB",
-            "XBTSX.BUSD",
             "XBTSX.TRX",
             "XBTSX.HT",
             "XBTSX.XRP",
-            "XBTSX.SHU",
-            "XBTSX.UNI",
             "XBTSX.HIVE",
             "XBTSX.EMC",
             "XBTSX.NESS",
@@ -228,13 +230,34 @@ export function getMyMarketsQuotes() {
             "XBTSX.AVAX",
             "XBTSX.RTM",
             "XBTSX.XAUT",
-            "XBTSX.TUSC",
             "XBTSX.MATIC",
             "XBTSX.HVQ",
             "XBTSX.TCG",
             "XBTSX.NCH",
             "XBTSX.LUNR",
-            "XBTSX.LUNAREUM"
+            "XBTSX.RDD",
+            "XBTSX.BSV",
+            "XBTSX.MANA",
+            "XBTSX.AUR",
+            "XBTSX.ETC",
+            "XBTSX.ASIC",
+            "XBTSX.VITE",
+            "XBTSX.GODS",
+            "XBTSX.FLUX",
+            "XBTSX.ZEC",
+            "XBTSX.QTUM",
+            "XBTSX.ZIL",
+            "XBTSX.KMD",
+            "XBTSX.XCCX",
+            "XBTSX.PEPE",
+            "XBTSX.RXD",
+            "XBTSX.HERO",
+            "XBTSX.DAI",
+            "XBTSX.WRAM",
+            "XBTSX.TON",
+            "XBTSX.DPR",
+            "XBTSX.XCH",
+            "XBTSX.PEP"
         ],
         honestTokens: [
             "HONEST",
@@ -289,7 +312,20 @@ export function getMyMarketsQuotes() {
             "HONEST.CNYSHORT"
         ],
         ioxbankTokens: ["IOB.XRP", "IOB.XLM"],
-        otherTokens: ["CVCOIN", "HERO", "OCT", "HERTZ", "YOYOW"]
+        otherTokens: [
+            "CVCOIN",
+            "HERO",
+            "OCT",
+            "HERTZ",
+            "YOYOW",
+            "EVRAZ",
+            "CRUDE.NGN",
+            "BEOS",
+            "TWENTIX",
+            "BTWTY",
+            "DEFI",
+            "QUINT"
+        ]
     };
 
     let allTokens = [];
@@ -309,6 +345,9 @@ export function getFeaturedMarkets(quotes = []) {
         return [["USD", "TEST"]];
     }
     return [
+        ["XBTSX.STH", "BTS"],
+        ["XBTSX.BTC", "BTS"],
+        ["XBTSX.BTC", "USDT"],
         ["USD", "BTS"],
         ["USD", "GOLD"],
         ["USD", "HERO"],
@@ -317,7 +356,7 @@ export function getFeaturedMarkets(quotes = []) {
         ["USD", "GDEX.EOS"],
         ["USD", "GDEX.BTO"],
         ["USD", "HONEST.BTC"],
-        ["USD", "HONEST.USD"],        
+        ["USD", "HONEST.USD"],
         ["USD", "HONEST.BTCSHORT"],
         ["USD", "HONEST.USDSHORT"],
         ["USD", "HERTZ"],
@@ -337,7 +376,7 @@ export function getFeaturedMarkets(quotes = []) {
         ["CNY", "GDEX.USDT"],
         ["CNY", "GDEX.GXC"],
         ["CNY", "HONEST.BTC"],
-        ["CNY", "HONEST.USD"],        
+        ["CNY", "HONEST.USD"],
         ["CNY", "HONEST.BTCSHORT"],
         ["CNY", "HONEST.USDSHORT"],
         ["CNY", "HONEST.CNY"],
@@ -360,7 +399,6 @@ export function getFeaturedMarkets(quotes = []) {
         ["BTS", "XBTSX.EUR"],
         ["BTS", "XBTSX.RUB"],
         ["BTS", "XBTSX.STH"],
-        ["BTS", "XBTSX.TUSD"],
         ["BTS", "XBTSX.WAVES"],
         ["BTS", "XBTSX.USD"],
         ["BTS", "XBTSX.USDC"],
@@ -421,7 +459,7 @@ export function getFeaturedMarkets(quotes = []) {
         ["BTS", "HERTZ"],
         ["BTS", "URTHR"],
         ["BTS", "SKULD"],
-        ["BTS", "VERTHANDI"],
+        ["BTS", "VERTHANDI"]
     ].filter(a => {
         if (!quotes.length) return true;
         return quotes.indexOf(a[0]) !== -1;
@@ -446,7 +484,7 @@ export function getAssetNamespaces() {
  */
 export function getAssetHideNamespaces() {
     // e..g "XBTSX.", "bit"
-    return [];
+    return ["XBTSX."];
 }
 
 /**
@@ -455,18 +493,7 @@ export function getAssetHideNamespaces() {
  * @returns {boolean}
  */
 export function allowedGateway(gateway) {
-    const allowedGateways = [
-        "TRADE",
-        "OPEN", // keep to display the warning icon, permanently disabled in gateways.js
-        "RUDEX", // keep to display the warning icon, permanently disabled in gateways.js
-        "GDEX",
-        "PIRATE",
-        "XBTSX",
-        "IOB",
-        "CITADEL", // keep to display the warning icon, permanently disabled in gateways.js
-        "BRIDGE", // keep to display the warning icon, permanently disabled in gateways.js
-        "SPARKDEX" // keep to display the warning icon, permanently disabled in gateways.js
-    ];
+    const allowedGateways = ["PIRATE", "XBTSX", "IOB"];
     if (!gateway) {
         // answers the question: are any allowed?
         return allowedGateways.length > 0;
@@ -499,6 +526,5 @@ export function getConfigurationAsset() {
 }
 
 export function getHiveNewsTag() {
-    return 'bitshares';
+    return "xbtsio";
 }
-
