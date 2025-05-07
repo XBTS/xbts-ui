@@ -21,6 +21,7 @@ import {Input, Icon, Switch, Tooltip, Button} from "bitshares-ui-style-guide";
 import counterpart from "counterpart";
 import SearchInput from "../Utility/SearchInput";
 import CreditOfferAccountPage from "./CreditOffer/CreditOfferAccountPage";
+import AccountStaking from "./AccountStaking";
 
 class AccountOverview extends React.Component {
     constructor(props) {
@@ -28,9 +29,13 @@ class AccountOverview extends React.Component {
         this.state = {
             shownAssets: props.viewSettings.get("shownAssets", "active"),
             alwaysShowAssets: [
-                "BTS"
-                // "USD",
-                // "CNY"
+                "BTS",
+                "XBTSX.STH",
+                "XBTSX.BTC",
+                "XBTSX.ETH",
+                "XBTSX.LTC",
+                "XBTSX.DASH",
+                "XBTSX.USDT"
             ],
             hideFishingProposals: true,
             question1: false,
@@ -493,6 +498,17 @@ class AccountOverview extends React.Component {
                             >
                                 <CreditOfferAccountPage
                                     account={this.props.account}
+                                />
+                            </Tab>
+
+                            <Tab
+                                title="xbtsx.account.staking"
+                                subText={hiddenSubText}
+                            >
+                                <AccountStaking
+                                    account={this.props.account}
+                                    balances={this.props.balances}
+                                    gateFee={this.props.gateFee}
                                 />
                             </Tab>
 
