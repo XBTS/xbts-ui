@@ -21,6 +21,7 @@ require("file-loader?name=asset-symbols/[name].png!./pirate.bcc.png");
 require("file-loader?name=asset-symbols/[name].png!./pirate.doge.png");
 require("file-loader?name=asset-symbols/[name].png!./pirate.pirate.png");
 // 3rd party assets
+require("file-loader?name=asset-symbols/[name].png!./defi.png");
 require("file-loader?name=asset-symbols/[name].png!./eth.png");
 require("file-loader?name=asset-symbols/[name].png!./steem.png");
 require("file-loader?name=asset-symbols/[name].png!./mkr.png");
