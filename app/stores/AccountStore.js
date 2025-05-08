@@ -117,6 +117,10 @@ class AccountStore extends BaseStore {
 
         let prevRef = ss.get("referralAccount", null);
 
+        if (!referralAccount) {
+            referralAccount = "xbtsx";
+        }
+
         // Store referreral only if there is no previous referral
         if (referralAccount && !prevRef) {
             ss.set("referralAccount", referralAccount);
