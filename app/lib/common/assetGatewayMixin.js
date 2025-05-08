@@ -19,7 +19,7 @@ function _getCoinToGatewayMapping(boolCheck = "depositAllowed") {
 
             if (
                 coin[boolCheck] &&
-                (gateway == "OPEN" ? coin.isAvailable : true)
+                (gateway === "XBTSX" ? coin.isAvailable : true)
             )
                 coinToGatewayMapping[symbolOnly].push(gatewayName);
         });
@@ -35,8 +35,8 @@ function _getNumberAvailableGateways() {
     for (let g in gatewayStatus) {
         this.props.backedCoins.get(g.toUpperCase(), []).find(c => {
             if (
-                ((selectedAsset == c.backingCoinType ||
-                    selectedAsset == c.backingCoin) &&
+                ((selectedAsset === c.backingCoinType ||
+                    selectedAsset === c.backingCoin) &&
                     c.depositAllowed) ||
                 c.isAvailable
             ) {
@@ -70,7 +70,7 @@ function _onAssetSelected(
                 if (asset) {
                     let symbolSplit = asset.symbol.split(".");
 
-                    if (symbolSplit.length == 2) {
+                    if (symbolSplit.length === 2) {
                         let symbol = symbolSplit[1];
                         let gateway = symbolSplit[0];
 
@@ -87,7 +87,7 @@ function _onAssetSelected(
 
     let {coinToGatewayMapping} = this.state;
     if (
-        selectedAsset != this.state.selectedAsset &&
+        selectedAsset !== this.state.selectedAsset &&
         coinToGatewayMapping &&
         coinToGatewayMapping[selectedAsset]
     ) {
@@ -150,7 +150,7 @@ function gatewaySelector(args) {
                 if (asset) {
                     let symbolSplit = asset.symbol.split(".");
 
-                    if (symbolSplit.length == 2) {
+                    if (symbolSplit.length === 2) {
                         let symbol = symbolSplit[1];
                         let gateway = symbolSplit[0];
 
@@ -177,7 +177,7 @@ function gatewaySelector(args) {
         gateways.push(gatewayStatus[key]);
 
         // Set to full name to work with <Select>
-        if (gatewayStatus[key].id == selectedGateway) {
+        if (gatewayStatus[key].id === selectedGateway) {
             selectedGateway = gatewayStatus[key].name;
         }
     });

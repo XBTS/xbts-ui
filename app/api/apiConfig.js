@@ -18,7 +18,6 @@ export const bscAPIs = {
 
 export const ethAPIs = {
     BASE: "https://apis.xbts.io/eth",
-    //BASE: "http://localhost:3080/eth", //for tests local
     COINS_LIST: "/coin"
 };
 
@@ -117,13 +116,6 @@ export const pirateCashAPIs = {
     BASE: "https://pirate.cash/dexapi",
     COINS_LIST: "/coins"
 };
-
-/*
-export const xbtsxAPIs = {
-    BASE: "https://apis.xbts.io/api/v2",
-    COINS_LIST: "/coin"
-};
- */
 
 export const nodeRegions = [
     // region of the node follows roughly https://en.wikipedia.org/wiki/Subregion#/media/File:United_Nations_geographical_subregions.png

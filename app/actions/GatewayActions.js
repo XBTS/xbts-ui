@@ -70,7 +70,7 @@ class GatewayActions {
         }
     }
 
-    fetchCoinsSimple({backer = "RUDEX", url = undefined} = {}) {
+    fetchCoinsSimple({backer = "XBTSX", url = undefined} = {}) {
         if (!inProgress["fetchCoinsSimple_" + backer]) {
             inProgress["fetchCoinsSimple_" + backer] = true;
             return dispatch => {

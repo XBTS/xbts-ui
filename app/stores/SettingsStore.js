@@ -117,7 +117,7 @@ class SettingsStore {
             showAssetPercent: false,
             walletLockTimeout: 60 * 10,
             themes: getDefaultTheme(),
-            passwordLogin: getDefaultLogin() == "password",
+            passwordLogin: getDefaultLogin() === "password",
             browser_notifications: {
                 allow: true,
                 additional: {
@@ -281,7 +281,7 @@ class SettingsStore {
             });
             // copy all the rest as well
             Object.keys(settings).forEach(key => {
-                if (returnSettings[key] == undefined) {
+                if (returnSettings[key] === undefined) {
                     // deep copy
                     returnSettings[key] = JSON.parse(
                         JSON.stringify(settings[key])
@@ -370,7 +370,7 @@ class SettingsStore {
         // merge choices by hand (do not use merge as the order in the apiServer list may change)
         let mergedChoices = Object.assign({}, savedChoices);
         Object.keys(choices).forEach(key => {
-            if (key != "apiServer") {
+            if (key !== "apiServer") {
                 mergedChoices[key] = choices[key];
             }
         });
@@ -392,7 +392,7 @@ class SettingsStore {
         let apiServer = choices.apiServer.slice(0); // maintain order in apiConfig.js
         // add any apis that the user added and update changes
         savedChoices.apiServer.forEach(api => {
-            let found = apiServer.find(a => a.url == api.url);
+            let found = apiServer.find(a => a.url === api.url);
             if (!!found) {
                 this._injectApiConfiguration(found, api);
             } else {
@@ -403,7 +403,7 @@ class SettingsStore {
             }
         });
         apiServer = apiServer.map(node => {
-            let found = choices.apiServer.find(a => a.url == node.url);
+            let found = choices.apiServer.find(a => a.url === node.url);
             node.default = !!found;
             node.hidden = !!node.hidden; // make sure this flag exists
             return node;

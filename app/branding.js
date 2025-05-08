@@ -153,7 +153,7 @@ export function getMyMarketsQuotes() {
             "USD"
             //"USD1.0"
         ],
-        /*
+
         gdexTokens: [
             "GDEX.BTC",
             "GDEX.BTO",
@@ -171,8 +171,6 @@ export function getMyMarketsQuotes() {
             "GDEX.NULS",
             "GDEX.USDT"
         ],
-
-         */
         openledgerTokens: [],
         rudexTokens: [],
         /*
@@ -486,7 +484,7 @@ export function getAssetHideNamespaces() {
  * @returns {boolean}
  */
 export function allowedGateway(gateway) {
-    const allowedGateways = ["PIRATE", "XBTSX", "IOB"];
+    const allowedGateways = ["XBTSX", "WAVES", "ETH", "BSC", "EOS"]; //, "PIRATE", "IOB"
     if (!gateway) {
         // answers the question: are any allowed?
         return allowedGateways.length > 0;

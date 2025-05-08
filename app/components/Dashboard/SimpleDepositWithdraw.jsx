@@ -158,6 +158,7 @@ class DepositWithdrawContent extends DecimalChecker {
             (this.state.memo ? ":" + new Buffer(this.state.memo, "utf-8") : "")
         );
     }
+
     onSubmit(e) {
         e.preventDefault();
         if (this.state.to_withdraw.getAmount() === 0) {
@@ -220,6 +221,7 @@ class DepositWithdrawContent extends DecimalChecker {
             this._checkBalance
         );
     }
+
     _getCurrentBalance() {
         let balances = this.props.balance
             ? [ChainStore.getObject(this.props.balance)]

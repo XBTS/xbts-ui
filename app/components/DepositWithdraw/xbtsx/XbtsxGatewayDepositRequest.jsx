@@ -145,7 +145,7 @@ class XbtsxGatewayDepositRequest extends React.Component {
             receive_address = this.state.receive_address;
 
         if (!receive_address) {
-            let account_name = this.props.account.get("name");
+            //let account_name = this.props.account.get("name");
             // receive_address = this.deposit_address_cache.getCachedInputAddress(
             //     this.props.gateway,
             //     account_name,

@@ -65,7 +65,12 @@ export function getGatewayStatusByAsset(
             if (
                 coin[boolCheck] &&
                 isAvailable &&
-                selectedAsset == backingCoin
+                selectedAsset === backingCoin &&
+                (g === "XBTSX" ||
+                    g === "WAVES" ||
+                    g === "ETH" ||
+                    g === "BSC" ||
+                    g === "EOS")
             ) {
                 gatewayStatus[g].options.enabled = true;
             }
@@ -78,7 +83,7 @@ export function getIntermediateAccount(symbol, backedCoins) {
     let {selectedGateway} = getAssetAndGateway(symbol);
     let coin = getBackedCoin(symbol, backedCoins);
     if (!coin) return undefined;
-    else if (selectedGateway === "RUDEX") return coin.issuerId || coin.issuer;
+    else if (selectedGateway === "XBTSX") return coin.issuerId || coin.issuer;
     else return coin.intermediateAccount || coin.issuer;
 }
 
@@ -111,6 +116,7 @@ export async function updateGatewayBackers(chain = "4018d784") {
     if (!Apis.instance().chain_id) return;
     if (Apis.instance().chain_id.substr(0, 8) === chain) {
         // Only one bridge so far, BlockTrades
+
         if (Object.values(availableBridges).length !== 1) {
             throw "Multiple bridges not yet supported!";
         }
@@ -125,7 +131,12 @@ export async function updateGatewayBackers(chain = "4018d784") {
         // Walk all Gateways
         for (let gateway in availableGateways) {
             let gatewayConfig = availableGateways[gateway];
-            gatewayConfig.enabled = await gatewayConfig.isEnabled();
+            try {
+                gatewayConfig.enabled = await gatewayConfig.isEnabled();
+            } catch (e) {
+                console.log(e);
+            }
+
             if (gatewayConfig.enabled) {
                 if (!!gatewayConfig.isSimple) {
                     GatewayActions.fetchCoinsSimple.defer({

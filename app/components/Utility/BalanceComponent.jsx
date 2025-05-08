@@ -27,7 +27,7 @@ class BalanceComponent extends React.Component {
             return null;
         }
         let amount = this.props.balance.get("balance");
-        if (amount || amount == 0) {
+        if (amount || amount === 0) {
             amount = Number(this.props.balance.get("balance"));
         } else {
             amount = null;

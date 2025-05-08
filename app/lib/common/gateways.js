@@ -4,15 +4,19 @@
  */
 
 import {
-    ioxbankAPIs,
-    rudexAPIs,
-    bitsparkAPIs,
-    openledgerAPIs,
-    cryptoBridgeAPIs,
-    gdex2APIs,
-    pirateCashAPIs,
+    //ioxbankAPIs,
+    //rudexAPIs,
+    //bitsparkAPIs,
+    //openledgerAPIs,
+    //cryptoBridgeAPIs,
+    //gdex2APIs,
+    //pirateCashAPIs,
+    //citadelAPIs,
     xbtsxAPIs,
-    citadelAPIs
+    wavesAPIs,
+    ethAPIs,
+    bscAPIs,
+    eosAPIs
 } from "api/apiConfig";
 import {allowedGateway} from "branding";
 import {isGatewayTemporarilyDisabled} from "../chain/onChainConfig";
@@ -67,8 +71,8 @@ const _isEnabled = gatewayKey => {
         }
         let userAllowed = false;
         if (
-            filteredServiceProviders.length == 1 &&
-            filteredServiceProviders[0] == "all"
+            filteredServiceProviders.length === 1 &&
+            filteredServiceProviders[0] === "all"
         ) {
             userAllowed = true;
         } else {
@@ -88,119 +92,6 @@ const _isEnabled = gatewayKey => {
 };
 
 export const availableGateways = {
-    IOB: {
-        id: "IOB",
-        name: "ioxbank",
-        baseAPI: ioxbankAPIs,
-        isEnabled: _isEnabled("IOB"),
-        isSimple: true,
-        selected: false,
-        simpleAssetGateway: true,
-        fixedMemo: {
-            prepend_default: "dex:",
-            prepend_btsid: "",
-            append: ""
-        },
-        addressValidatorMethod: "POST",
-        options: {
-            enabled: false,
-            selected: false
-        },
-        landing: "https://ioxbank.com",
-        wallet: "https://dex.iobanker.com/"
-    },
-    OPEN: {
-        id: "OPEN",
-        name: "OpenLedger",
-        baseAPI: openledgerAPIs,
-        isEnabled: () => false,
-        selected: false,
-        options: {
-            enabled: false,
-            selected: false
-        },
-        landing: "Shutdown",
-        wallet: "Shutdown"
-    },
-    RUDEX: {
-        id: "RUDEX",
-        name: "RuDEX",
-        baseAPI: rudexAPIs,
-        isEnabled: () => false,
-        isSimple: true,
-        selected: false,
-        simpleAssetGateway: true,
-        fixedMemo: {
-            prepend_default: "dex:",
-            prepend_btsid: "btsid-",
-            append: ""
-        },
-        addressValidatorMethod: "POST",
-        options: {
-            enabled: false,
-            selected: false
-        },
-        landing: "Shutdown",
-        wallet: "Shutdown"
-    },
-    SPARKDEX: {
-        id: "SPARKDEX",
-        name: "BitSpark",
-        baseAPI: bitsparkAPIs,
-        isEnabled: () => false,
-        selected: false,
-        options: {
-            enabled: false,
-            selected: false
-        },
-        landing: "https://www.bitspark.io/",
-        wallet: "Shutdown"
-    },
-    BRIDGE: {
-        id: "BRIDGE",
-        name: "CryptoBridge",
-        baseAPI: cryptoBridgeAPIs,
-        isEnabled: () => false,
-        selected: false,
-        singleWallet: true, // Has no coresponging coinType == backingCoinType specific wallet
-        addressValidatorAsset: true, // Address validator requires output_asset parameter
-        useFullAssetName: true, // Adds <gateway>.<asset> to memo and address object
-        intermediateAccount: "cryptobridge", // Fixed intermediateAccount
-        options: {
-            enabled: false,
-            selected: false
-        },
-        landing: "Shutdown",
-        wallet: "Shutdown"
-    },
-    GDEX: {
-        id: "GDEX",
-        name: "GDEX",
-        baseAPI: gdex2APIs,
-        isEnabled: () => false,
-        options: {
-            enabled: false,
-            selected: false
-        },
-        landing: "https://bitsharestalk.org/index.php?topic=33861",
-        wallet: "Only manual deposit / withdraw",
-        comment: "Only manual deposit / withdraw"
-    },
-    PIRATE: {
-        id: "PIRATE",
-        name: "PirateCash",
-        baseAPI: pirateCashAPIs,
-        isEnabled: _isEnabled("PIRATE"),
-        isSimple: true,
-        selected: false,
-        addressValidatorMethod: "POST",
-        options: {
-            enabled: false,
-            selected: false
-        },
-        landing: "https://pirate.cash/",
-        wallet: "https://wallet.pirate.cash/"
-    },
     XBTSX: {
         id: "XBTSX",
         name: "XBTS Native Chains",
@@ -216,19 +107,69 @@ export const availableGateways = {
         landing: "https://xbts.io/",
         wallet: "https://ex.xbts.io/"
     },
-    CITADEL: {
-        id: "CITADEL",
-        name: "Citadel",
-        baseAPI: citadelAPIs,
-        isEnabled: () => false,
+    WAVES: {
+        id: "WAVES",
+        name: "WAVES",
+        baseAPI: wavesAPIs,
+        isEnabled: _isEnabled("WAVES"),
+        isSimple: true,
         selected: false,
-        assetWithdrawlAlias: {monero: "xmr"}, // if asset name doesn't equal to memo
+        simpleAssetGateway: false,
+        addressValidatorMethod: "POST",
         options: {
             enabled: false,
             selected: false
         },
-        landing: "Shutdown",
-        wallet: "Shutdown"
+        landing: "https://xbts.io/",
+        wallet: "https://ex.xbts.io/"
+    },
+    ETH: {
+        id: "ETH",
+        name: "ETH",
+        baseAPI: ethAPIs,
+        isEnabled: _isEnabled("ETH"),
+        isSimple: true,
+        selected: false,
+        simpleAssetGateway: false,
+        addressValidatorMethod: "POST",
+        options: {
+            enabled: false,
+            selected: false
+        },
+        landing: "https://xbts.io/",
+        wallet: "https://ex.xbts.io/"
+    },
+    BSC: {
+        id: "BSC",
+        name: "BSC",
+        baseAPI: bscAPIs,
+        isEnabled: _isEnabled("BSC"),
+        isSimple: true,
+        selected: false,
+        simpleAssetGateway: false,
+        addressValidatorMethod: "POST",
+        options: {
+            enabled: false,
+            selected: false
+        },
+        landing: "https://xbts.io/",
+        wallet: "https://ex.xbts.io/"
+    },
+    EOS: {
+        id: "EOS",
+        name: "EOS",
+        baseAPI: eosAPIs,
+        isEnabled: _isEnabled("EOS"),
+        isSimple: true,
+        selected: false,
+        simpleAssetGateway: false,
+        addressValidatorMethod: "POST",
+        options: {
+            enabled: false,
+            selected: false
+        },
+        landing: "https://xbts.io/",
+        wallet: "https://ex.xbts.io/"
     }
 };
 

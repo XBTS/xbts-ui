@@ -9,7 +9,7 @@ import {
     TransactionWrapper
 } from "components/Account/RecentTransactions";
 import Immutable from "immutable";
-import cnames from "classnames";
+//import cnames from "classnames";
 import LoadingIndicator from "../../LoadingIndicator";
 
 class XbtsxGateway extends React.Component {
@@ -18,7 +18,7 @@ class XbtsxGateway extends React.Component {
 
         this.state = {
             activeCoin: this._getActiveCoin(props, {action: "deposit"}),
-            action: props.viewSettings.get(`xbtsxAction`, "deposit")
+            action: props.viewSettings.get("xbtsxAction", "deposit")
         };
     }
 
@@ -28,11 +28,11 @@ class XbtsxGateway extends React.Component {
             null
         );
         let firstTimeCoin = null;
-        if (state.action == "deposit") {
-            firstTimeCoin = "PPY";
+        if (state.action === "deposit") {
+            firstTimeCoin = "XBTSX.BTC";
         }
-        if (state.action == "withdraw") {
-            firstTimeCoin = "PPY";
+        if (state.action === "withdraw") {
+            firstTimeCoin = "XBTSX.BTC";
         }
         let activeCoin = cachedCoin ? cachedCoin : firstTimeCoin;
         return activeCoin;
@@ -64,7 +64,7 @@ class XbtsxGateway extends React.Component {
             activeCoin: activeCoin
         });
 
-        SettingsActions.changeViewSetting({[`xbtsxAction`]: type});
+        SettingsActions.changeViewSetting({["xbtsxAction"]: type});
     }
 
     render() {
