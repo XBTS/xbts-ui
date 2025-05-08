@@ -501,6 +501,52 @@ var Utils = {
         string = string.replace(/data:/gi, "");
         string = string.replace(/tcl:/gi, "");
         return string;
+    },
+
+    timeStringToGrapheneDate(time_string) {
+        if (!time_string) return new Date("1970-01-01T00:00:00.000Z");
+        if (!/Z$/.test(time_string)) {
+            //does not end in Z
+            // https://github.com/cryptonomex/graphene/issues/368
+            time_string = time_string + "Z";
+        }
+        return new Date(time_string);
+    },
+
+    toFixedString(x) {
+        if (Math.abs(x) < 1.0) {
+            const e = parseInt(x.toString().split("e-")[1]);
+            if (e) {
+                x *= Math.pow(10, e - 1);
+                x = "0." + new Array(e).join("0") + x.toString().substring(2);
+                if (x === "0.00000007000000000000001") {
+                    x = "0.00000007";
+                }
+                if (x[10] === "9") {
+                    let ten = x.substr(2, 8) * 1 + 1;
+                    x = x.substr(0, 8) + ten;
+                }
+            } else {
+                x = x.toString();
+            }
+
+            /*
+            if (x.length < 10 && x.length > 8) {
+                while (x.length < 10) {
+                    x = x + "0";
+                }
+            }
+             */
+        } else {
+            let e = parseInt(x.toString().split("+")[1]);
+            if (e > 20) {
+                e -= 20;
+                x /= Math.pow(10, e);
+                x += new Array(e + 1).join("0");
+            }
+        }
+
+        return x;
     }
 };
 
