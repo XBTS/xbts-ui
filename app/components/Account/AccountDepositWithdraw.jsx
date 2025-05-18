@@ -19,6 +19,7 @@ import PropTypes from "prop-types";
 
 import XbtsFiat from "../DepositWithdraw/XbtsFiat";
 import XbtsxGateway from "../DepositWithdraw/xbtsx/XbtsxGateway";
+import BscGateway from "../DepositWithdraw/bsc/BscGateway";
 //import EthGateway from "../DepositWithdraw/eth/EthGateway";
 //import XbtsBscGateway from "../DepositWithdraw/XbtsBsc/XbtsBscGateway";
 //import EosGateway from "../DepositWithdraw/eos/EosGateway";
@@ -38,12 +39,11 @@ class AccountDepositWithdraw extends React.Component {
         super();
         this.state = {
             xbtsxService: props.viewSettings.get("xbtsxService", "gateway"),
+            BscService: props.viewSettings.get("BscService", "gateway"),
             //eosService: props.viewSettings.get("eosService", "gateway"),
             /*
             wavesService: props.viewSettings.get("wavesService", "gateway"),
             ethService: props.viewSettings.get("ethService", "gateway"),
-            XbtsBscService: props.viewSettings.get("XbtsBscService", "gateway"),
-
              */
             activeService: props.viewSettings.get("activeService", 0)
         };
@@ -54,10 +54,11 @@ class AccountDepositWithdraw extends React.Component {
             nextProps.account !== this.props.account ||
             nextProps.servicesDown !== this.props.servicesDown ||
             nextState.xbtsxService !== this.state.xbtsxService ||
+            nextState.BscService !== this.state.BscService ||
             //nextState.eosService !== this.state.eosService ||
             //nextState.wavesService !== this.state.wavesService ||
             //nextState.ethService !== this.state.ethService ||
-            //nextState.XbtsBscService !== this.state.XbtsBscService ||
+            //
             nextState.activeService !== this.state.activeService
         );
     }
@@ -106,13 +107,13 @@ class AccountDepositWithdraw extends React.Component {
         });
     }
 
-    toggleXbtsBscService(service) {
+    toggleBscService(service) {
         this.setState({
-            XbtsBscService: service
+            BscService: service
         });
 
         SettingsActions.changeViewSetting({
-            XbtsBscService: service
+            BscService: service
         });
     }
 
@@ -128,7 +129,8 @@ class AccountDepositWithdraw extends React.Component {
     }
 
     renderServices(
-        xbtsxGatewayCoins
+        xbtsxGatewayCoins,
+        BscGatewayCoins
         //eosGatewayCoins,
         /*
         wavesGatewayCoins,
@@ -140,7 +142,8 @@ class AccountDepositWithdraw extends React.Component {
         let serList = [];
         let {account} = this.props;
         let {
-            xbtsxService
+            xbtsxService,
+            BscService
             //eosService,
             /*
             wavesService,
@@ -205,6 +208,39 @@ class AccountDepositWithdraw extends React.Component {
             )
         });
 
+        serList.push({
+            name: "Binance Smart Chain [BSC] Tokens",
+            identifier: "BSC",
+            template: (
+                <div className="content-block">
+                    <div
+                        className="service-selector"
+                        style={{marginBottom: "2rem"}}
+                    >
+                        <ul className="button-group segmented no-margin">
+                            <li
+                                onClick={this.toggleBscService.bind(
+                                    this,
+                                    "gateway"
+                                )}
+                                className={
+                                    BscService === "gateway" ? "is-active" : ""
+                                }
+                            >
+                                <a>
+                                    <Translate content="gateway.gateway" />
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {BscService === "gateway" && BscGatewayCoins.length ? (
+                        <BscGateway account={account} coins={BscGatewayCoins} />
+                    ) : null}
+                </div>
+            )
+        });
+
         /*
         serList.push({
             name: "EOS Chain Tokens",
@@ -239,44 +275,7 @@ class AccountDepositWithdraw extends React.Component {
         });
 */
         /*
-        serList.push({
-            name: "Binance Smart Chain [BSC] Tokens",
-            identifier: "BSC",
-            template: (
-                <div className="content-block">
-                    <div
-                        className="service-selector"
-                        style={{marginBottom: "2rem"}}
-                    >
-                        <ul className="button-group segmented no-margin">
-                            <li
-                                onClick={this.toggleXbtsBscService.bind(
-                                    this,
-                                    "gateway"
-                                )}
-                                className={
-                                    XbtsBscService === "gateway"
-                                        ? "is-active"
-                                        : ""
-                                }
-                            >
-                                <a>
-                                    <Translate content="gateway.gateway" />
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
 
-                    {XbtsBscService === "gateway" &&
-                    XbtsBscGatewayCoins.length ? (
-                        <XbtsBscGateway
-                            account={account}
-                            coins={XbtsBscGatewayCoins}
-                        />
-                    ) : null}
-                </div>
-            )
-        });
 
         serList.push({
             name: "Ethereum Chain ETH Tokens",
@@ -375,6 +374,14 @@ class AccountDepositWithdraw extends React.Component {
                 return 0;
             });
 
+        let BscGatewayCoins = this.props.BscBackedCoins.map(coin => {
+            return coin;
+        }).sort((a, b) => {
+            if (a.symbol < b.symbol) return -1;
+            if (a.symbol > b.symbol) return 1;
+            return 0;
+        });
+
         /*
 
          let eosGatewayCoins = this.props.eosBackedCoins
@@ -407,17 +414,12 @@ class AccountDepositWithdraw extends React.Component {
                 return 0;
             });
 
-        let XbtsBscGatewayCoins = this.props.XbtsBscBackedCoins.map(coin => {
-            return coin;
-        }).sort((a, b) => {
-            if (a.symbol < b.symbol) return -1;
-            if (a.symbol > b.symbol) return 1;
-            return 0;
-        });
+
          */
 
         let services = this.renderServices(
-            xbtsxGatewayCoins
+            xbtsxGatewayCoins,
+            BscGatewayCoins
             //eosGatewayCoins,
             /*
             wavesGatewayCoins,
@@ -427,11 +429,11 @@ class AccountDepositWithdraw extends React.Component {
         );
 
         const serviceNames = [
-            "XBTSX"
+            "XBTSX",
+            "XBTS_BSC"
             //"EOS",
             /*
             "ETH",
-            "XBTS_BSC",
             "WAVES",
             "XbtsFiat", // XbtsFiat fiat
              */
@@ -624,6 +626,7 @@ export default connect(DepositStoreWrapper, {
                 "XBTSX",
                 []
             ),
+            BscBackedCoins: GatewayStore.getState().backedCoins.get("BSC", []),
             //eosBackedCoins: GatewayStore.getState().backedCoins.get("EOS",[]),
             /*
                 ethBackedCoins: GatewayStore.getState().backedCoins.get(
@@ -635,10 +638,7 @@ export default connect(DepositStoreWrapper, {
                 "WAVES",
                 []
             ),
-            XbtsBscBackedCoins: GatewayStore.getState().backedCoins.get(
-                "BSC",
-                []
-            ),
+
             */
             servicesDown: GatewayStore.getState().down || {}
         };

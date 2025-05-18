@@ -1,6 +1,6 @@
 import ls from "./localStorage";
 import {bscAPIs} from "api/apiConfig";
-const bscStorage = new ls("");
+const bscStorage = ls("");
 
 export function fetchCoinList(url = bscAPIs.BASE + bscAPIs.COINS_LIST) {
     return fetch(url, {method: "post"})
