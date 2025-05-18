@@ -408,10 +408,10 @@ class AccountOverview extends React.Component {
                                         <div
                                             className={cnames("inline-block", {
                                                 inactive:
-                                                    shownAssets != "visual"
+                                                    shownAssets !== "visual"
                                             })}
                                             onClick={
-                                                shownAssets != "visual"
+                                                shownAssets !== "visual"
                                                     ? this._changeShownAssets.bind(
                                                           this,
                                                           "visual"
@@ -424,7 +424,7 @@ class AccountOverview extends React.Component {
                                     </div>
                                 </div>
 
-                                {shownAssets != "visual" ? (
+                                {shownAssets !== "visual" ? (
                                     shownAssets === "hidden" &&
                                     hiddenBalancesList.size ? (
                                         hiddenPortfolioList
