@@ -13,13 +13,8 @@ export function getGatewayName(asset) {
         return counterpart.translate("exchange.native");
     }
 
-    let prefix =
-        asset.get("symbol") === "PPY"
-            ? "RUDEX"
-            : asset.get("symbol").split(".")[0];
-
-    let assetName =
-        asset.get("symbol") === "PPY" ? "RUDEX.PPY" : asset.get("symbol");
+    let prefix = asset.get("symbol").split(".")[0];
+    let assetName = asset.get("symbol");
 
     if (hasGatewayPrefix(assetName)) {
         return availableGateways[prefix].name;
@@ -28,17 +23,8 @@ export function getGatewayName(asset) {
 }
 
 export function hasGatewayPrefix(name) {
-    let prefix = "";
-    if (name === "PPY") {
-        prefix = "RUDEX";
-    } else {
-        prefix = name.split(".")[0];
-    }
-
-    if (gatewayPrefixes.indexOf(prefix) !== -1) {
-        return true;
-    }
-    return false;
+    let prefix = name.split(".")[0];
+    return gatewayPrefixes.indexOf(prefix) !== -1;
 }
 
 export function getGatewayStatusByAsset(
@@ -99,10 +85,6 @@ export function getBackedCoin(symbol, backedCoins) {
 export function getAssetAndGateway(symbol) {
     if (symbol) {
         let [selectedGateway, selectedAsset] = symbol.split(".");
-        if (symbol === "PPY") {
-            selectedGateway = "RUDEX";
-            selectedAsset = "PPY";
-        }
         if (!selectedAsset) {
             selectedAsset = selectedGateway;
             selectedGateway = undefined;
