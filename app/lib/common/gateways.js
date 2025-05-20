@@ -3,21 +3,7 @@
  * General API Settings are stored in api/apiConfig and should be imported here
  */
 
-import {
-    //ioxbankAPIs,
-    //rudexAPIs,
-    //bitsparkAPIs,
-    //openledgerAPIs,
-    //cryptoBridgeAPIs,
-    //gdex2APIs,
-    //pirateCashAPIs,
-    //citadelAPIs,
-    xbtsxAPIs,
-    wavesAPIs,
-    ethAPIs,
-    bscAPIs,
-    eosAPIs
-} from "api/apiConfig";
+import {xbtsxAPIs, wavesAPIs, ethAPIs, bscAPIs, eosAPIs} from "api/apiConfig";
 import {allowedGateway} from "branding";
 import {isGatewayTemporarilyDisabled} from "../chain/onChainConfig";
 import SettingsStore from "stores/SettingsStore";
@@ -107,22 +93,6 @@ export const availableGateways = {
         landing: "https://xbts.io/",
         wallet: "https://ex.xbts.io/"
     },
-    WAVES: {
-        id: "WAVES",
-        name: "WAVES",
-        baseAPI: wavesAPIs,
-        isEnabled: _isEnabled("WAVES"),
-        isSimple: true,
-        selected: false,
-        simpleAssetGateway: false,
-        addressValidatorMethod: "POST",
-        options: {
-            enabled: false,
-            selected: false
-        },
-        landing: "https://xbts.io/",
-        wallet: "https://ex.xbts.io/"
-    },
     ETH: {
         id: "ETH",
         name: "ETH",
@@ -144,6 +114,22 @@ export const availableGateways = {
         name: "BSC",
         baseAPI: bscAPIs,
         isEnabled: _isEnabled("BSC"),
+        isSimple: true,
+        selected: false,
+        simpleAssetGateway: false,
+        addressValidatorMethod: "POST",
+        options: {
+            enabled: false,
+            selected: false
+        },
+        landing: "https://xbts.io/",
+        wallet: "https://ex.xbts.io/"
+    },
+    WAVES: {
+        id: "WAVES",
+        name: "WAVES",
+        baseAPI: wavesAPIs,
+        isEnabled: _isEnabled("WAVES"),
         isSimple: true,
         selected: false,
         simpleAssetGateway: false,

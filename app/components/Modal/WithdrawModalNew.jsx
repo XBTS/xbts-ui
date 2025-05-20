@@ -40,6 +40,7 @@ import FeeAssetSelector from "components/Utility/FeeAssetSelector";
 import {checkBalance} from "common/trxHelper";
 import AccountSelector from "components/Account/AccountSelector";
 import {ChainStore} from "bitsharesjs";
+
 const gatewayBoolCheck = "withdrawalAllowed";
 
 import {getAssetAndGateway, getIntermediateAccount} from "common/gatewayUtils";
@@ -47,7 +48,6 @@ import {getAssetAndGateway, getIntermediateAccount} from "common/gatewayUtils";
 class WithdrawModalNew extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             selectedAsset: "",
             selectedAssetId: "",
@@ -200,9 +200,6 @@ class WithdrawModalNew extends React.Component {
         let fullSymbol = selectedGateway
             ? selectedGateway + "." + selectedAsset
             : selectedAsset;
-
-        if (selectedGateway === "RUDEX" && selectedAsset === "PPY")
-            fullSymbol = "PPY";
 
         let withdrawalCurrencyBalance = 0;
         let withdrawalCurrencyBalanceId = null;
@@ -615,7 +612,7 @@ class WithdrawModalNew extends React.Component {
     onMemoChanged(e) {
         this.setState({memo: e.target.value});
     }
-    
+
     onTagChanged(e) {
         this.setState({tag: e.target.value});
     }
@@ -1230,7 +1227,7 @@ class WithdrawModalNew extends React.Component {
                                 }
                             </div>
                         ) : null}
-                        
+
                         {/*TAG*/}
                         {isBTS ||
                         (backingAsset && backingAsset.memoType === "tagid") ? (
@@ -1244,7 +1241,7 @@ class WithdrawModalNew extends React.Component {
                                 />
                             </div>
                         ) : null}
-                        
+
                         {/*MEMO*/}
                         {isBTS ||
                         (backingAsset && backingAsset.supportsMemos) ? (
@@ -1277,7 +1274,7 @@ class WithdrawModalNew extends React.Component {
                                                     this.state.selectedAsset.toLowerCase() +
                                                     ":" +
                                                     this.state.address +
-                                                     (this.state.tag
+                                                    (this.state.tag
                                                         ? ":" + this.state.tag
                                                         : "") +
                                                     (this.state.memo

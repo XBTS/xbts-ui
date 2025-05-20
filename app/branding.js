@@ -154,25 +154,8 @@ export function getMyMarketsQuotes() {
             //"USD1.0"
         ],
 
-        gdexTokens: [
-            "GDEX.BTC",
-            "GDEX.BTO",
-            "GDEX.EOS",
-            "GDEX.ETH",
-            "GDEX.BKBT",
-            "GDEX.GXC",
-            "GDEX.SEER",
-            "GDEX.FOTA",
-            "GDEX.JRC",
-            "GDEX.EOSDAC",
-            "GDEX.MTS",
-            "GDEX.GUSD",
-            "GDEX.IQ",
-            "GDEX.NULS",
-            "GDEX.USDT"
-        ],
+        gdexTokens: ["GDEX.BTC", "GDEX.EOS", "GDEX.ETH", "GDEX.USDT"],
         openledgerTokens: [],
-        rudexTokens: [],
         /*
         piratecashTockens: [
             "PIRATE.PIRATE",
@@ -259,9 +242,9 @@ export function getMyMarketsQuotes() {
             "XBTSX.TON",
             "XBTSX.DPR",
             "XBTSX.XCH",
-            "XBTSX.PEP"
-            //"XBTSX.TUSD",
-            //"XBTSX.USDN",
+            "XBTSX.PEP",
+            "XBTSX.A",
+            "XBTSX.AEUR"
         ],
         /*
         honestTokens: [

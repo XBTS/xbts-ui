@@ -568,8 +568,8 @@ class BscWithdrawModal extends React.Component {
                 <div
                     className={
                         !storedAddress.length
-                            ? "rudex-disabled-options"
-                            : "rudex-options"
+                            ? "xbts-disabled-options"
+                            : "xbts-options"
                     }
                 >
                     {storedAddress.map(function(name, index) {
@@ -823,7 +823,7 @@ class BscWithdrawModal extends React.Component {
                                 content="modal.withdraw.address"
                             />
                         </label>
-                        <div className="rudex-select-dropdown">
+                        <div className="xbts-select-dropdown">
                             <div className="inline-label">
                                 <input
                                     type="text"
@@ -840,7 +840,7 @@ class BscWithdrawModal extends React.Component {
                                 </span>
                             </div>
                         </div>
-                        <div className="rudex-position-options">{options}</div>
+                        <div className="xbts-position-options">{options}</div>
                         {invalid_address_message}
                     </div>
 

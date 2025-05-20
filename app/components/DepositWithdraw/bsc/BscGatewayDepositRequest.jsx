@@ -216,7 +216,7 @@ class BscGatewayDepositRequest extends React.Component {
 
         if (this.props.action === "deposit") {
             return (
-                <div className="rudex__gateway grid-block no-padding no-margin">
+                <div className="xbts__gateway grid-block no-padding no-margin">
                     <div className="small-12 medium-5">
                         <Translate
                             component="h4"
@@ -443,7 +443,7 @@ class BscGatewayDepositRequest extends React.Component {
             );
         } else {
             return (
-                <div className="rudex__gateway grid-block no-padding no-margin">
+                <div className="xbts__gateway grid-block no-padding no-margin">
                     <div className="small-12 medium-5">
                         <Translate
                             component="h4"

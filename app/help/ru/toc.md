@@ -18,5 +18,4 @@
 - [Торговля](dex/trading.md)
 - [Короткая продажа BitAssets](dex/shorting.md)
 - [Шлюзы](gateways/introduction.md)
-    - [Rudex](gateways/rudex.md)
     - [XBTSX](gateways/xbtsx.md)

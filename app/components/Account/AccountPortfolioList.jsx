@@ -716,11 +716,7 @@ class AccountPortfolioList extends React.Component {
             {
                 className: "column-hide-medium",
                 title: <Translate content="exchange.buy" />,
-                customizable: atLeastOneHas.buy
-                    ? undefined
-                    : {
-                          default: false
-                      },
+                customizable: atLeastOneHas.buy ? undefined : {default: false},
                 dataIndex: "buy",
                 align: "center",
                 render: item => {
@@ -746,9 +742,7 @@ class AccountPortfolioList extends React.Component {
                 ),
                 customizable: atLeastOneHas.deposit
                     ? undefined
-                    : {
-                          default: false
-                      },
+                    : {default: false},
                 dataIndex: "deposit",
                 align: "center",
                 render: item => {
@@ -760,9 +754,7 @@ class AccountPortfolioList extends React.Component {
                 title: <Translate content="modal.withdraw.submit" />,
                 customizable: atLeastOneHas.withdraw
                     ? undefined
-                    : {
-                          default: false
-                      },
+                    : {default: false},
                 dataIndex: "withdraw",
                 align: "center",
                 render: item => {
@@ -841,7 +833,7 @@ class AccountPortfolioList extends React.Component {
     }
 
     _sumVestingBalances(balances) {
-        if (!balances || balances.length == 0) return 0;
+        if (!balances || balances.length === 0) return 0;
         let sum = 0;
         balances.forEach(item => {
             sum = sum + balanceToAsset(item).amount;
@@ -1008,7 +1000,8 @@ class AccountPortfolioList extends React.Component {
             const canWithdraw =
                 backedCoin &&
                 backedCoin.withdrawalAllowed &&
-                hasBalance && balanceObject.get("balance") != 0;
+                hasBalance &&
+                balanceObject.get("balance") != 0;
 
             const canBuy = !!this.props.bridgeCoins.get(symbol);
 
@@ -1242,11 +1235,11 @@ class AccountPortfolioList extends React.Component {
                                     a => a.backingCoinType === thisAssetName[1]
                                 ) ||
                             !!this.props.backedCoins
-                                .get("RUDEX", [])
+                                .get("XBTSX", [])
                                 .find(
                                     a => a.backingCoin === thisAssetName[1]
                                 ) ||
-                            asset.get("symbol") == "BTS";
+                            asset.get("symbol") === "BTS";
 
                         const canBuy = !!this.props.bridgeCoins.get(
                             asset.get("symbol")
@@ -1466,9 +1459,9 @@ class AccountPortfolioList extends React.Component {
                 atLeastOneHas.buy = true;
             }
             if (!!_item.deposit && _item.deposit !== "-") {
-                if (_item.key == "BTS" && GatewayStore.anyAllowed()) {
+                if (_item.key === "BTS" && GatewayStore.anyAllowed()) {
                     atLeastOneHas.depositOnlyBTS =
-                        _item.key == "BTS" && !atLeastOneHas.deposit;
+                        _item.key === "BTS" && !atLeastOneHas.deposit;
                     atLeastOneHas.deposit = true;
                 }
             }
