@@ -128,6 +128,7 @@ class BscWithdrawModal extends React.Component {
             data: {
                 type: "memo",
                 content:
+                    "bsc:" +
                     this.props.output_coin_type +
                     ":" +
                     state.withdraw_address +
@@ -165,6 +166,7 @@ class BscWithdrawModal extends React.Component {
                     data: {
                         type: "memo",
                         content:
+                            "bsc:" +
                             this.props.output_coin_type +
                             ":" +
                             state.withdraw_address +
@@ -344,7 +346,8 @@ class BscWithdrawModal extends React.Component {
                     this.props.issuer.get("id"),
                     sendAmount.getAmount(),
                     asset.get("id"),
-                    this.props.output_coin_type +
+                    "bsc:" +
+                        this.props.output_coin_type +
                         ":" +
                         this.state.withdraw_address +
                         (this.state.memo
