@@ -26,14 +26,6 @@ export const eosAPIs = {
     COINS_LIST: "/coin"
 };
 
-export const ioxbankAPIs = {
-    BASE: "https://api.ioxbank.com/bitshares",
-    COINS_LIST: "/coins",
-    ACTIVE_WALLETS: "/active-wallets",
-    TRADING_PAIRS: "/trading-pairs",
-    NEW_DEPOSIT_ADDRESS: "/simple-api/initiate-trade"
-};
-
 export const blockTradesAPIs = {
     BASE: "https://api.blocktrades.us/v2",
     COINS_LIST: "/coins",
@@ -55,12 +47,6 @@ export const openledgerAPIs = {
     RPC_URL: "https://openledger.info/api/"
 };
 
-export const rudexAPIs = {
-    BASE: "https://gateway.rudex.org/api/rudex",
-    COINS_LIST: "/coins",
-    NEW_DEPOSIT_ADDRESS: "/simple-api/initiate-trade"
-};
-
 export const bitsparkAPIs = {
     BASE: "https://dex-api.bitspark.io/api/v1",
     COINS_LIST: "/coins",
@@ -71,14 +57,6 @@ export const bitsparkAPIs = {
     ESTIMATE_INPUT: "/estimate-input-amount"
 };
 
-export const cryptoBridgeAPIs = {
-    BASE: "https://api.crypto-bridge.org/api/v1",
-    COINS_LIST: "/coins",
-    ACTIVE_WALLETS: "/wallets",
-    MARKETS: "/markets",
-    TRADING_PAIRS: "/trading-pairs"
-};
-
 export const citadelAPIs = {
     BASE: "https://citadel.li/trade",
     COINS_LIST: "/coins",
@@ -87,13 +65,6 @@ export const citadelAPIs = {
     DEPOSIT_LIMIT: "/deposit-limits",
     ESTIMATE_OUTPUT: "/estimate-output-amount",
     ESTIMATE_INPUT: "/estimate-input-amount"
-};
-
-export const gdex2APIs = {
-    BASE: "https://openapi.52bts.net/adjust",
-    COINS_LIST: "/coins",
-    ACTIVE_WALLETS: "/active-wallets",
-    TRADING_PAIRS: "/trading-pairs"
 };
 
 // Legacy Deposit/Withdraw
