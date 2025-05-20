@@ -33,9 +33,11 @@ class AssetImage extends React.Component {
     _onError(imgName) {
         if (!this.state.imgError) {
             if (this.props.replaceNoneToBts)
+                // eslint-disable-next-line react/no-string-refs
                 this.refs[
                     imgName.toLowerCase()
                 ].src = `${__BASE_URL__}asset-symbols/bts.png`;
+            // eslint-disable-next-line react/no-string-refs
             else this.refs[imgName.toLowerCase()].remove();
             this.setState({
                 imgError: true
@@ -47,17 +49,13 @@ class AssetImage extends React.Component {
         let {asset} = this.props;
 
         function getImageName(asset) {
-            let symbol = asset.get("symbol");
-            return symbol;
+            return asset.get("symbol");
             // if (symbol === "OPEN.BTC" || symbol === "GDEX.BTC") return symbol;
             // if (symbol.startsWith("ESCROW.")) return symbol;
             // let imgName = asset.get("symbol").split(".");
             //return imgName.length === 2 ? imgName[1] : imgName[0];
         }
-
         const imgName = getImageName(asset).replace("XBTSX.", "");
-        //.replace("GDEX.", "");
-
         return (
             <img
                 ref={imgName.toLowerCase()}

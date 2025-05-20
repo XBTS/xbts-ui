@@ -20,7 +20,7 @@ import PropTypes from "prop-types";
 import XbtsFiat from "../DepositWithdraw/XbtsFiat";
 import XbtsxGateway from "../DepositWithdraw/xbtsx/XbtsxGateway";
 import BscGateway from "../DepositWithdraw/bsc/BscGateway";
-//import EthGateway from "../DepositWithdraw/eth/EthGateway";
+import EthGateway from "../DepositWithdraw/eth/EthGateway";
 //import XbtsBscGateway from "../DepositWithdraw/XbtsBsc/XbtsBscGateway";
 //import EosGateway from "../DepositWithdraw/eos/EosGateway";
 //import WavesGateway from "../DepositWithdraw/waves/WavesGateway";
@@ -40,11 +40,9 @@ class AccountDepositWithdraw extends React.Component {
         this.state = {
             xbtsxService: props.viewSettings.get("xbtsxService", "gateway"),
             BscService: props.viewSettings.get("BscService", "gateway"),
-            //eosService: props.viewSettings.get("eosService", "gateway"),
-            /*
-            wavesService: props.viewSettings.get("wavesService", "gateway"),
             ethService: props.viewSettings.get("ethService", "gateway"),
-             */
+            //eosService: props.viewSettings.get("eosService", "gateway"),
+            //wavesService: props.viewSettings.get("wavesService", "gateway"),
             activeService: props.viewSettings.get("activeService", 0)
         };
     }
@@ -55,10 +53,9 @@ class AccountDepositWithdraw extends React.Component {
             nextProps.servicesDown !== this.props.servicesDown ||
             nextState.xbtsxService !== this.state.xbtsxService ||
             nextState.BscService !== this.state.BscService ||
+            nextState.ethService !== this.state.ethService ||
             //nextState.eosService !== this.state.eosService ||
             //nextState.wavesService !== this.state.wavesService ||
-            //nextState.ethService !== this.state.ethService ||
-            //
             nextState.activeService !== this.state.activeService
         );
     }
@@ -77,6 +74,7 @@ class AccountDepositWithdraw extends React.Component {
         });
     }
 
+    /*
     toggleWavesService(service) {
         this.setState({
             wavesService: service
@@ -86,6 +84,8 @@ class AccountDepositWithdraw extends React.Component {
             wavesService: service
         });
     }
+
+     */
 
     toggleEthService(service) {
         this.setState({
@@ -97,6 +97,7 @@ class AccountDepositWithdraw extends React.Component {
         });
     }
 
+    /*
     toggleEosService(service) {
         this.setState({
             eosService: service
@@ -106,6 +107,8 @@ class AccountDepositWithdraw extends React.Component {
             eosService: service
         });
     }
+
+     */
 
     toggleBscService(service) {
         this.setState({
@@ -130,26 +133,19 @@ class AccountDepositWithdraw extends React.Component {
 
     renderServices(
         xbtsxGatewayCoins,
-        BscGatewayCoins
+        BscGatewayCoins,
+        ethGatewayCoins
         //eosGatewayCoins,
-        /*
-        wavesGatewayCoins,
-        ethGatewayCoins,
-        XbtsBscGatewayCoins
-         */
+        //wavesGatewayCoins,
     ) {
-        //let services = ["Openledger (OPEN.X)", "BlockTrades (TRADE.X)", "Transwiser", "BitKapital"];
         let serList = [];
         let {account} = this.props;
         let {
             xbtsxService,
-            BscService
+            BscService,
+            ethService
             //eosService,
-            /*
-            wavesService,
-            ethService,
-            XbtsBscService
-             */
+            //wavesService,
         } = this.state;
 
         serList.push({
@@ -209,7 +205,7 @@ class AccountDepositWithdraw extends React.Component {
         });
 
         serList.push({
-            name: "Binance Smart Chain [BSC] Tokens",
+            name: "BSC Network",
             identifier: "BSC",
             template: (
                 <div className="content-block">
@@ -274,11 +270,9 @@ class AccountDepositWithdraw extends React.Component {
             )
         });
 */
-        /*
-
 
         serList.push({
-            name: "Ethereum Chain ETH Tokens",
+            name: "Ethereum Network",
             template: (
                 <div className="content-block">
                     <div
@@ -308,7 +302,7 @@ class AccountDepositWithdraw extends React.Component {
                 </div>
             )
         });
-
+        /*
         serList.push({
             name: "WAVES Chain Tokens",
             template: (
@@ -382,6 +376,16 @@ class AccountDepositWithdraw extends React.Component {
             return 0;
         });
 
+        let ethGatewayCoins = this.props.ethBackedCoins
+            .map(coin => {
+                return coin;
+            })
+            .sort((a, b) => {
+                if (a.symbol < b.symbol) return -1;
+                if (a.symbol > b.symbol) return 1;
+                return 0;
+            });
+
         /*
 
          let eosGatewayCoins = this.props.eosBackedCoins
@@ -404,36 +408,29 @@ class AccountDepositWithdraw extends React.Component {
                 return 0;
             });
 
-        let ethGatewayCoins = this.props.ethBackedCoins
-            .map(coin => {
-                return coin;
-            })
-            .sort((a, b) => {
-                if (a.symbol < b.symbol) return -1;
-                if (a.symbol > b.symbol) return 1;
-                return 0;
-            });
+
 
 
          */
 
         let services = this.renderServices(
             xbtsxGatewayCoins,
-            BscGatewayCoins
+            BscGatewayCoins,
+            ethGatewayCoins
             //eosGatewayCoins,
             /*
             wavesGatewayCoins,
-            ethGatewayCoins,
+
             XbtsBscGatewayCoins
              */
         );
 
         const serviceNames = [
             "XBTSX",
-            "XBTS_BSC"
+            "XBTS_BSC",
+            "ETH"
             //"EOS",
             /*
-            "ETH",
             "WAVES",
             "XbtsFiat", // XbtsFiat fiat
              */
@@ -627,12 +624,10 @@ export default connect(DepositStoreWrapper, {
                 []
             ),
             BscBackedCoins: GatewayStore.getState().backedCoins.get("BSC", []),
+            ethBackedCoins: GatewayStore.getState().backedCoins.get("ETH", []),
             //eosBackedCoins: GatewayStore.getState().backedCoins.get("EOS",[]),
             /*
-                ethBackedCoins: GatewayStore.getState().backedCoins.get(
-                "ETH",
-                []
-            ),
+
 
             wavesBackedCoins: GatewayStore.getState().backedCoins.get(
                 "WAVES",
