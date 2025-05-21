@@ -754,7 +754,7 @@ class WalletDb extends BaseStore {
         let private_cipherhex = aes_private.encryptToHex(
             private_key.toBuffer()
         );
-        let wallet = this.state.wallet;
+        //let wallet = this.state.wallet;
         if (!public_key_string) {
             //S L O W
             // console.log('WARN: public key was not provided, this may incur slow performance')
