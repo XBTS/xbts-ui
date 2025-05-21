@@ -34,7 +34,6 @@ class EthGatewayDepositRequest extends React.Component {
         action: PropTypes.string,
         supports_output_memos: PropTypes.bool.isRequired,
         min_amount: PropTypes.number,
-        max_amount: PropTypes.number,
         deposit_fee: PropTypes.number,
         withdraw_fee: PropTypes.number,
         asset_precision: PropTypes.number
@@ -217,7 +216,7 @@ class EthGatewayDepositRequest extends React.Component {
 
         if (this.props.action === "deposit") {
             return (
-                <div className="rudex__gateway grid-block no-padding no-margin">
+                <div className="xbts__gateway grid-block no-padding no-margin">
                     <div className="small-12 medium-5">
                         <Translate
                             component="h4"
@@ -432,41 +431,19 @@ class EthGatewayDepositRequest extends React.Component {
                                 coin={this.props.deposit_asset}
                             />
                             <Translate
-                                className="info fz_14"
-                                component="p"
-                                content="gateway.eth.info"
-                                minDeposit={minDeposit}
-                                coin={this.props.deposit_asset}
-                            />
-                            <Translate
                                 className="has-error fz_14"
                                 component="p"
-                                content="gateway.eth.min_deposit_warning_asset"
+                                content="gateway.min_deposit_warning_asset"
                                 minDeposit={minDeposit}
                                 coin={this.props.deposit_asset}
                             />
-                            {this.props.contract ? (
-                                <span>
-                                    Contract{" "}
-                                    <a
-                                        target="_blank"
-                                        href={
-                                            "https://etherscan.io/token/" +
-                                            this.props.contract
-                                        }
-                                        rel="noreferrer"
-                                    >
-                                        {this.props.contract}
-                                    </a>
-                                </span>
-                            ) : null}
                         </div>
                     </div>
                 </div>
             );
         } else {
             return (
-                <div className="rudex__gateway grid-block no-padding no-margin">
+                <div className="xbts__gateway grid-block no-padding no-margin">
                     <div className="small-12 medium-5">
                         <Translate
                             component="h4"
@@ -563,13 +540,6 @@ class EthGatewayDepositRequest extends React.Component {
                             component="h4"
                             content="gateway.withdraw_inst"
                         />
-                        <Translate
-                            className="info fz_14"
-                            component="p"
-                            content="gateway.eth.info"
-                            minDeposit={minDeposit}
-                            coin={this.props.deposit_asset}
-                        />
                         <label className="left-label">
                             <Translate
                                 content="gateway.withdraw_to"
@@ -614,8 +584,6 @@ class EthGatewayDepositRequest extends React.Component {
                             memo_prefix={withdraw_memo_prefix}
                             modal_id={withdraw_modal_id}
                             min_amount={this.props.min_amount}
-                            max_amount={this.props.max_amount}
-                            contract={this.props.contract}
                             withdraw_fee={this.props.withdraw_fee}
                             asset_precision={this.props.asset_precision}
                             balance={

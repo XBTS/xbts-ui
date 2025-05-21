@@ -1,6 +1,6 @@
 import ls from "./localStorage";
 import {ethAPIs} from "api/apiConfig";
-const ethStorage = new ls("");
+const ethStorage = ls("");
 
 export function fetchCoinList(url = ethAPIs.BASE + ethAPIs.COINS_LIST) {
     return fetch(url, {method: "post"})
@@ -51,14 +51,14 @@ export function requestDepositAddress({
                         if (stateCallback) stateCallback(address);
                     },
                     error => {
-                        // console.log( "error: ",error  );
+                        console.log("error: ", error);
                         if (stateCallback)
                             stateCallback({address: "unknown", memo: null});
                     }
                 );
             },
             error => {
-                // console.log( "error: ",error  );
+                console.log("error: ", error);
                 if (stateCallback)
                     stateCallback({address: "unknown", memo: null});
             }

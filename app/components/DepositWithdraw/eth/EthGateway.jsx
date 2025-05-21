@@ -29,10 +29,10 @@ class EthGateway extends React.Component {
         );
         let firstTimeCoin = null;
         if (state.action === "deposit") {
-            firstTimeCoin = "XBTSX.ETH";
+            firstTimeCoin = "XBTSX.USDT";
         }
         if (state.action === "withdraw") {
-            firstTimeCoin = "XBTSX.ETH";
+            firstTimeCoin = "XBTSX.USDT";
         }
         let activeCoin = cachedCoin ? cachedCoin : firstTimeCoin;
         return activeCoin;
@@ -196,10 +196,6 @@ class EthGateway extends React.Component {
                                 receive_coin_type={coin.symbol.toLowerCase()}
                                 supports_output_memos={coin.memoSupport}
                                 min_amount={coin.minAmount}
-                                max_amount={coin.maxAmount}
-                                contract={coin.contract}
-                                withdraw_fee={coin.withdrawFee}
-                                deposit_fee={coin.depositFee}
                                 asset_precision={coin.precision}
                                 action={this.state.action}
                             />
