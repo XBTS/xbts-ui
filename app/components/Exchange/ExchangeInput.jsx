@@ -16,22 +16,22 @@ class ExchangeInput extends DecimalChecker {
 
     render() {
         //let {allowNaN, value} = this.props;
-        let {value} = this.props;
-
+        var {value} = this.props;
         if (typeof value === "undefined") {
             value = "";
         } else {
-            value = utils.toFixedString(value);
+            value = utils.convertExp(value);
         }
 
         const props = Object.assign({}, this.props, {value});
 
+        // allowNaN is no valid prop for Input, remove
         return (
             <Input
                 ref="input"
                 type="text"
                 {...props}
-                onPaste={this.onPaste.bind(this)}
+                onPaste={this.props.onPaste || this.onPaste.bind(this)}
                 onKeyPress={this.onKeyPress.bind(this)}
             />
         );
