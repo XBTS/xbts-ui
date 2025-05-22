@@ -34,7 +34,6 @@ class EosGatewayDepositRequest extends React.Component {
         action: PropTypes.string,
         supports_output_memos: PropTypes.bool.isRequired,
         min_amount: PropTypes.number,
-        max_amount: PropTypes.number,
         deposit_fee: PropTypes.number,
         withdraw_fee: PropTypes.number,
         asset_precision: PropTypes.number
@@ -146,7 +145,7 @@ class EosGatewayDepositRequest extends React.Component {
             receive_address = this.state.receive_address;
 
         if (!receive_address) {
-            let account_name = this.props.account.get("name");
+            //let account_name = this.props.account.get("name");
             // receive_address = this.deposit_address_cache.getCachedInputAddress(
             //     this.props.gateway,
             //     account_name,
@@ -191,7 +190,7 @@ class EosGatewayDepositRequest extends React.Component {
             var withdraw_memo_prefix = this.props.deposit_coin_type + ":";
         } else {
             if (receive_address.memo) {
-                // This is a client that uses a deposit memo (like HT Eco Chain), we need to display both the address and the memo they need to send
+                // This is a client that uses a deposit memo (like ethereum), we need to display both the address and the memo they need to send
                 memoText = receive_address.memo;
                 clipboardText = receive_address.address;
                 deposit_address_fragment = (
@@ -217,7 +216,7 @@ class EosGatewayDepositRequest extends React.Component {
 
         if (this.props.action === "deposit") {
             return (
-                <div className="rudex__gateway grid-block no-padding no-margin">
+                <div className="xbts__gateway grid-block no-padding no-margin">
                     <div className="small-12 medium-5">
                         <Translate
                             component="h4"
@@ -432,16 +431,9 @@ class EosGatewayDepositRequest extends React.Component {
                                 coin={this.props.deposit_asset}
                             />
                             <Translate
-                                className="info fz_14"
-                                component="p"
-                                content="gateway.eos.info"
-                                minDeposit={minDeposit}
-                                coin={this.props.deposit_asset}
-                            />
-                            <Translate
                                 className="has-error fz_14"
                                 component="p"
-                                content="gateway.eos.min_deposit_warning_asset"
+                                content="gateway.min_deposit_warning_asset"
                                 minDeposit={minDeposit}
                                 coin={this.props.deposit_asset}
                             />
@@ -451,7 +443,7 @@ class EosGatewayDepositRequest extends React.Component {
             );
         } else {
             return (
-                <div className="rudex__gateway grid-block no-padding no-margin">
+                <div className="xbts__gateway grid-block no-padding no-margin">
                     <div className="small-12 medium-5">
                         <Translate
                             component="h4"
@@ -548,13 +540,6 @@ class EosGatewayDepositRequest extends React.Component {
                             component="h4"
                             content="gateway.withdraw_inst"
                         />
-                        <Translate
-                            className="info fz_14"
-                            component="p"
-                            content="gateway.eos.info"
-                            minDeposit={minDeposit}
-                            coin={this.props.deposit_asset}
-                        />
                         <label className="left-label">
                             <Translate
                                 content="gateway.withdraw_to"
@@ -599,8 +584,6 @@ class EosGatewayDepositRequest extends React.Component {
                             memo_prefix={withdraw_memo_prefix}
                             modal_id={withdraw_modal_id}
                             min_amount={this.props.min_amount}
-                            max_amount={this.props.max_amount}
-                            contract={this.props.contract}
                             withdraw_fee={this.props.withdraw_fee}
                             asset_precision={this.props.asset_precision}
                             balance={

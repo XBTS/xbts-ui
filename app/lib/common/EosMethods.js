@@ -1,6 +1,6 @@
 import ls from "./localStorage";
 import {eosAPIs} from "api/apiConfig";
-const eosStorage = new ls("");
+const eosStorage = ls("");
 
 export function fetchCoinList(url = eosAPIs.BASE + eosAPIs.COINS_LIST) {
     return fetch(url, {method: "post"})

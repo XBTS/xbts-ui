@@ -467,7 +467,7 @@ export function getAssetHideNamespaces() {
  * @returns {boolean}
  */
 export function allowedGateway(gateway) {
-    const allowedGateways = ["XBTSX", "ETH", "BSC"]; // "WAVES", "EOS", "PIRATE", "IOB"
+    const allowedGateways = ["XBTSX", "ETH", "BSC", "EOS"]; //  "WAVES", "PIRATE", "IOB"
     if (!gateway) {
         // answers the question: are any allowed?
         return allowedGateways.length > 0;

@@ -22,7 +22,7 @@ import XbtsxGateway from "../DepositWithdraw/xbtsx/XbtsxGateway";
 import BscGateway from "../DepositWithdraw/bsc/BscGateway";
 import EthGateway from "../DepositWithdraw/eth/EthGateway";
 //import XbtsBscGateway from "../DepositWithdraw/XbtsBsc/XbtsBscGateway";
-//import EosGateway from "../DepositWithdraw/eos/EosGateway";
+import EosGateway from "../DepositWithdraw/eos/EosGateway";
 //import WavesGateway from "../DepositWithdraw/waves/WavesGateway";
 
 class AccountDepositWithdraw extends React.Component {
@@ -41,7 +41,7 @@ class AccountDepositWithdraw extends React.Component {
             xbtsxService: props.viewSettings.get("xbtsxService", "gateway"),
             BscService: props.viewSettings.get("BscService", "gateway"),
             ethService: props.viewSettings.get("ethService", "gateway"),
-            //eosService: props.viewSettings.get("eosService", "gateway"),
+            eosService: props.viewSettings.get("eosService", "gateway"),
             //wavesService: props.viewSettings.get("wavesService", "gateway"),
             activeService: props.viewSettings.get("activeService", 0)
         };
@@ -54,7 +54,7 @@ class AccountDepositWithdraw extends React.Component {
             nextState.xbtsxService !== this.state.xbtsxService ||
             nextState.BscService !== this.state.BscService ||
             nextState.ethService !== this.state.ethService ||
-            //nextState.eosService !== this.state.eosService ||
+            nextState.eosService !== this.state.eosService ||
             //nextState.wavesService !== this.state.wavesService ||
             nextState.activeService !== this.state.activeService
         );
@@ -97,7 +97,6 @@ class AccountDepositWithdraw extends React.Component {
         });
     }
 
-    /*
     toggleEosService(service) {
         this.setState({
             eosService: service
@@ -107,8 +106,6 @@ class AccountDepositWithdraw extends React.Component {
             eosService: service
         });
     }
-
-     */
 
     toggleBscService(service) {
         this.setState({
@@ -134,8 +131,8 @@ class AccountDepositWithdraw extends React.Component {
     renderServices(
         xbtsxGatewayCoins,
         BscGatewayCoins,
-        ethGatewayCoins
-        //eosGatewayCoins,
+        ethGatewayCoins,
+        eosGatewayCoins
         //wavesGatewayCoins,
     ) {
         let serList = [];
@@ -143,8 +140,8 @@ class AccountDepositWithdraw extends React.Component {
         let {
             xbtsxService,
             BscService,
-            ethService
-            //eosService,
+            ethService,
+            eosService
             //wavesService,
         } = this.state;
 
@@ -237,9 +234,8 @@ class AccountDepositWithdraw extends React.Component {
             )
         });
 
-        /*
         serList.push({
-            name: "EOS Chain Tokens",
+            name: "Vaulta (EOS) Network",
             template: (
                 <div className="content-block">
                     <div
@@ -269,7 +265,6 @@ class AccountDepositWithdraw extends React.Component {
                 </div>
             )
         });
-*/
 
         serList.push({
             name: "Ethereum Network",
@@ -386,38 +381,37 @@ class AccountDepositWithdraw extends React.Component {
                 return 0;
             });
 
+        let eosGatewayCoins = this.props.eosBackedCoins
+            .map(coin => {
+                return coin;
+            })
+            .sort((a, b) => {
+                if (a.symbol < b.symbol) return -1;
+                if (a.symbol > b.symbol) return 1;
+                return 0;
+            });
+
         /*
-
-         let eosGatewayCoins = this.props.eosBackedCoins
-            .map(coin => {
-                return coin;
-            })
-            .sort((a, b) => {
-                if (a.symbol < b.symbol) return -1;
-                if (a.symbol > b.symbol) return 1;
-                return 0;
-            });
-
-        let wavesGatewayCoins = this.props.wavesBackedCoins
-            .map(coin => {
-                return coin;
-            })
-            .sort((a, b) => {
-                if (a.symbol < b.symbol) return -1;
-                if (a.symbol > b.symbol) return 1;
-                return 0;
-            });
+       let wavesGatewayCoins = this.props.wavesBackedCoins
+           .map(coin => {
+               return coin;
+           })
+           .sort((a, b) => {
+               if (a.symbol < b.symbol) return -1;
+               if (a.symbol > b.symbol) return 1;
+               return 0;
+           });
 
 
 
 
-         */
+        */
 
         let services = this.renderServices(
             xbtsxGatewayCoins,
             BscGatewayCoins,
-            ethGatewayCoins
-            //eosGatewayCoins,
+            ethGatewayCoins,
+            eosGatewayCoins
             /*
             wavesGatewayCoins,
 
@@ -428,8 +422,8 @@ class AccountDepositWithdraw extends React.Component {
         const serviceNames = [
             "XBTSX",
             "XBTS_BSC",
-            "ETH"
-            //"EOS",
+            "ETH",
+            "EOS"
             /*
             "WAVES",
             "XbtsFiat", // XbtsFiat fiat
@@ -625,7 +619,7 @@ export default connect(DepositStoreWrapper, {
             ),
             BscBackedCoins: GatewayStore.getState().backedCoins.get("BSC", []),
             ethBackedCoins: GatewayStore.getState().backedCoins.get("ETH", []),
-            //eosBackedCoins: GatewayStore.getState().backedCoins.get("EOS",[]),
+            eosBackedCoins: GatewayStore.getState().backedCoins.get("EOS", []),
             /*
 
 

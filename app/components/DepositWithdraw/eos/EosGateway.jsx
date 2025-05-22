@@ -9,7 +9,7 @@ import {
     TransactionWrapper
 } from "components/Account/RecentTransactions";
 import Immutable from "immutable";
-import cnames from "classnames";
+//import cnames from "classnames";
 import LoadingIndicator from "../../LoadingIndicator";
 
 class EosGateway extends React.Component {
@@ -29,13 +29,12 @@ class EosGateway extends React.Component {
         );
         let firstTimeCoin = null;
         if (state.action === "deposit") {
-            firstTimeCoin = "XBTSX.EOS";
+            firstTimeCoin = "XBTSX.A";
         }
         if (state.action === "withdraw") {
-            firstTimeCoin = "XBTSX.EOS";
+            firstTimeCoin = "XBTSX.A";
         }
-        let activeCoin = cachedCoin ? cachedCoin : firstTimeCoin;
-        return activeCoin;
+        return cachedCoin ? cachedCoin : firstTimeCoin;
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
@@ -196,10 +195,6 @@ class EosGateway extends React.Component {
                                 receive_coin_type={coin.symbol.toLowerCase()}
                                 supports_output_memos={coin.memoSupport}
                                 min_amount={coin.minAmount}
-                                max_amount={coin.maxAmount}
-                                contract={coin.contract}
-                                withdraw_fee={coin.withdrawFee}
-                                deposit_fee={coin.depositFee}
                                 asset_precision={coin.precision}
                                 action={this.state.action}
                             />
