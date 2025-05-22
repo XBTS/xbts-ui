@@ -146,7 +146,7 @@ class MarketsTable extends React.Component {
             if (aPrice && bPrice) {
                 compared = aPrice - bPrice;
             }
-            if (compared == 0) {
+            if (compared === 0) {
                 return this.sortFunctions.alphabetic(a, b, true);
             } else {
                 return compared;
