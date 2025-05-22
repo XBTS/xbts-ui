@@ -83,8 +83,7 @@ class AccountStakeCreateNew extends React.Component {
         this._updateFee = debounce(this._updateFee.bind(this), 250);
     }
 
-    // eslint-disable-next-line react/no-deprecated
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this._updateFee();
         this._checkFeeStatus();
     }
