@@ -61,7 +61,6 @@ export class AccountStakingInfo {
 
 class AccountStakeCreateNew extends React.Component {
     static propTypes = {};
-
     static defaultProps = {};
 
     constructor(props) {

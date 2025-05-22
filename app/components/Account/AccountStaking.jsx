@@ -135,8 +135,8 @@ class VestingBalance extends React.Component {
 }
 
 class AccountStaking extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             vbs: null
