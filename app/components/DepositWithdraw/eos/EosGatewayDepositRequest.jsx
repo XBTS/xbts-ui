@@ -133,7 +133,9 @@ class EosGatewayDepositRequest extends React.Component {
                 let balance_object = ChainStore.getObject(balance_object_id);
                 if (balance_object) {
                     let balance = balance_object.get("balance");
-                    if (balance != 0) has_nonzero_balance = true;
+                    if (balance !== 0) {
+                        has_nonzero_balance = true;
+                    }
                 }
             }
             if (!has_nonzero_balance) return emptyRow;
@@ -169,17 +171,9 @@ class EosGatewayDepositRequest extends React.Component {
         // else
         // {
         let clipboardText = "";
-        let payFromWallet =
-            "sth:" +
-            receive_address.address +
-            "?vendorField=" +
-            this.props.account.get("name");
-        var showPayFromWallet = false;
-        if (this.props.deposit_asset === "STH") {
-            showPayFromWallet = true;
-        }
 
         let memoText;
+        let withdraw_memo_prefix = "";
         if (this.props.deposit_account) {
             deposit_address_fragment = (
                 <span>{this.props.deposit_account}</span>
@@ -187,7 +181,7 @@ class EosGatewayDepositRequest extends React.Component {
             clipboardText = this.props.deposit_account;
             memoText = "dex:" + this.props.account.get("name");
             deposit_memo = <span>{memoText}</span>;
-            var withdraw_memo_prefix = this.props.deposit_coin_type + ":";
+            withdraw_memo_prefix = this.props.deposit_coin_type + ":";
         } else {
             if (receive_address.memo) {
                 // This is a client that uses a deposit memo (like ethereum), we need to display both the address and the memo they need to send
@@ -204,7 +198,7 @@ class EosGatewayDepositRequest extends React.Component {
                     <span>{receive_address.address}</span>
                 );
             }
-            var withdraw_memo_prefix = "";
+            withdraw_memo_prefix = "";
         }
 
         let minDeposit = utils.format_number(
@@ -415,12 +409,6 @@ class EosGatewayDepositRequest extends React.Component {
                                             <Translate content="gateway.copy_memo" />
                                         </div>
                                     </CopyToClipboard>
-                                ) : null}
-                                {showPayFromWallet ? (
-                                    <a className="button" href={payFromWallet}>
-                                        <Translate content="gateway.deposit_from_wallet" />{" "}
-                                        {this.props.deposit_asset}
-                                    </a>
                                 ) : null}
                             </div>
                             <Translate
