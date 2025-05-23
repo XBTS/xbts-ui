@@ -1,6 +1,6 @@
 import ls from "./localStorage";
 import {wavesAPIs} from "api/apiConfig";
-const wavesStorage = new ls("");
+const wavesStorage = ls("");
 
 export function fetchCoinList(url = wavesAPIs.BASE + wavesAPIs.COINS_LIST) {
     return fetch(url, {method: "post"})
@@ -10,7 +10,7 @@ export function fetchCoinList(url = wavesAPIs.BASE + wavesAPIs.COINS_LIST) {
             })
         )
         .catch(err => {
-            console.log("error fetching sth-waves list of coins", err, url);
+            console.log("error fetching waves list of coins", err, url);
         });
 }
 
@@ -51,14 +51,14 @@ export function requestDepositAddress({
                         if (stateCallback) stateCallback(address);
                     },
                     error => {
-                        console.log("error: ", error);
+                        // console.log( "error: ",error  );
                         if (stateCallback)
                             stateCallback({address: "unknown", memo: null});
                     }
                 );
             },
             error => {
-                console.log("error: ", error);
+                // console.log( "error: ",error  );
                 if (stateCallback)
                     stateCallback({address: "unknown", memo: null});
             }

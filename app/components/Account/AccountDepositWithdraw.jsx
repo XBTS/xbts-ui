@@ -21,9 +21,8 @@ import XbtsFiat from "../DepositWithdraw/XbtsFiat";
 import XbtsxGateway from "../DepositWithdraw/xbtsx/XbtsxGateway";
 import BscGateway from "../DepositWithdraw/bsc/BscGateway";
 import EthGateway from "../DepositWithdraw/eth/EthGateway";
-//import XbtsBscGateway from "../DepositWithdraw/XbtsBsc/XbtsBscGateway";
 import EosGateway from "../DepositWithdraw/eos/EosGateway";
-//import WavesGateway from "../DepositWithdraw/waves/WavesGateway";
+import WavesGateway from "../DepositWithdraw/waves/WavesGateway";
 
 class AccountDepositWithdraw extends React.Component {
     static propTypes = {
@@ -42,7 +41,7 @@ class AccountDepositWithdraw extends React.Component {
             BscService: props.viewSettings.get("BscService", "gateway"),
             ethService: props.viewSettings.get("ethService", "gateway"),
             eosService: props.viewSettings.get("eosService", "gateway"),
-            //wavesService: props.viewSettings.get("wavesService", "gateway"),
+            wavesService: props.viewSettings.get("wavesService", "gateway"),
             activeService: props.viewSettings.get("activeService", 0)
         };
     }
@@ -55,7 +54,7 @@ class AccountDepositWithdraw extends React.Component {
             nextState.BscService !== this.state.BscService ||
             nextState.ethService !== this.state.ethService ||
             nextState.eosService !== this.state.eosService ||
-            //nextState.wavesService !== this.state.wavesService ||
+            nextState.wavesService !== this.state.wavesService ||
             nextState.activeService !== this.state.activeService
         );
     }
@@ -74,7 +73,6 @@ class AccountDepositWithdraw extends React.Component {
         });
     }
 
-    /*
     toggleWavesService(service) {
         this.setState({
             wavesService: service
@@ -84,8 +82,6 @@ class AccountDepositWithdraw extends React.Component {
             wavesService: service
         });
     }
-
-     */
 
     toggleEthService(service) {
         this.setState({
@@ -132,8 +128,8 @@ class AccountDepositWithdraw extends React.Component {
         xbtsxGatewayCoins,
         BscGatewayCoins,
         ethGatewayCoins,
-        eosGatewayCoins
-        //wavesGatewayCoins,
+        eosGatewayCoins,
+        wavesGatewayCoins
     ) {
         let serList = [];
         let {account} = this.props;
@@ -141,8 +137,8 @@ class AccountDepositWithdraw extends React.Component {
             xbtsxService,
             BscService,
             ethService,
-            eosService
-            //wavesService,
+            eosService,
+            wavesService
         } = this.state;
 
         serList.push({
@@ -297,7 +293,7 @@ class AccountDepositWithdraw extends React.Component {
                 </div>
             )
         });
-        /*
+
         serList.push({
             name: "WAVES Chain Tokens",
             template: (
@@ -336,7 +332,7 @@ class AccountDepositWithdraw extends React.Component {
         });
 
         serList.push({
-            name: "FIAT (USD RUB EUR)",
+            name: "Payeer (USD RUB EUR)",
             template: (
                 <XbtsFiat
                     viewSettings={this.props.viewSettings}
@@ -344,7 +340,6 @@ class AccountDepositWithdraw extends React.Component {
                 />
             )
         });
-        */
 
         return serList;
     }
@@ -391,43 +386,31 @@ class AccountDepositWithdraw extends React.Component {
                 return 0;
             });
 
-        /*
-       let wavesGatewayCoins = this.props.wavesBackedCoins
-           .map(coin => {
-               return coin;
-           })
-           .sort((a, b) => {
-               if (a.symbol < b.symbol) return -1;
-               if (a.symbol > b.symbol) return 1;
-               return 0;
-           });
-
-
-
-
-        */
+        let wavesGatewayCoins = this.props.wavesBackedCoins
+            .map(coin => {
+                return coin;
+            })
+            .sort((a, b) => {
+                if (a.symbol < b.symbol) return -1;
+                if (a.symbol > b.symbol) return 1;
+                return 0;
+            });
 
         let services = this.renderServices(
             xbtsxGatewayCoins,
             BscGatewayCoins,
             ethGatewayCoins,
-            eosGatewayCoins
-            /*
-            wavesGatewayCoins,
-
-            XbtsBscGatewayCoins
-             */
+            eosGatewayCoins,
+            wavesGatewayCoins
         );
 
         const serviceNames = [
             "XBTSX",
             "XBTS_BSC",
             "ETH",
-            "EOS"
-            /*
+            "EOS",
             "WAVES",
-            "XbtsFiat", // XbtsFiat fiat
-             */
+            "XbtsFiat" // XbtsFiat fiat
         ];
         let options = services.map((services_obj, index) => {
             //serviceNames.push(services_obj.identifier);
@@ -620,15 +603,10 @@ export default connect(DepositStoreWrapper, {
             BscBackedCoins: GatewayStore.getState().backedCoins.get("BSC", []),
             ethBackedCoins: GatewayStore.getState().backedCoins.get("ETH", []),
             eosBackedCoins: GatewayStore.getState().backedCoins.get("EOS", []),
-            /*
-
-
             wavesBackedCoins: GatewayStore.getState().backedCoins.get(
                 "WAVES",
                 []
             ),
-
-            */
             servicesDown: GatewayStore.getState().down || {}
         };
     }
