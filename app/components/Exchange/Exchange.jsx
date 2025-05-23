@@ -4,9 +4,10 @@ import {
     Tabs,
     Collapse,
     Icon as AntIcon,
-    Button,
+    //Button,
     Tooltip
 } from "bitshares-ui-style-guide";
+import {Link} from "react-router-dom";
 import cnames from "classnames";
 import translator from "counterpart";
 import guide from "intro.js";
@@ -43,7 +44,8 @@ import SimpleDepositBlocktradesBridge from "../Dashboard/SimpleDepositBlocktrade
 import {Notification} from "bitshares-ui-style-guide";
 import PriceAlert from "./PriceAlert";
 import counterpart from "counterpart";
-import {numberExponentToLarge} from "../../lib/common/numberExplonentConversion";
+import AssetImage from "../Utility/AssetImage";
+//import {numberExponentToLarge} from "../../lib/common/numberExplonentConversion";
 
 class Exchange extends React.Component {
     static propTypes = {
@@ -2082,9 +2084,28 @@ class Exchange extends React.Component {
                             }
                         ]}
                     />
+                    &nbsp;
+                    <Link
+                        to={"/asset/" + quote.get("symbol")}
+                        title={"Asset Info"}
+                    >
+                        <AssetImage
+                            style="vertical-align: sub;"
+                            replaceNoneToBts={false}
+                            maxWidth={18}
+                            name={quote.get("symbol")}
+                        />
+                    </Link>
                 </div>
             );
         };
+
+        /*
+numberExponentToLarge do no work
+amount={numberExponentToLarge(bid.toReceiveText)}
+price={numberExponentToLarge(bid.priceText)} - result 0,00001.4
+total={numberExponentToLarge(bid.forSaleText)}
+*/
 
         let buyForm = isFrozen ? null : tinyScreen &&
           !this.state.mobileKey.includes("buySellTab") ? null : (
@@ -2155,9 +2176,9 @@ class Exchange extends React.Component {
                             this,
                             "bid"
                         )}
-                        amount={numberExponentToLarge(bid.toReceiveText)}
-                        price={numberExponentToLarge(bid.priceText)}
-                        total={numberExponentToLarge(bid.forSaleText)}
+                        amount={utils.convertExp(bid.toReceiveText)}
+                        price={utils.convertExp(bid.priceText)}
+                        total={utils.convertExp(bid.forSaleText)}
                         quote={quote}
                         base={base}
                         amountChange={this._onInputReceive.bind(
@@ -2252,6 +2273,12 @@ class Exchange extends React.Component {
             </Tabs>
         );
 
+        /*
+        do not work
+        amount={numberExponentToLarge(ask.forSaleText)}
+                        price={numberExponentToLarge(ask.priceText)}
+                        total={numberExponentToLarge(ask.toReceiveText)}
+         */
         let sellForm = isFrozen ? null : tinyScreen &&
           !this.state.mobileKey.includes("buySellTab") ? null : (
             <Tabs
@@ -2312,9 +2339,9 @@ class Exchange extends React.Component {
                         }}
                         type="ask"
                         hideHeader={true}
-                        amount={numberExponentToLarge(ask.forSaleText)}
-                        price={numberExponentToLarge(ask.priceText)}
-                        total={numberExponentToLarge(ask.toReceiveText)}
+                        amount={utils.convertExp(ask.forSaleText)}
+                        price={utils.convertExp(ask.priceText)}
+                        total={utils.convertExp(ask.toReceiveText)}
                         quote={quote}
                         base={base}
                         expirationType={expirationType["ask"]}

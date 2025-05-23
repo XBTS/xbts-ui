@@ -32,13 +32,15 @@ class AssetImage extends React.Component {
 
     _onError(imgName) {
         if (!this.state.imgError) {
-            if (this.props.replaceNoneToBts)
+            if (this.props.replaceNoneToBts) {
                 // eslint-disable-next-line react/no-string-refs
                 this.refs[
                     imgName.toLowerCase()
                 ].src = `${__BASE_URL__}asset-symbols/bts.png`;
-            // eslint-disable-next-line react/no-string-refs
-            else this.refs[imgName.toLowerCase()].remove();
+            } else {
+                // eslint-disable-next-line react/no-string-refs
+                this.refs[imgName.toLowerCase()].remove();
+            }
             this.setState({
                 imgError: true
             });
@@ -56,13 +58,16 @@ class AssetImage extends React.Component {
             //return imgName.length === 2 ? imgName[1] : imgName[0];
         }
         const imgName = getImageName(asset).replace("XBTSX.", "");
+
+        let src = `${__BASE_URL__}asset-symbols/${imgName.toLowerCase()}.png`;
+
         return (
             <img
                 ref={imgName.toLowerCase()}
                 className="column-hide-small"
                 onError={this._onError.bind(this, imgName)}
                 style={{maxWidth: this.props.maxWidth, marginRight: 5}}
-                src={`${__BASE_URL__}asset-symbols/${imgName.toLowerCase()}.png`}
+                src={src}
             />
         );
     }

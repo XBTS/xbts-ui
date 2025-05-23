@@ -348,8 +348,20 @@ require("file-loader?name=asset-symbols/[name].png!./guap.png");
 require("file-loader?name=asset-symbols/[name].png!./axai.png");
 require("file-loader?name=asset-symbols/[name].png!./beos.png");
 
+// iob
+require("file-loader?name=asset-symbols/[name].png!./iob.xrp.png");
+require("file-loader?name=asset-symbols/[name].png!./honest.btc.png");
+require("file-loader?name=asset-symbols/[name].png!./btwty.eos.png");
+
 // gdex
 require("file-loader?name=asset-symbols/[name].png!./gdex.btc.png");
 require("file-loader?name=asset-symbols/[name].png!./gdex.eos.png");
 require("file-loader?name=asset-symbols/[name].png!./gdex.eth.png");
 require("file-loader?name=asset-symbols/[name].png!./gdex.usdt.png");
+
+//lp
+
+require("file-loader?name=asset-symbols/[name].png!./usdtxchlp.png");
+require("file-loader?name=asset-symbols/[name].png!./honest.money.png");
+require("file-loader?name=asset-symbols/[name].png!./usdtxautlp.png");
+require("file-loader?name=asset-symbols/[name].png!./usdtwramlp.png");

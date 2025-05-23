@@ -32,6 +32,7 @@ import {
     Collapse,
     Alert
 } from "bitshares-ui-style-guide";
+import AssetImage from "../Utility/AssetImage";
 import GatewayStore from "../../stores/GatewayStore";
 const {Panel} = Collapse;
 
@@ -399,6 +400,8 @@ class Asset extends React.Component {
                 />
             );
         }
+
+        // !asset.for_liquidity_pool
         return (
             <div style={{overflow: "visible"}}>
                 {asset &&
@@ -415,7 +418,6 @@ class Asset extends React.Component {
                         />
                     )}
                 {warning}
-
                 <HelpContent
                     path={"assets/" + asset.symbol}
                     alt_path="assets/Asset"
@@ -425,8 +427,12 @@ class Asset extends React.Component {
                     issuer={issuerName}
                     hide_issuer="true"
                 />
-                {short_name ? <p>{short_name}</p> : null}
-
+                <AssetImage
+                    maxWidth={50}
+                    replaceNoneToBts={false}
+                    name={asset.symbol}
+                />
+                ){short_name ? <p>{short_name}</p> : ""}
                 <Link
                     className="button market-button"
                     to={`/market/${asset.symbol}_${preferredMarket}`}
