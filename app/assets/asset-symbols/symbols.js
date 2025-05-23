@@ -1,5 +1,6 @@
 //Unknown asset
 require("file-loader?name=asset-symbols/[name].png!./unknown.png");
+require("file-loader?name=asset-symbols/[name].png!./islp.png");
 
 // assets
 require("file-loader?name=asset-symbols/[name].png!./aeur.png");

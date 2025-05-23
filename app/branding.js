@@ -43,7 +43,7 @@ export function getWalletURL() {
 export function getFaucet() {
     return {
         url: "https://faucet.xbts.io", // 2017-12-infrastructure worker proposal
-        show: true,
+        show: false,
         editable: false,
         referrer: "xbtsx"
     };
