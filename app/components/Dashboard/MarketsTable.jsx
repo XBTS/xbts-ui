@@ -363,7 +363,7 @@ class MarketsTable extends React.Component {
                         className="column-hide-small"
                         onError={this._onError.bind(this, imgName)}
                         style={{maxWidth: 20, marginRight: 10}}
-                        src={imageSrc}
+                        src={`${__BASE_URL__}asset-symbols/${imgName.toLowerCase()}.png`}
                     />
                     <AssetName dataPlace="top" name={quote} />
                     &nbsp;
