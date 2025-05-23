@@ -156,6 +156,7 @@ function gatewaySelector(args) {
 
                         if (!balancesByAssetAndGateway[symbol])
                             balancesByAssetAndGateway[symbol] = {};
+
                         balancesByAssetAndGateway[symbol][gateway] = [
                             balance.get("balance"),
                             asset

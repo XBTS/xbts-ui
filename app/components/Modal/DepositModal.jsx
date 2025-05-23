@@ -53,7 +53,7 @@ class DepositModalContent extends DecimalChecker {
     }
 
     onAssetSelected(asset) {
-        if (asset.gateway == "")
+        if (asset.gateway === "")
             return this.setState({
                 selectedAsset: asset.id,
                 selectedGateway: null
