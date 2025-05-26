@@ -1174,7 +1174,7 @@ class BuySell extends React.Component {
                                                     : "exchange.highest_bid"
                                             }
                                         />
-                                        <div className="small-8 buy-sell-label">
+                                        <div className="small-8 buy-sell-label buy-sell-max">
                                             <span
                                                 style={{
                                                     borderBottom:
@@ -1211,7 +1211,7 @@ class BuySell extends React.Component {
                                             className="small-4 buy-sell-label"
                                             content="exchange.balance"
                                         />
-                                        <div className="small-8 buy-sell-label">
+                                        <div className="small-8 buy-sell-label buy-sell-balance">
                                             <span
                                                 style={{
                                                     borderBottom:

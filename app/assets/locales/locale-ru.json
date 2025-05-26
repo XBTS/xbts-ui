@@ -1053,7 +1053,7 @@
                 "asset_type": "Тип актива",
                 "current_supply": "Текущее предложение",
                 "issuer": "Владелец актива",
-                "market_fee": "Комиссия рынка",
+                "market_fee": "Market fee",
                 "market_fee_referral_reward_percent": "Реферальное вознаграждение с рыночной комиссии",
                 "market_fee_referral_taker_fee_percent": "Taker fee percent",
                 "stealth_supply": "Стелс предложение"
