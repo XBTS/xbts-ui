@@ -504,5 +504,5 @@ export function getConfigurationAsset() {
 }
 
 export function getHiveNewsTag() {
-    return "xbtsio";
+    return "xbts";
 }
