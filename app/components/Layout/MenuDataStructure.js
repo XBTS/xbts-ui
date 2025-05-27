@@ -118,6 +118,7 @@ class MenuDataStructure {
             allItems.follow,
             allItems.divider,
             allItems.dashboard,
+            allItems.deposit_withdraw,
             allItems.market,
             allItems.lending,
             allItems.poolmart,
@@ -142,7 +143,7 @@ class MenuDataStructure {
             allItems.settings,
             allItems.settings_mobile,
             allItems.accounts,
-            // allItems.news,
+            //allItems.news,
             allItems.borrow,
             allItems.barter,
             allItems.direct_debit,
@@ -252,6 +253,7 @@ class MenuDataStructure {
                 text: "header.payments",
                 inDropdownBehavior: MenuItemType.WhenAccount
             }),
+
             deposit: state => ({
                 target: state.clickHandlers.showDeposit,
                 icon: {
@@ -259,15 +261,19 @@ class MenuDataStructure {
                     title: "icons.deposit.deposit"
                 },
                 text: "modal.deposit.submit",
+                /*
                 submenu: {
                     target: "/deposit-withdraw",
                     text: "header.deposit_legacy",
                     disabled: !state.enableDepositWithdraw
                 },
+
+                 */
                 disabled: !state.enableDepositWithdraw,
                 inDropdownBehavior: MenuItemType.WhenAccount
             }),
             withdraw: state => ({
+                /*
                 target: state.clickHandlers.showWithdraw,
                 icon: "withdraw",
                 text: "modal.withdraw.submit",
@@ -278,9 +284,16 @@ class MenuDataStructure {
                 },
                 disabled: !state.enableDepositWithdraw,
                 inDropdownBehavior: MenuItemType.WhenAccount
+                 */
+                target: "/deposit-withdraw",
+                icon: "deposit-withdraw",
+                text: "header.deposit-withdraw",
+                disabled: !state.enableDepositWithdraw,
+                inDropdownBehavior: MenuItemType.WhenAccount
             }),
             deposit_withdraw: state => ({
                 includePattern: "deposit-withdraw",
+                target: "/deposit-withdraw",
                 icon: {
                     name: "deposit-withdraw",
                     title: "icons.deposit.deposit_withdraw"

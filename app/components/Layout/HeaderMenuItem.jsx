@@ -98,8 +98,8 @@ class HeaderMenuItem extends React.Component {
         // Show or hide element by it's behavior
         let actuallyHidden = true;
         if (
-            actualBehavior == MenuItemType.Always ||
-            (actualBehavior == MenuItemType.Dynamic && patternMatched)
+            actualBehavior === MenuItemType.Always ||
+            (actualBehavior === MenuItemType.Dynamic && patternMatched)
         ) {
             actuallyHidden = false;
         }

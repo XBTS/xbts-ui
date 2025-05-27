@@ -7,6 +7,8 @@ import DividerMenuItem from "./DividerMenuItem";
 import SubmenuItem from "./SubmenuItem";
 import MenuItemType from "./MenuItemType";
 import MenuDataStructure from "./MenuDataStructure";
+import cnames from "classnames";
+import Icon from "../Icon/Icon";
 
 export default class DropDownMenu extends React.Component {
     constructor() {

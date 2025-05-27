@@ -51,7 +51,7 @@ class DepositWithdrawAssetSelector extends React.Component {
                     return item;
                 })
                 .filter(item => {
-                    if (item.id == "BTS") {
+                    if (item.id === "BTS") {
                         return true;
                     }
                     if (include) {
@@ -76,7 +76,7 @@ class DepositWithdrawAssetSelector extends React.Component {
         let asset;
 
         assets.map(a => {
-            if (a.id == selectedAsset) {
+            if (a.id === selectedAsset) {
                 asset = a;
             }
         });
@@ -115,7 +115,7 @@ class DepositWithdrawAssetSelector extends React.Component {
                 onChange={this._onInputChanged.bind(this)}
                 onSearch={this._onInputChanged.bind(this)}
                 placeholder={counterpart.translate(
-                    usageContext == "withdraw"
+                    usageContext === "withdraw"
                         ? "gateway.asset_search_withdraw"
                         : "gateway.asset_search_deposit"
                 )}
@@ -141,7 +141,7 @@ class DepositWithdrawAssetSelector extends React.Component {
                 ) : (
                     <Select.Option disabled key={0} value={0}>
                         {counterpart.translate(
-                            usageContext == "withdraw"
+                            usageContext === "withdraw"
                                 ? "modal.withdraw.no_assets"
                                 : "modal.deposit.no_assets"
                         )}
@@ -153,16 +153,13 @@ class DepositWithdrawAssetSelector extends React.Component {
 }
 DepositWithdrawAssetSelector = BindToChainState(DepositWithdrawAssetSelector);
 
-export default connect(
-    DepositWithdrawAssetSelector,
-    {
-        listenTo() {
-            return [GatewayStore];
-        },
-        getProps() {
-            return {
-                backedCoins: GatewayStore.getState().backedCoins
-            };
-        }
+export default connect(DepositWithdrawAssetSelector, {
+    listenTo() {
+        return [GatewayStore];
+    },
+    getProps() {
+        return {
+            backedCoins: GatewayStore.getState().backedCoins
+        };
     }
-);
+});

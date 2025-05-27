@@ -49,17 +49,17 @@ class AccountPortfolioList extends React.Component {
             isSettleModalVisible: false,
             isBorrowModalVisible: false,
             isDepositModalVisible: false,
+            isDepositModalVisibleBefore: false,
+            depositAsset: null,
             isWithdrawModalVisible: false,
             isBurnModalVisible: false,
             isBridgeModalVisibleBefore: false,
             isSettleModalVisibleBefore: false,
             isBorrowModalVisibleBefore: false,
-            isDepositModalVisibleBefore: false,
             isWithdrawModalVisibleBefore: false,
             isBurnModalVisibleBefore: false,
             borrow: null,
             settleAsset: "1.3.0",
-            depositAsset: null,
             withdrawAsset: null,
             bridgeAsset: null,
             allRefsAssigned: false,
@@ -475,7 +475,7 @@ class AccountPortfolioList extends React.Component {
 
     _renderGatewayAction = (type, allowed, assetName, emptyCell) => {
         let modalAction =
-            type == "deposit"
+            type === "deposit"
                 ? this._showDepositModal.bind(this, assetName)
                 : this._showDepositWithdraw.bind(
                       this,
@@ -485,7 +485,7 @@ class AccountPortfolioList extends React.Component {
                   );
 
         let actionTitle =
-            type == "deposit" ? `icons.${type}.${type}` : `icons.${type}`;
+            type === "deposit" ? `icons.${type}.${type}` : `icons.${type}`;
 
         let linkElement = (
             <span>
@@ -749,6 +749,7 @@ class AccountPortfolioList extends React.Component {
                     return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
                 }
             },
+            /*
             {
                 className: "column-hide-medium",
                 title: <Translate content="modal.withdraw.submit" />,
@@ -761,6 +762,8 @@ class AccountPortfolioList extends React.Component {
                     return <span style={{whiteSpace: "nowrap"}}>{item}</span>;
                 }
             },
+
+             */
             {
                 className: "column-hide-medium",
                 title: <Translate content="account.trade" />,

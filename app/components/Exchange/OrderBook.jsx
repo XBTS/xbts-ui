@@ -88,6 +88,7 @@ class OrderBookRowVertical extends React.Component {
                     "clickable"
                 )}
             >
+                <Cell className={`cell ${integerClass} right`}>{price}</Cell>
                 <Cell className="cell left">
                     {utils.format_number(
                         order[
@@ -104,7 +105,6 @@ class OrderBookRowVertical extends React.Component {
                         quote.get("precision")
                     )}
                 </Cell>
-                <Cell className={`cell ${integerClass} right`}>{price}</Cell>
             </Row>
         );
     }
@@ -173,12 +173,16 @@ class OrderBookRowHorizontal extends React.Component {
               );
 
         let bgImage = "";
-        if(this.props.marketDepthPercentage && !this.props.isBid) {
-            bgImage = `linear-gradient(to right, rgba(255,0,0,.15) ${this.props.marketDepthPercentage || 0}%, rgba(0,0,0,0) ${this.props.marketDepthPercentage || 0}%)`
-        } else if(this.props.marketDepthPercentage && this.props.isBid) {
-            bgImage = `linear-gradient(to left, rgba(0,255,0,.15) ${this.props.marketDepthPercentage || 0}%, rgba(0,0,0,0) ${this.props.marketDepthPercentage || 0}%)`
+        if (this.props.marketDepthPercentage && !this.props.isBid) {
+            bgImage = `linear-gradient(to right, rgba(255,0,0,.15) ${this.props
+                .marketDepthPercentage || 0}%, rgba(0,0,0,0) ${this.props
+                .marketDepthPercentage || 0}%)`;
+        } else if (this.props.marketDepthPercentage && this.props.isBid) {
+            bgImage = `linear-gradient(to left, rgba(0,255,0,.15) ${this.props
+                .marketDepthPercentage || 0}%, rgba(0,0,0,0) ${this.props
+                .marketDepthPercentage || 0}%)`;
         }
-        
+
         return (
             <tr
                 onClick={this.props.onClick}
@@ -779,11 +783,12 @@ class OrderBook extends React.Component {
                     );
                 });
             } else {
-                let maxBid = tempBids.length ? tempBids[tempBids.length - 1].totalForSale().getAmount() : 0;
-                
+                let maxBid = tempBids.length
+                    ? tempBids[tempBids.length - 1].totalForSale().getAmount()
+                    : 0;
                 bidRows = tempBids.map((order, index) => {
                     const value = order.totalForSale().getAmount();
-                    const percentage = Math.ceil(value * 100 / maxBid);
+                    const percentage = Math.ceil((value * 100) / maxBid);
                     return horizontal ? (
                         <OrderBookRowHorizontal
                             index={index}
@@ -818,11 +823,13 @@ class OrderBook extends React.Component {
                     );
                 });
 
-                let maxAsk = tempAsks.length ? tempAsks[tempAsks.length - 1].totalForSale().getAmount() : 0;
-                
+                let maxAsk = tempAsks.length
+                    ? tempAsks[tempAsks.length - 1].totalForSale().getAmount()
+                    : 0;
+
                 askRows = tempAsks.map((order, index) => {
                     const value = order.totalForSale().getAmount();
-                    const percentage = Math.ceil(value * 100 / maxAsk);
+                    const percentage = Math.ceil((value * 100) / maxAsk);
                     return horizontal ? (
                         <OrderBookRowHorizontal
                             index={index}
@@ -1073,7 +1080,10 @@ class OrderBook extends React.Component {
                                     </span>
                                 </div>
                             </div>
-                            <div className="market-right-padding-only" style={{ paddingRight: "0.6rem" }} >
+                            <div
+                                className="market-right-padding-only"
+                                style={{paddingRight: "0.6rem"}}
+                            >
                                 <table className="table order-table table-hover fixed-table text-right">
                                     {!flipOrderBook ? rightHeader : leftHeader}
                                 </table>
@@ -1233,7 +1243,10 @@ class OrderBook extends React.Component {
                                     </span>
                                 </div>
                             </div>
-                            <div className="market-right-padding-only" style={{ paddingRight: "0.6rem" }} >
+                            <div
+                                className="market-right-padding-only"
+                                style={{paddingRight: "0.6rem"}}
+                            >
                                 <table className="table order-table table-hover fixed-table text-right">
                                     {flipOrderBook ? rightHeader : leftHeader}
                                 </table>
@@ -1297,21 +1310,21 @@ class OrderBook extends React.Component {
                         ref={this.verticalStickyTable}
                     >
                         <Row className="top-header sticky-table-header">
-                            <Cell className="cell header-cell left">
-                                <span className="header-sub-title">
-                                    <AssetName name={baseSymbol} />
-                                </span>
-                            </Cell>
-                            <Cell className="cell header-cell">
-                                <span className="header-sub-title">
-                                    <AssetName name={quoteSymbol} />
-                                </span>
-                            </Cell>
                             <Cell className="cell header-cell right">
                                 <Translate
                                     className="header-sub-title"
                                     content="exchange.price"
                                 />
+                            </Cell>
+                            <Cell className="cell header-cell left">
+                                <span className="header-sub-title">
+                                    <AssetName name={baseSymbol} />
+                                </span>
+                            </Cell>
+                            <Cell className="cell header-cell left">
+                                <span className="header-sub-title">
+                                    <AssetName name={quoteSymbol} />
+                                </span>
                             </Cell>
                         </Row>
                         {orderBookReversed ? (
@@ -1363,10 +1376,15 @@ class OrderBook extends React.Component {
                                         <span className="spread-value">
                                             {!!spread ? spread : "0"}
                                         </span>
+                                        &nbsp;
+                                        <AssetName
+                                            dataPlace="top"
+                                            name={baseSymbol}
+                                        />
                                     </span>
                                 </Cell>
                                 <Cell className="cell cell-center">
-                                    <span style={{width: 75}}>
+                                    <span style={{width: 25}}>
                                         {!this.props.hideFunctionButtons ? (
                                             <Icon
                                                 //data-intro={translator.translate(
@@ -1405,7 +1423,7 @@ class OrderBook extends React.Component {
                                             />
                                         ) : null}
                                         &nbsp;
-                                        {currentGroupOrderLimit == 0 ? null : (
+                                        {currentGroupOrderLimit === 0 ? null : (
                                             <Icon
                                                 name="grouping"
                                                 className="icon-14px"

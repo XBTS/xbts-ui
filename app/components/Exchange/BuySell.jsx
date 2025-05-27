@@ -1,5 +1,6 @@
 import cnames from "classnames";
 import React from "react";
+import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import utils from "common/utils";
@@ -21,6 +22,7 @@ import {Button, Select, Popover, Tooltip} from "bitshares-ui-style-guide";
 import ReactTooltip from "react-tooltip";
 import AccountStore from "../../stores/AccountStore";
 import GatewayStore from "../../stores/GatewayStore";
+//import DepositModal from "../Modal/DepositModal";
 
 class BuySell extends React.Component {
     static propTypes = {
@@ -1262,13 +1264,29 @@ class BuySell extends React.Component {
                                                 {isBid ? "Buy" : "Sell"}
                                             </Button>
                                         </Tooltip>
-                                        {/* <Button
-                                            style={{margin: 5}}
-                                            onClick={this.props.clearForm.bind(this, isBid)}
-                                        >
-                                            Clear
-                                        </Button> */}
 
+                                        <Link
+                                            to={"/deposit-withdraw"}
+                                            className={
+                                                "ant-btn ant-btn-secondary float-right"
+                                            }
+                                            type="info"
+                                            style={{margin: 5}}
+                                        >
+                                            <Translate
+                                                component="span"
+                                                content="account.deposit_withdraw"
+                                            />
+                                        </Link>
+
+                                        {/*
+                                        <Button
+                                            style={{margin: 5}}
+                                            onClick={this.showDepositModal}
+                                        >
+                                            DEPOSIT
+                                        </Button>
+*/}
                                         {this.props.currentBridges &&
                                         !this.props.backedCoin ? (
                                             <Tooltip
@@ -1334,7 +1352,7 @@ class BuySell extends React.Component {
                                                     )}
                                                     disabled={
                                                         GatewayStore.isDown(
-                                                            "OPEN"
+                                                            "XBTSX"
                                                         ) ||
                                                         !this.props
                                                             .currentAccount ||
@@ -1404,7 +1422,7 @@ class BuySell extends React.Component {
                                                                     this
                                                                 )}
                                                                 disabled={GatewayStore.isDown(
-                                                                    "OPEN"
+                                                                    "XBTSX"
                                                                 )}
                                                             >
                                                                 <Translate content="exchange.quick_deposit_gateway_button" />

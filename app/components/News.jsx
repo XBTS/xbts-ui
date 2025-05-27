@@ -4,9 +4,9 @@ import {api} from "@hiveio/hive-js";
 import Translate from "react-translate-component";
 import LoadingIndicator from "./LoadingIndicator";
 import utils from "common/utils";
-import {getHiveNewsTag} from "../branding";
+//import {getHiveNewsTag} from "../branding";
 
-const query = {tag: getHiveNewsTag(), limit: 20};
+const query = {tag: "xbts", limit: 25};
 
 const alignRight = {textAlign: "right"};
 const alignLeft = {textAlign: "left"};
@@ -160,7 +160,7 @@ class News extends React.Component {
             return;
         }
         api.getDiscussionsByTrending(query, (err, result) => {
-            if(err) {
+            if (err) {
                 return this.setState({isLoading: false, isWrong: true});
             }
             this.orderDiscussions(result);
@@ -182,13 +182,12 @@ class News extends React.Component {
                             <div className="grid-block vertical">
                                 {isWrong && <SomethingWentWrong />}
                                 {isLoading ? <LoadingIndicator /> : null}
-                                {!isWrong &&
-                                    !isLoading && (
-                                        <NewsTable
-                                            width={width}
-                                            data={discussions}
-                                        />
-                                    )}
+                                {!isWrong && !isLoading && (
+                                    <NewsTable
+                                        width={width}
+                                        data={discussions}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
