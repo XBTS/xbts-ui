@@ -67,6 +67,10 @@ export function getLogo() {
     //return require("assets/logo-year.png");
 }
 
+export function getLogoSmall() {
+    return require("assets/logo-small.png");
+}
+
 /**
  * Default set theme for the UI
  * @returns {string}

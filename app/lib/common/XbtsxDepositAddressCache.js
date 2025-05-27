@@ -3,7 +3,7 @@ import WalletDb from "stores/WalletDb";
 class XbtsxDepositAddressCache {
     constructor() {
         // increment this to force generating new addresses for all mappings
-        this.current_xbtsx_address_cache_version_string = "1";
+        this.current_xbtsx_address_cache_version_string = "2";
     }
 
     getIndexForDepositKeyInExchange(
