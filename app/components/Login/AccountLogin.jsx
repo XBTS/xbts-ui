@@ -226,6 +226,7 @@ class AccountLogin extends React.Component {
                 validateStatus={getValidateStatus()}
             >
                 <Input
+                    /* eslint-disable-next-line react/no-string-refs */
                     ref={"password"}
                     placeholder={counterpart.translate("wallet.enter_password")}
                     style={{width: "100%"}}

@@ -142,7 +142,7 @@ class AccountDepositWithdraw extends React.Component {
         } = this.state;
 
         serList.push({
-            name: "COINS (Native Chains)",
+            name: "ALTCOINS (Native Chains)",
             template: (
                 <div className="content-block">
                     <div
@@ -295,7 +295,7 @@ class AccountDepositWithdraw extends React.Component {
         });
 
         serList.push({
-            name: "WAVES Chain Tokens",
+            name: "WAVES Network",
             template: (
                 <div className="content-block">
                     <div

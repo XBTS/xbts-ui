@@ -169,6 +169,7 @@ class WithdrawModalNew extends React.Component {
             let toAsset = null;
             let fromAsset = null;
             let fullFromAssetSymbol = selectedGateway + "." + selectedAsset;
+            //let fullFromAssetSymbol = "XBTSX" + "." + selectedAsset;
 
             assets.forEach(item => {
                 item = item.get ? item : Immutable.fromJS(item);
@@ -221,7 +222,7 @@ class WithdrawModalNew extends React.Component {
                 if (balance && balance.toJS) {
                     if (
                         withdrawalCurrency &&
-                        balance.get("asset_type") == withdrawalCurrency.id
+                        balance.get("asset_type") === withdrawalCurrency.id
                     ) {
                         withdrawBalance = balance;
                         withdrawalCurrencyBalanceId = balance.get("id");
@@ -242,18 +243,19 @@ class WithdrawModalNew extends React.Component {
             assets.forEach(item => {
                 item = item.get ? item : Immutable.fromJS(item);
                 if (item.get("id") == "1.3.0") coreAsset = item;
-                if (item.get("symbol") == preferredCurrency) {
+                if (item.get("symbol") === preferredCurrency) {
                     toAsset = item;
                     preferredCurrencyPrecision = item.get("precision");
                 }
                 if (
+                    //selectedGateway > XBTSX
                     item.get("symbol") ==
                     selectedGateway + "." + selectedAsset
                 ) {
                     fromAsset = item;
                     withdrawalCurrencyPrecision = item.get("precision");
                 }
-                if (item.get("symbol") == selectedAsset) {
+                if (item.get("symbol") === selectedAsset) {
                     fromAsset = item;
                     withdrawalCurrencyPrecision = item.get("precision");
                 }
@@ -321,7 +323,7 @@ class WithdrawModalNew extends React.Component {
         let isBTS = false;
         if (coreAsset) {
             if (selectedAsset == coreAsset.get("symbol")) isBTS = true;
-        } else if (selectedAsset == "BTS") {
+        } else if (selectedAsset === "BTS") {
             isBTS = true;
         }
 
@@ -688,7 +690,7 @@ class WithdrawModalNew extends React.Component {
             WithdrawAddresses.set({wallet: assetName, addresses: withdrawals});
         } else {
             let withdrawals = WithdrawAddresses.get(assetName);
-            if (withdrawals.indexOf(address) == -1) {
+            if (withdrawals.indexOf(address) === -1) {
                 withdrawals.push(address);
                 WithdrawAddresses.set({
                     wallet: assetName,

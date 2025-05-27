@@ -428,9 +428,8 @@ class DepositModalContent extends DecimalChecker {
                                         content="gateway.purchase_notice"
                                         inputAsset={selectedAsset}
                                         outputAsset={
-                                            selectedGateway +
-                                            "." +
-                                            selectedAsset
+                                            //selectedGateway
+                                            "XBTSX" + "." + selectedAsset
                                         }
                                     />
                                     <div
