@@ -86,11 +86,12 @@ class AmountSelector extends DecimalChecker {
     }
 
     _onChange(e) {
-        if (this.props.onChange)
+        if (this.props.onChange) {
             this.props.onChange({
                 amount: this.getNumericEventValue(e),
                 asset: this.props.asset
             });
+        }
     }
 
     onAssetChange(selected_asset) {
@@ -152,6 +153,7 @@ class AmountSelector extends DecimalChecker {
         );
     }
 }
+
 AmountSelector = AssetWrapper(AmountSelector);
 
 export default AmountSelector;
