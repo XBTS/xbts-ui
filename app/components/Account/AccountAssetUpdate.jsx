@@ -129,7 +129,7 @@ class AccountAssetUpdate extends React.Component {
         ) {
             asset.options.extensions.taker_fee_percent /= 100;
         }
-        
+
         let coreRateQuoteAssetName = ChainStore.getAsset(
             core_exchange_rate.quote.asset_id
         ).get("symbol");
@@ -153,7 +153,7 @@ class AccountAssetUpdate extends React.Component {
             "extensions",
             "taker_fee_percent"
         ]);
-        
+
         return {
             isAssetUpdateConfirmationModalVisible: false,
             update: {
@@ -630,10 +630,10 @@ class AccountAssetUpdate extends React.Component {
                     : new big(parseInt(new_state.max_supply, 10))
                           .times(Math.pow(10, p))
                           .gt(GRAPHENE_MAX_SHARE_SUPPLY)
-                        ? counterpart.translate(
-                              "account.user_issued_assets.too_large"
-                          )
-                        : null;
+                    ? counterpart.translate(
+                          "account.user_issued_assets.too_large"
+                      )
+                    : null;
         } catch (err) {
             console.log("err:", err);
             errors.max_supply = counterpart.translate(
@@ -697,8 +697,15 @@ class AccountAssetUpdate extends React.Component {
     }
 
     _onCoreRateChange(type, amount) {
-        amount.amount =
-            amount.amount == "" ? "0" : amount.amount.replace(/,/g, "");
+        amount.amount = amount.amount == "" ? "0" : amount.amount.toString(); //.replace(/,/g, "");
+        //console.log('amount typeof', typeof amount.amount)
+
+        /*
+        amount.amount = typeof amount.amount === "string"
+            ? (amount.amount === "" ? "0" : amount.amount.replace(/,/g, ""))
+            : amount.amount.toString();
+
+         */
 
         amount.amount = utils.limitByPrecision(
             amount.amount,
@@ -924,8 +931,8 @@ class AccountAssetUpdate extends React.Component {
                 update.description.visible
                     ? false
                     : update.description.visible === false
-                        ? true
-                        : false
+                    ? true
+                    : false
             )
         );
 
@@ -1500,25 +1507,25 @@ class AccountAssetUpdate extends React.Component {
                                                     marginLeft: "30px"
                                                 }}
                                             >
-                                            <label>
-                                                        <Tooltip
-                                                            title={counterpart.translate(
-                                                                "account.user_issued_assets.taker_fee_percent_tooltip"
-                                                            )}
-                                                        >
-                                                            <Translate content="account.user_issued_assets.taker_fee_percent" />{" "}
-                                                            (%)
-                                                        </Tooltip>
-                                                        <input
-                                                            type="number"
-                                                            value={
-                                                                update.taker_fee_percent
-                                                            }
-                                                            onChange={this._onUpdateInput.bind(
-                                                                this,
-                                                                "taker_fee_percent"
-                                                            )}
-                                                        />
+                                                <label>
+                                                    <Tooltip
+                                                        title={counterpart.translate(
+                                                            "account.user_issued_assets.taker_fee_percent_tooltip"
+                                                        )}
+                                                    >
+                                                        <Translate content="account.user_issued_assets.taker_fee_percent" />{" "}
+                                                        (%)
+                                                    </Tooltip>
+                                                    <input
+                                                        type="number"
+                                                        value={
+                                                            update.taker_fee_percent
+                                                        }
+                                                        onChange={this._onUpdateInput.bind(
+                                                            this,
+                                                            "taker_fee_percent"
+                                                        )}
+                                                    />
                                                 </label>
                                                 <label>
                                                     <Translate content="account.user_issued_assets.market_fee" />{" "}
