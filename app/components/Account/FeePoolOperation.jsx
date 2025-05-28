@@ -34,13 +34,13 @@ class FeePoolOperation extends React.Component {
             [key]: amount
         });
     }
-    
+
     onClaimCollateralInput(key, {amount}) {
         this.state[key + "Asset"].setAmount({real: amount});
         this.setState({
             [key]: amount
         });
-    } 
+    }
 
     onFundPool = () =>
         AssetActions.fundPool(
@@ -49,7 +49,7 @@ class FeePoolOperation extends React.Component {
                 : null,
             this.props.core,
             this.props.asset,
-            this.state.fundPoolAmount.replace(/,/g, "")
+            this.state.fundPoolAmount.toString().replace(/,/g, "")
         );
 
     reset = () => {
@@ -82,18 +82,18 @@ class FeePoolOperation extends React.Component {
             precision: this.props.asset.get("precision"),
             asset_id: this.props.asset.get("id")
         }),
-	backingAsset: new Asset({
+        backingAsset: new Asset({
             amount: 0,
             asset_id: this.props.asset.has("bitasset")
-            ? this.props.asset.getIn([
-                  "bitasset",
-                  "options",
-                  "short_backing_asset"
-              ])
-            : "1.3.0"
+                ? this.props.asset.getIn([
+                      "bitasset",
+                      "options",
+                      "short_backing_asset"
+                  ])
+                : "1.3.0"
         })
     });
-	
+
     onClaimCollateralFees() {
         let account = ChainStore.getAccount(this.props.funderAccountName);
         if (!account) return;
@@ -104,7 +104,7 @@ class FeePoolOperation extends React.Component {
             this.state.claimCollateralFeesAmountAsset
         );
     }
-	
+
     onClaimFees() {
         let account = ChainStore.getAccount(this.props.funderAccountName);
         if (!account) return;
@@ -374,7 +374,7 @@ class FeePoolOperation extends React.Component {
         let dynamicObject = getDynamicObject(
             asset.get("dynamic_asset_data_id")
         );
-	    console.log(dynamicObject);
+        console.log(dynamicObject);
         let backingAsset = this.props.asset.has("bitasset")
             ? this.props.asset.getIn([
                   "bitasset",
@@ -387,7 +387,8 @@ class FeePoolOperation extends React.Component {
             : 0;
         let validClaim =
             claimCollateralFeesAmount > 0 &&
-            this.state.claimCollateralFeesAmountAsset.getAmount() <= unclaimedCollateralBalance;
+            this.state.claimCollateralFeesAmountAsset.getAmount() <=
+                unclaimedCollateralBalance;
 
         let unclaimedCollateralBalanceText = (
             <span
@@ -424,7 +425,9 @@ class FeePoolOperation extends React.Component {
                     :&nbsp;
                     {dynamicObject ? (
                         <FormattedAsset
-                            amount={dynamicObject.get("accumulated_collateral_fees")}
+                            amount={dynamicObject.get(
+                                "accumulated_collateral_fees"
+                            )}
                             asset={backingAsset}
                         />
                     ) : null}
@@ -434,7 +437,10 @@ class FeePoolOperation extends React.Component {
                     label="transfer.amount"
                     display_balance={unclaimedCollateralBalanceText}
                     amount={claimCollateralFeesAmount}
-                    onChange={this.onClaimCollateralInput.bind(this, "claimCollateralFeesAmount")}
+                    onChange={this.onClaimCollateralInput.bind(
+                        this,
+                        "claimCollateralFeesAmount"
+                    )}
                     asset={backingAsset}
                     assets={[backingAsset]}
                     placeholder="0.0"
@@ -461,7 +467,7 @@ class FeePoolOperation extends React.Component {
             </div>
         );
     }
-	
+
     render() {
         if (this.props.type === "fund") {
             return this.renderFundPool();
@@ -469,9 +475,9 @@ class FeePoolOperation extends React.Component {
             return this.renderClaimPool();
         } else if (this.props.type === "claim_fees") {
             return this.renderClaimFees();
-        }  else if (this.props.type === "claim_collateral_fees") {
+        } else if (this.props.type === "claim_collateral_fees") {
             return this.renderClaimCollateralFees();
-	}
+        }
     }
 }
 
