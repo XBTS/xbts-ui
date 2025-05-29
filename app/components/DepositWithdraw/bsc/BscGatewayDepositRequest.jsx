@@ -169,15 +169,6 @@ class BscGatewayDepositRequest extends React.Component {
         // else
         // {
         let clipboardText = "";
-        let payFromWallet =
-            "sth:" +
-            receive_address.address +
-            "?vendorField=" +
-            this.props.account.get("name");
-        var showPayFromWallet = false;
-        if (this.props.deposit_asset === "STH") {
-            showPayFromWallet = true;
-        }
 
         let memoText;
         if (this.props.deposit_account) {
@@ -415,12 +406,6 @@ class BscGatewayDepositRequest extends React.Component {
                                             <Translate content="gateway.copy_memo" />
                                         </div>
                                     </CopyToClipboard>
-                                ) : null}
-                                {showPayFromWallet ? (
-                                    <a className="button" href={payFromWallet}>
-                                        <Translate content="gateway.deposit_from_wallet" />{" "}
-                                        {this.props.deposit_asset}
-                                    </a>
                                 ) : null}
                             </div>
                             <Translate

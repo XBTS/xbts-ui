@@ -1423,7 +1423,7 @@ class OrderBook extends React.Component {
                                             />
                                         ) : null}
                                         &nbsp;
-                                        {currentGroupOrderLimit === 0 ? null : (
+                                        {currentGroupOrderLimit == 0 ? null : (
                                             <Icon
                                                 name="grouping"
                                                 className="icon-14px"

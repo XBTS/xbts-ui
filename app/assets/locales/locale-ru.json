@@ -926,7 +926,7 @@
         },
         "asset": {
             "actions": "Действия с активами",
-            "asset_owner_responsible": "The asset symbol, description as well as its parameters are user defined (by the asset owner)",
+            "asset_owner_responsible": "Символ актива, описание, а также его параметры определяются владельцем актива.",
             "collateral": {
                 "bid": "Обеспечение предложения",
                 "bid_price": "Цена предложения",

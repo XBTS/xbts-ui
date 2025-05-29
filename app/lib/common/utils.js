@@ -1,13 +1,12 @@
 import sanitize from "xss";
 import asset_utils from "./asset_utils";
+import {ChainTypes} from "bitsharesjs";
+import {getAssetHideNamespaces, getAssetNamespaces} from "../../branding";
 
 var numeral = require("numeral");
 let id_regex = /\b\d+\.\d+\.(\d+)\b/;
 
-import {ChainTypes} from "bitsharesjs";
 var {object_type} = ChainTypes;
-
-import {getAssetNamespaces, getAssetHideNamespaces} from "../../branding";
 
 var Utils = {
     is_object_id: obj_id => {
@@ -230,7 +229,7 @@ var Utils = {
         newStats = {close: {}},
         oldStats = {close: {}}
     ) {
-        let statsChanged =
+        return (
             newStats.volumeBase !== oldStats.volumeBase ||
             !this.are_equal_shallow(
                 newStats.close && newStats.close.base,
@@ -239,8 +238,8 @@ var Utils = {
             !this.are_equal_shallow(
                 newStats.close && newStats.close.quote,
                 oldStats.close && oldStats.close.quote
-            );
-        return statsChanged;
+            )
+        );
     },
 
     are_equal_shallow: function(a, b) {

@@ -428,11 +428,11 @@ class Asset extends React.Component {
                     hide_issuer="true"
                 />
                 <AssetImage
-                    maxWidth={50}
+                    maxWidth={36}
                     replaceNoneToBts={false}
                     name={asset.symbol}
                 />
-                ){short_name ? <p>{short_name}</p> : ""}
+                {short_name ? <p>{short_name}</p> : ""}
                 <Link
                     className="button market-button"
                     to={`/market/${asset.symbol}_${preferredMarket}`}
