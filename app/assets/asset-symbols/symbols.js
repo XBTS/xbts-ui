@@ -1,13 +1,9 @@
+// Core asset
+require("file-loader?name=asset-symbols/[name].png!./bts.png");
+
 //Unknown asset
 require("file-loader?name=asset-symbols/[name].png!./unknown.png");
 require("file-loader?name=asset-symbols/[name].png!./islp.png");
-
-// assets
-require("file-loader?name=asset-symbols/[name].png!./aeur.png");
-require("file-loader?name=asset-symbols/[name].png!./a.png");
-
-// Core asset
-require("file-loader?name=asset-symbols/[name].png!./bts.png");
 
 // BitAssets
 require("file-loader?name=asset-symbols/[name].png!./usd.png");
@@ -17,7 +13,13 @@ require("file-loader?name=asset-symbols/[name].png!./gold.png");
 require("file-loader?name=asset-symbols/[name].png!./btc.png");
 require("file-loader?name=asset-symbols/silver.png!./silver.png");
 
+// assets
+require("file-loader?name=asset-symbols/[name].png!./aeur.png");
+require("file-loader?name=asset-symbols/[name].png!./a.png");
+require("file-loader?name=asset-symbols/[name].png!./link.png");
+
 //xbtsx
+require("file-loader?name=asset-symbols/[name].png!./xbtsx.link.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.asic.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.aur.png");
 require("file-loader?name=asset-symbols/[name].png!./xbtsx.avax.png");
