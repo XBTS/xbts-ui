@@ -3,7 +3,14 @@
  * General API Settings are stored in api/apiConfig and should be imported here
  */
 
-import {xbtsxAPIs, wavesAPIs, ethAPIs, bscAPIs, eosAPIs} from "api/apiConfig";
+import {
+    xbtsxAPIs,
+    wavesAPIs,
+    ethAPIs,
+    bscAPIs,
+    eosAPIs,
+    tonAPIs
+} from "api/apiConfig";
 import {allowedGateway} from "branding";
 import {isGatewayTemporarilyDisabled} from "../chain/onChainConfig";
 import SettingsStore from "stores/SettingsStore";
@@ -90,8 +97,8 @@ export const availableGateways = {
             enabled: false,
             selected: false
         },
-        landing: "https://xbts.io/",
-        wallet: "https://ex.xbts.io/"
+        landing: "https://xbts.io",
+        wallet: "https://trade.xbts.io"
     },
     ETH: {
         id: "ETH",
@@ -106,8 +113,8 @@ export const availableGateways = {
             enabled: false,
             selected: false
         },
-        landing: "https://xbts.io/",
-        wallet: "https://ex.xbts.io/"
+        landing: "https://xbts.io",
+        wallet: "https://trade.xbts.io"
     },
     BSC: {
         id: "BSC",
@@ -122,8 +129,8 @@ export const availableGateways = {
             enabled: false,
             selected: false
         },
-        landing: "https://xbts.io/",
-        wallet: "https://ex.xbts.io/"
+        landing: "https://xbts.io",
+        wallet: "https://trade.xbts.io"
     },
     WAVES: {
         id: "WAVES",
@@ -138,8 +145,8 @@ export const availableGateways = {
             enabled: false,
             selected: false
         },
-        landing: "https://xbts.io/",
-        wallet: "https://ex.xbts.io/"
+        landing: "https://xbts.io",
+        wallet: "https://trade.xbts.io"
     },
     EOS: {
         id: "EOS",
@@ -154,8 +161,24 @@ export const availableGateways = {
             enabled: false,
             selected: false
         },
-        landing: "https://xbts.io/",
-        wallet: "https://ex.xbts.io/"
+        landing: "https://xbts.io",
+        wallet: "https://trade.xbts.io"
+    },
+    TON: {
+        id: "TON",
+        name: "TON",
+        baseAPI: tonAPIs,
+        isEnabled: _isEnabled("TON"),
+        isSimple: true,
+        selected: false,
+        simpleAssetGateway: false,
+        addressValidatorMethod: "POST",
+        options: {
+            enabled: false,
+            selected: false
+        },
+        landing: "https://xbts.io",
+        wallet: "https://trade.xbts.io"
     }
 };
 

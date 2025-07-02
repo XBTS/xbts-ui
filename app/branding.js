@@ -248,7 +248,9 @@ export function getMyMarketsQuotes() {
             "XBTSX.XCH",
             "XBTSX.PEP",
             "XBTSX.A",
-            "XBTSX.AEUR"
+            "XBTSX.AEUR",
+            "XBTSX.LINK",
+            "XBTSX.DOGS"
         ],
         /*
         honestTokens: [
@@ -471,7 +473,7 @@ export function getAssetHideNamespaces() {
  * @returns {boolean}
  */
 export function allowedGateway(gateway) {
-    const allowedGateways = ["XBTSX", "ETH", "BSC", "EOS", "WAVES"]; //  , "PIRATE", "IOB"
+    const allowedGateways = ["XBTSX", "ETH", "BSC", "EOS", "WAVES", "TON"]; //  , "PIRATE", "IOB"
     if (!gateway) {
         // answers the question: are any allowed?
         return allowedGateways.length > 0;

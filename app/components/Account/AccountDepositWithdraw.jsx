@@ -22,6 +22,7 @@ import XbtsxGateway from "../DepositWithdraw/xbtsx/XbtsxGateway";
 import BscGateway from "../DepositWithdraw/bsc/BscGateway";
 import EthGateway from "../DepositWithdraw/eth/EthGateway";
 import EosGateway from "../DepositWithdraw/eos/EosGateway";
+import TonGateway from "../DepositWithdraw/ton/TonGateway";
 import WavesGateway from "../DepositWithdraw/waves/WavesGateway";
 
 class AccountDepositWithdraw extends React.Component {
@@ -41,6 +42,7 @@ class AccountDepositWithdraw extends React.Component {
             BscService: props.viewSettings.get("BscService", "gateway"),
             ethService: props.viewSettings.get("ethService", "gateway"),
             eosService: props.viewSettings.get("eosService", "gateway"),
+            tonService: props.viewSettings.get("tonService", "gateway"),
             wavesService: props.viewSettings.get("wavesService", "gateway"),
             activeService: props.viewSettings.get("activeService", 0)
         };
@@ -54,6 +56,7 @@ class AccountDepositWithdraw extends React.Component {
             nextState.BscService !== this.state.BscService ||
             nextState.ethService !== this.state.ethService ||
             nextState.eosService !== this.state.eosService ||
+            nextState.tonService !== this.state.tonService ||
             nextState.wavesService !== this.state.wavesService ||
             nextState.activeService !== this.state.activeService
         );
@@ -103,6 +106,16 @@ class AccountDepositWithdraw extends React.Component {
         });
     }
 
+    toggleTonService(service) {
+        this.setState({
+            tonService: service
+        });
+
+        SettingsActions.changeViewSetting({
+            tonService: service
+        });
+    }
+
     toggleBscService(service) {
         this.setState({
             BscService: service
@@ -129,6 +142,7 @@ class AccountDepositWithdraw extends React.Component {
         BscGatewayCoins,
         ethGatewayCoins,
         eosGatewayCoins,
+        tonGatewayCoins,
         wavesGatewayCoins
     ) {
         let serList = [];
@@ -138,6 +152,7 @@ class AccountDepositWithdraw extends React.Component {
             BscService,
             ethService,
             eosService,
+            tonService,
             wavesService
         } = this.state;
 
@@ -257,6 +272,38 @@ class AccountDepositWithdraw extends React.Component {
 
                     {eosService === "gateway" && eosGatewayCoins.length ? (
                         <EosGateway account={account} coins={eosGatewayCoins} />
+                    ) : null}
+                </div>
+            )
+        });
+
+        serList.push({
+            name: "TON Network",
+            template: (
+                <div className="content-block">
+                    <div
+                        className="service-selector"
+                        style={{marginBottom: "2rem"}}
+                    >
+                        <ul className="button-group segmented no-margin">
+                            <li
+                                onClick={this.toggleTonService.bind(
+                                    this,
+                                    "gateway"
+                                )}
+                                className={
+                                    tonService === "gateway" ? "is-active" : ""
+                                }
+                            >
+                                <a>
+                                    <Translate content="gateway.gateway" />
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {tonService === "gateway" && tonGatewayCoins.length ? (
+                        <TonGateway account={account} coins={tonGatewayCoins} />
                     ) : null}
                 </div>
             )
@@ -386,6 +433,16 @@ class AccountDepositWithdraw extends React.Component {
                 return 0;
             });
 
+        let tonGatewayCoins = this.props.tonBackedCoins
+            .map(coin => {
+                return coin;
+            })
+            .sort((a, b) => {
+                if (a.symbol < b.symbol) return -1;
+                if (a.symbol > b.symbol) return 1;
+                return 0;
+            });
+
         let wavesGatewayCoins = this.props.wavesBackedCoins
             .map(coin => {
                 return coin;
@@ -401,6 +458,7 @@ class AccountDepositWithdraw extends React.Component {
             BscGatewayCoins,
             ethGatewayCoins,
             eosGatewayCoins,
+            tonGatewayCoins,
             wavesGatewayCoins
         );
 
@@ -409,6 +467,7 @@ class AccountDepositWithdraw extends React.Component {
             "XBTS_BSC",
             "ETH",
             "EOS",
+            "TON",
             "WAVES",
             "XbtsFiat" // XbtsFiat fiat
         ];
@@ -603,6 +662,7 @@ export default connect(DepositStoreWrapper, {
             BscBackedCoins: GatewayStore.getState().backedCoins.get("BSC", []),
             ethBackedCoins: GatewayStore.getState().backedCoins.get("ETH", []),
             eosBackedCoins: GatewayStore.getState().backedCoins.get("EOS", []),
+            tonBackedCoins: GatewayStore.getState().backedCoins.get("TON", []),
             wavesBackedCoins: GatewayStore.getState().backedCoins.get(
                 "WAVES",
                 []

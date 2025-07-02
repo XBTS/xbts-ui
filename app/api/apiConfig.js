@@ -26,6 +26,11 @@ export const eosAPIs = {
     COINS_LIST: "/coin"
 };
 
+export const tonAPIs = {
+    BASE: "https://apis.xbts.io/ton",
+    COINS_LIST: "/coin"
+};
+
 export const blockTradesAPIs = {
     BASE: "https://api.blocktrades.us/v2",
     COINS_LIST: "/coins",

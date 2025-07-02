@@ -129,6 +129,7 @@ require("file-loader?name=asset-symbols/[name].png!./pirate.doge.png");
 require("file-loader?name=asset-symbols/[name].png!./pirate.pirate.png");
 
 // 3rd party assets
+require("file-loader?name=asset-symbols/[name].png!./dogs.png");
 require("file-loader?name=asset-symbols/[name].png!./mdl.png");
 require("file-loader?name=asset-symbols/[name].png!./defi.png");
 require("file-loader?name=asset-symbols/[name].png!./eth.png");
