@@ -250,7 +250,8 @@ export function getMyMarketsQuotes() {
             "XBTSX.A",
             "XBTSX.AEUR",
             "XBTSX.LINK",
-            "XBTSX.DOGS"
+            "XBTSX.DOGS",
+            "XBTSX.NOT"
         ],
         /*
         honestTokens: [
