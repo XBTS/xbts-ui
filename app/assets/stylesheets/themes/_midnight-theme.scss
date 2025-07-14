@@ -1054,3 +1054,8 @@ input[type="checkbox"] + span:hover {
 .small {
     font-size: small;
 }
+
+body.midnightTheme .ant-alert-info {
+    background-color: #628ce9;
+    border: 1px solid #1240ab;
+}
